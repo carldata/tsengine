@@ -23,7 +23,7 @@ Please report bugs via the
 
 # Redistributing
 
-timeseries source code is distributed under the Apache-2.0 license.
+tsEngine source code is distributed under the Apache-2.0 license.
 
 **Contributions**
 
