@@ -1,5 +1,7 @@
 # Time Series Script Engine
 
+[![Build status](https://travis-ci.org/carldata/tsengine.svg?branch=master)](https://travis-ci.org/carldata/tsengine)
+
 Execute scripts on Time Series.
 
  
