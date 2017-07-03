@@ -15,7 +15,7 @@ ts,A
 
 ## Params
 
-onRead script all called with **fromDate** and **toDate** params
+onRead script is called with **fromDate** and **toDate** params
 
 ```inputs
 fromDate = '2010-01-01'
@@ -28,7 +28,7 @@ Multiply series by scalar value.
 
 ```script
 let
-    A = series 'A' fromDate toDate
+    A = read_series('A', fromDate, toDate)
 in
     A * 2.54
 ```

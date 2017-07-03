@@ -1,0 +1,27 @@
+# Convert units on write
+
+This script will convert inches to millimeters during data writing.
+
+
+## Params
+
+onWrite script is called with **dataPoint** param.
+
+```inputs
+dataPoint = '2010-01-01', 2
+```
+
+## Script
+
+Multiply series by scalar value.
+
+```script
+    dataPoint * 2.54
+```
+
+## Expected output
+
+```expected
+ts,output
+'2010-01-11T12:05:00',5.08
+```
