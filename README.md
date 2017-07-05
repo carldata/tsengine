@@ -2,7 +2,10 @@
 
 [![Build status](https://travis-ci.org/carldata/tsengine.svg?branch=master)](https://travis-ci.org/carldata/tsengine)
 
-Execute scripts on Time Series.
+This library consists of Compiler and Runtime for FlowScript language.
+The goals for this library are:
+  * FlowScript similar in expressiveness to Spreadsheet programming.
+  * Execute script on Time Series data 
 
  
 ## Build
@@ -10,6 +13,13 @@ Execute scripts on Time Series.
  ```bash
  sbt test
  ```
+ 
+ REPL console:
+ 
+ ```bash
+  sbt console
+  ```
+
 
 # Join in!
 

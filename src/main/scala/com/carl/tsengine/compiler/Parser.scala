@@ -5,7 +5,9 @@ import com.carl.tsengine.compiler.gen.{FlowScriptLexer, FlowScriptParser}
 import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 
 /**
-  * Script parser
+  * Script parser.
+  * This parser uses ANTLR4 generated Parser and Lexer.
+  * What this object adds is conversion of ANTLR AST into FlowScript AST.
   */
 object Parser {
 

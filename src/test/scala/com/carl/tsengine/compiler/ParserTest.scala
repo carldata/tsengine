@@ -19,5 +19,4 @@ class ParserTest extends FlatSpec with Matchers {
         FunDecl("my_fun", Seq("a", "xs"),
           FunBody(Seq(), VarExpr("a"))))
   }
-
 }

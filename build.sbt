@@ -4,6 +4,13 @@ version := "0.1.0"
 
 scalaVersion := "2.12.1"
 
-libraryDependencies += "org.antlr" % "antlr4-runtime" % "4.7"
+libraryDependencies ++= Seq(
+  // Scala native libraries
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+  // Java dependencies
+  "org.antlr" % "antlr4-runtime" % "4.7",
+
+  // Test dependencies
+  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+  "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
+)
