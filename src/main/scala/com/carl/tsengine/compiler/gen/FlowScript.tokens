@@ -1,0 +1,15 @@
+T__0=1
+T__1=2
+T__2=3
+T__3=4
+DEF=5
+MODULE=6
+WS=7
+LINE_COMMENT=8
+Identifier=9
+'('=1
+')'=2
+'='=3
+','=4
+'def'=5
+'module'=6
