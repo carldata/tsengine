@@ -18,4 +18,19 @@ object AST {
   case class StringExpr(value: String) extends Expr
   case class NumberExpr(value: Double) extends Expr
 
+
+  // Write AST as source code
+  def prettyPrint(m: Module): String = {
+    val fstr = prettyPrint(m.funDecl)
+
+    "module %s\n%s".format(m.name, fstr)
+  }
+
+  def prettyPrint(fundecl: FunDecl): String = {
+    val body = "a"
+    "def %s() = %s\n".format(fundecl.name, body)
+  }
+
+  def prettyPrint(str: String): String = '"' + str.toString + '"'
+  def prettyPrint(v: NumberExpr): String = v.toString
 }
