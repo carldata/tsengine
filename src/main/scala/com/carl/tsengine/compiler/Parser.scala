@@ -1,9 +1,11 @@
 package com.carl.tsengine.compiler
 
-import com.carl.tsengine.compiler.AST.{FunBody, FunDecl, Module, VarExpr}
-import com.carl.tsengine.compiler.gen.FlowScriptParser.CompilationUnitContext
+import com.carl.tsengine.compiler.AST.{Expr, FunDecl, Module, VarExpr}
+import com.carl.tsengine.compiler.gen.FlowScriptParser.{CompilationUnitContext, ExpressionContext, FunctionDeclarationContext}
 import com.carl.tsengine.compiler.gen.{FlowScriptLexer, FlowScriptParser}
 import org.antlr.v4.runtime._
+
+import scala.collection.JavaConverters._
 
 /**
   * Script parser.
@@ -21,6 +23,7 @@ object Parser {
     parser.removeErrorListeners()
     val errorListener = new SyntaxErrorListener()
     parser.addErrorListener(errorListener)
+    // Now we are ready to run ANTLR parser
     val compilationUnit = parser.compilationUnit()
     if(errorListener.getErrors.size() > 0)
       Left(errorListener.getErrors.firstElement())
@@ -30,8 +33,24 @@ object Parser {
 
   def convertCompilationUnit(ctx: CompilationUnitContext): Module = {
     val moduleName = ctx.moduleDeclaration().Identifier().getText
-    Module(moduleName,
-      FunDecl("my_fun", Seq("a", "xs"),
-        FunBody(Seq(), VarExpr("a"))))
+    val funDecl = convertFunDecl(ctx.functionDeclaration())
+    Module(moduleName, funDecl)
   }
+
+  def convertFunDecl(ctx: FunctionDeclarationContext): FunDecl = {
+    val funName = ctx.Identifier().getText
+    val params = if(ctx.paramList() == null) {
+      Seq()
+    } else {
+      ctx.paramList().param().asScala.map(pctx => pctx.Identifier().getText)
+    }
+    val body = convertExpr(ctx.expression())
+    FunDecl(funName, params, body)
+
+  }
+
+  def convertExpr(ctx: ExpressionContext): Expr = {
+    VarExpr(ctx.Identifier().getText)
+  }
+
 }

@@ -58,13 +58,13 @@ public interface FlowScriptListener extends ParseTreeListener {
 	 */
 	void exitParam(FlowScriptParser.ParamContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FlowScriptParser#functionBody}.
+	 * Enter a parse tree produced by {@link FlowScriptParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionBody(FlowScriptParser.FunctionBodyContext ctx);
+	void enterExpression(FlowScriptParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FlowScriptParser#functionBody}.
+	 * Exit a parse tree produced by {@link FlowScriptParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionBody(FlowScriptParser.FunctionBodyContext ctx);
+	void exitExpression(FlowScriptParser.ExpressionContext ctx);
 }

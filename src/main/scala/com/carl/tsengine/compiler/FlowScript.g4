@@ -10,7 +10,7 @@ moduleDeclaration
     ;
 
 functionDeclaration
-    : DEF Identifier '(' paramList? ')' '=' functionBody
+    : DEF Identifier '(' paramList? ')' '=' expression
     ;
 
 paramList
@@ -21,7 +21,7 @@ param
 	: Identifier
     ;
 
-functionBody
+expression
     : Identifier
     ;
 

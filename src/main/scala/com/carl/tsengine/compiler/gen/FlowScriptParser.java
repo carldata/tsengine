@@ -21,10 +21,10 @@ public class FlowScriptParser extends Parser {
 		Identifier=9;
 	public static final int
 		RULE_compilationUnit = 0, RULE_moduleDeclaration = 1, RULE_functionDeclaration = 2, 
-		RULE_paramList = 3, RULE_param = 4, RULE_functionBody = 5;
+		RULE_paramList = 3, RULE_param = 4, RULE_expression = 5;
 	public static final String[] ruleNames = {
 		"compilationUnit", "moduleDeclaration", "functionDeclaration", "paramList", 
-		"param", "functionBody"
+		"param", "expression"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -172,8 +172,8 @@ public class FlowScriptParser extends Parser {
 	public static class FunctionDeclarationContext extends ParserRuleContext {
 		public TerminalNode DEF() { return getToken(FlowScriptParser.DEF, 0); }
 		public TerminalNode Identifier() { return getToken(FlowScriptParser.Identifier, 0); }
-		public FunctionBodyContext functionBody() {
-			return getRuleContext(FunctionBodyContext.class,0);
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public ParamListContext paramList() {
 			return getRuleContext(ParamListContext.class,0);
@@ -220,7 +220,7 @@ public class FlowScriptParser extends Parser {
 			setState(26);
 			match(T__2);
 			setState(27);
-			functionBody();
+			expression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -330,25 +330,25 @@ public class FlowScriptParser extends Parser {
 		return _localctx;
 	}
 
-	public static class FunctionBodyContext extends ParserRuleContext {
+	public static class ExpressionContext extends ParserRuleContext {
 		public TerminalNode Identifier() { return getToken(FlowScriptParser.Identifier, 0); }
-		public FunctionBodyContext(ParserRuleContext parent, int invokingState) {
+		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_functionBody; }
+		@Override public int getRuleIndex() { return RULE_expression; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof FlowScriptListener ) ((FlowScriptListener)listener).enterFunctionBody(this);
+			if ( listener instanceof FlowScriptListener ) ((FlowScriptListener)listener).enterExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof FlowScriptListener ) ((FlowScriptListener)listener).exitFunctionBody(this);
+			if ( listener instanceof FlowScriptListener ) ((FlowScriptListener)listener).exitExpression(this);
 		}
 	}
 
-	public final FunctionBodyContext functionBody() throws RecognitionException {
-		FunctionBodyContext _localctx = new FunctionBodyContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_functionBody);
+	public final ExpressionContext expression() throws RecognitionException {
+		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_expression);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

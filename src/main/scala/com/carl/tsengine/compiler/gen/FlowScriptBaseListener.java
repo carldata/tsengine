@@ -76,13 +76,13 @@ public class FlowScriptBaseListener implements FlowScriptListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionBody(FlowScriptParser.FunctionBodyContext ctx) { }
+	@Override public void enterExpression(FlowScriptParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionBody(FlowScriptParser.FunctionBodyContext ctx) { }
+	@Override public void exitExpression(FlowScriptParser.ExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

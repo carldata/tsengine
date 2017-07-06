@@ -1,8 +1,8 @@
 package com.carl.tsengine.compiler
 
-import com.carl.tsengine.compiler.AST.{FunBody, FunDecl, Module, VarExpr}
-import org.scalacheck.{Gen, Properties}
+import com.carl.tsengine.compiler.AST.{FunDecl, Module, VarExpr}
 import org.scalacheck.Prop.forAll
+import org.scalacheck.{Gen, Properties}
 
 /**
   * This test check the following property:
@@ -10,9 +10,16 @@ import org.scalacheck.Prop.forAll
   */
 object ParserCheck extends Properties("Parser") {
 
+  private val exprGen = for {
+    varName <- Gen.identifier
+  } yield VarExpr(varName)
+
   private val moduleGen = for {
     moduleName <- Gen.identifier
-  } yield Module(moduleName, FunDecl("my_fun", Seq("a", "xs"), FunBody(Seq(), VarExpr("a"))))
+    funName <- Gen.identifier
+    funParams <- Gen.listOf(Gen.identifier)
+    bodyExpr <- exprGen
+  } yield Module(moduleName, FunDecl(funName, funParams, bodyExpr))
 
 
   property("prettyPrint -> parse") = forAll(moduleGen) { module: Module =>
@@ -31,7 +38,9 @@ object ParserCheck extends Properties("Parser") {
           println("AST:\n%s\n".format(m.toString))
           false
         }
-        else { true }
+        else {
+          true
+        }
     }
   }
 
