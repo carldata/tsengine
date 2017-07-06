@@ -25,16 +25,6 @@ expression
     : Identifier
     ;
 
-fragment
-Letter
-	: [a-zA-Z$_] // these are the allowed characters
-	;
-
-fragment
-LetterOrDigit
-	: [a-zA-Z0-9$_] // these are the allowed characters or digits
-    ;
-
 // LEXER
 DEF : 'def';
 MODULE : 'module';
@@ -49,4 +39,14 @@ Identifier
 	: Letter LetterOrDigit*
     ;
 
+
+fragment
+Letter
+	: [a-zA-Z$_] // these are the allowed characters
+	;
+
+fragment
+LetterOrDigit
+	: [a-zA-Z0-9$_] // these are the allowed characters or digits
+    ;
 
