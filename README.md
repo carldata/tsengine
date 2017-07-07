@@ -1,11 +1,21 @@
-# Time Series Script Engine
+# FlowScript language
 
-[![Build status](https://travis-ci.org/carldata/tsengine.svg?branch=master)](https://travis-ci.org/carldata/tsengine)
+[![Build status](https://travis-ci.org/carldata/flow-script.svg?branch=master)](https://travis-ci.org/carldata/flow-script)
 
-This library consists of Compiler and Runtime for FlowScript language.
-The goals for this library are:
-  * FlowScript similar in expressiveness to Spreadsheet programming.
-  * Execute script on Time Series data 
+This project consists of compiler and basic runtime system for FlowScript.
+
+The main design goal for this language is a security. It should be safe to run any script written by the user 
+on the server. 
+The program written in FlowScript is executed by runtime which provide base functions for the script. 
+Basic runtime implementation provides only few functions, which doesn't communicate with the OS.
+
+Projects which want to use FlowScript and given scripts written in this language more power will extend runtime
+with custom functions.
+
+This language is intended for use cases like:
+
+ * Add script to convert units in Time Series during data exports
+ * Merging 2 Time Series.
 
  
 ## Build
@@ -27,13 +37,13 @@ We are happy to receive bug reports, fixes, documentation enhancements,
 and other improvements.
 
 Please report bugs via the
-[github issue tracker](http://github.com/carldata/tsengine/issues).
+[github issue tracker](http://github.com/carldata/flow-script/issues).
 
 
 
 # Redistributing
 
-tsEngine source code is distributed under the Apache-2.0 license.
+FlowScript source code is distributed under the Apache-2.0 license.
 
 **Contributions**
 
