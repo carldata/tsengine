@@ -8,6 +8,15 @@ import com.carl.sf.compiler.AST.Module
 object SemanticAnalyzer {
 
   def analyze(module: Module): Either[String, Module] = {
+    VariableChecker.check(module)
+  }
+}
+
+private object VariableChecker {
+
+  /** Check for errors in the module. Returns None if no error was found */
+  def check(module: Module): Either[String, Module] = {
+    val st = new SymbolTable()
     Right(module)
   }
 }

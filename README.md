@@ -9,13 +9,13 @@ on the server.
 The program written in FlowScript is executed by runtime which provide base functions for the script. 
 Basic runtime implementation provides only few functions, which doesn't communicate with the OS.
 
-Projects which want to use FlowScript and given scripts written in this language more power will extend runtime
+Projects which want to use FlowScript and give scripts written in this language more power will extend runtime
 with custom functions.
 
 This language is intended for use cases like:
 
  * Add script to convert units in Time Series during data exports
- * Merging 2 Time Series.
+ * Merging 2 Time Series to create new Series
 
  
 ## Build
