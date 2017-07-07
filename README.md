@@ -27,7 +27,7 @@ This language is intended for use cases like:
 ## FlowScript examples
 
 ```scala
-package Test1
+module Test1
 
 // Read channel A2 and convert inches to centimeters
 def onRead(fromDate, toDate) = load_series("A2", fromDate, toDate) * 2.54 
