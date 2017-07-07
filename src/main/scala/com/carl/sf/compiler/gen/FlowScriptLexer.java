@@ -1,5 +1,5 @@
-// Generated from /home/klangner/workspaces/scala/tsengine/src/main/scala/com/carl/tsengine/compiler/FlowScript.g4 by ANTLR 4.7
-package com.carl.tsengine.compiler.gen;
+// Generated from /home/klangner/workspaces/scala/tsengine/src/main/scala/com/carl/sf/compiler/FlowScript.g4 by ANTLR 4.7
+package com.carl.sf.compiler.gen;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

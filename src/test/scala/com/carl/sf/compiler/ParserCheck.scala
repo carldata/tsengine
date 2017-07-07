@@ -1,6 +1,6 @@
-package com.carl.tsengine.compiler
+package com.carl.sf.compiler
 
-import com.carl.tsengine.compiler.AST.{FunDecl, Module, VarExpr}
+import com.carl.sf.compiler.AST.{FunDecl, Module, VarExpr}
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Gen, Properties}
 
