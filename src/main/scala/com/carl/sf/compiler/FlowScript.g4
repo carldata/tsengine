@@ -2,15 +2,15 @@ grammar FlowScript;
 
 /* Main compilation unit */
 compilationUnit
-    : moduleDeclaration functionDeclaration EOF
+    : moduleDeclaration functionDefinition EOF
     ;
 
 moduleDeclaration
     : MODULE Identifier
     ;
 
-functionDeclaration
-    : DEF Identifier '(' paramList? ')' '=' expression
+functionDefinition
+    : DEF Identifier '(' paramList? ')' '=' term
     ;
 
 paramList
@@ -21,24 +21,25 @@ param
 	: Identifier
     ;
 
-expression
+term
+    : variableTerm
+    ;
+
+variableTerm
     : Identifier
     ;
 
 // LEXER
 DEF : 'def';
 MODULE : 'module';
-// Whitespace and comments
 
+// Whitespace and comments
 WS  :  [ \t\r\n\u000C]+ -> skip;
-LINE_COMMENT
-    :   '//' ~[\r\n]* -> skip
-    ;
+LINE_COMMENT:   '//' ~[\r\n]* -> skip;
 
 Identifier
 	: Letter LetterOrDigit*
     ;
-
 
 fragment
 Letter

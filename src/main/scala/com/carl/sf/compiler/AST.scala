@@ -7,15 +7,14 @@ object AST {
 
   type MathOp = String
 
-  case class Module(name: String, funDecl: FunDecl)
-  case class FunDecl(name: String, params: Seq[String], body: Expr)
-  case class Assign(varName: String, expr: Expr)
-  sealed trait Expr
-  case class MathExpr(expr1: Expr, expr2: Expr, op: MathOp) extends Expr
-  case class FunExpr(identifier: String, params: Seq[Expr]) extends Expr
-  case class VarExpr(name: String) extends Expr
-  case class StringExpr(value: String) extends Expr
-  case class NumberExpr(value: Double) extends Expr
+  case class Module(name: String, funDecl: FunctionDef)
+  case class FunctionDef(name: String, params: Seq[String], body: Term)
+//  case class Assign(varName: String, expr: Term)
+  sealed trait Term
+//  case class ApplicationTerm(name: String, params: Seq[Term]) extends Term
+  case class VariableTerm(name: String) extends Term
+//  case class StringTerm(value: String) extends Term
+//  case class NumberTerm(value: Double) extends Term
 
 
   // Write AST as source code
@@ -25,19 +24,18 @@ object AST {
     "module %s\n%s".format(m.name, fstr)
   }
 
-  def prettyPrint(funDecl: FunDecl): String = {
+  def prettyPrint(funDecl: FunctionDef): String = {
     val params = funDecl.params.mkString(",")
     val body = prettyPrint(funDecl.body)
     "def %s(%s) = %s\n".format(funDecl.name, params, body)
   }
 
-  def prettyPrint(expr: Expr): String = {
+  def prettyPrint(expr: Term): String = {
     expr match {
-      case MathExpr(e1, e2, op) => prettyPrint(e1) + op + prettyPrint(e2)
-      case FunExpr(name, params) => "def " + name + "(%s)".format(params.map(prettyPrint).mkString(","))
-      case VarExpr(name) => name
-      case StringExpr(str) => '"' + str + '"'
-      case NumberExpr(v) => v.toString
+//      case ApplicationTerm(name, params) => "def " + name + "(%s)".format(params.map(prettyPrint).mkString(","))
+      case VariableTerm(name) => name
+//      case StringTerm(str) => '"' + str + '"'
+//      case NumberTerm(v) => v.toString
     }
   }
 }

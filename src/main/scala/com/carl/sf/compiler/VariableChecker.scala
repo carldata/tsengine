@@ -3,17 +3,11 @@ package com.carl.sf.compiler
 import com.carl.sf.compiler.AST._
 
 /**
-  * Semantic Analysis consists of:
-  *   1. Variable scope checker
+  * Run the following checks
+  *   1. Variable redefinition in the same scope
+  *   2. Variable not declared
   */
-object SemanticAnalyzer {
-
-  def analyze(module: Module): Either[String, Unit] = {
-    VariableChecker.check(module)
-  }
-}
-
-private object VariableChecker {
+object VariableChecker {
 
   /** Check for errors in the module. Returns None if no error was found */
   def check(module: Module): Either[String, Unit] = {
@@ -22,7 +16,7 @@ private object VariableChecker {
   }
 
   /** Update symbol table and at the same time look for duplicate variables */
-  def check(f: FunDecl, table: SymbolTable): Either[String, Unit] = {
+  def check(f: FunctionDef, table: SymbolTable): Either[String, Unit] = {
     val st = f.params.foldLeft[Either[String, SymbolTable]](Right(table)) { (e, x) =>
       e.flatMap { t =>
         if (t.checkScope(x)) {
@@ -35,13 +29,12 @@ private object VariableChecker {
     st.flatMap(check(f.body, _))
   }
 
-  def check(expr: Expr, table: SymbolTable): Either[String, Unit] = {
+  def check(expr: Term, table: SymbolTable): Either[String, Unit] = {
     expr match {
-      case MathExpr(e1, e2, op) => Right()
-      case FunExpr(name, params) => Right()
-      case VarExpr(x) => if(table.hasSymbol(x)) { Right() } else { Left("Unresolved variable: %s".format(x)) }
-      case StringExpr(_) => Right()
-      case NumberExpr(_) => Right()
+//      case ApplicationTerm(name, params) => Right()
+      case VariableTerm(x) => if(table.hasSymbol(x)) { Right() } else { Left("Unresolved variable: %s".format(x)) }
+//      case StringTerm(_) => Right()
+//      case NumberTerm(_) => Right()
     }
   }
 }

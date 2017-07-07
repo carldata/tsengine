@@ -1,7 +1,7 @@
 package com.carl.sf.compiler
 
-import com.carl.sf.compiler.AST.{Expr, FunDecl, Module, VarExpr}
-import com.carl.sf.compiler.gen.FlowScriptParser.{CompilationUnitContext, ExpressionContext, FunctionDeclarationContext}
+import com.carl.sf.compiler.AST.{FunctionDef, Module, Term, VariableTerm}
+import com.carl.sf.compiler.gen.FlowScriptParser._
 import com.carl.sf.compiler.gen.{FlowScriptLexer, FlowScriptParser}
 import org.antlr.v4.runtime._
 
@@ -25,32 +25,36 @@ object Parser {
     parser.addErrorListener(errorListener)
     // Now we are ready to run ANTLR parser
     val compilationUnit = parser.compilationUnit()
+    // Parser succeeded only if error list is empty
     if(errorListener.getErrors.size() > 0)
       Left(errorListener.getErrors.firstElement())
     else
       Right(convertCompilationUnit(compilationUnit))
   }
 
+  /** Convert ANTLR Context into AST Module node */
   def convertCompilationUnit(ctx: CompilationUnitContext): Module = {
     val moduleName = ctx.moduleDeclaration().Identifier().getText
-    val funDecl = convertFunDecl(ctx.functionDeclaration())
+    val funDecl = convertFunDef(ctx.functionDefinition())
     Module(moduleName, funDecl)
   }
 
-  def convertFunDecl(ctx: FunctionDeclarationContext): FunDecl = {
+  /** Convert ANTLR Context into Function Definition node */
+  def convertFunDef(ctx: FunctionDefinitionContext): FunctionDef = {
     val funName = ctx.Identifier().getText
     val params = if(ctx.paramList() == null) {
       Seq()
     } else {
       ctx.paramList().param().asScala.map(pctx => pctx.Identifier().getText)
     }
-    val body = convertExpr(ctx.expression())
-    FunDecl(funName, params, body)
+    val body = convertTerm(ctx.term())
+    FunctionDef(funName, params, body)
 
   }
 
-  def convertExpr(ctx: ExpressionContext): Expr = {
-    VarExpr(ctx.Identifier().getText)
+  /** Convert ANTLR Context into Term node */
+  def convertTerm(ctx: TermContext): Term = {
+    VariableTerm(ctx.variableTerm().Identifier().getText)
   }
 
 }

@@ -1,4 +1,4 @@
-// Generated from /home/klangner/workspaces/scala/tsengine/src/main/scala/com/carl/sf/compiler/FlowScript.g4 by ANTLR 4.7
+// Generated from /home/klangner/workspaces/scala/flow-script/src/main/scala/com/carl/sf/compiler/FlowScript.g4 by ANTLR 4.7
 package com.carl.sf.compiler.gen;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -20,11 +20,11 @@ public class FlowScriptParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, DEF=5, MODULE=6, WS=7, LINE_COMMENT=8, 
 		Identifier=9;
 	public static final int
-		RULE_compilationUnit = 0, RULE_moduleDeclaration = 1, RULE_functionDeclaration = 2, 
-		RULE_paramList = 3, RULE_param = 4, RULE_expression = 5;
+		RULE_compilationUnit = 0, RULE_moduleDeclaration = 1, RULE_functionDefinition = 2, 
+		RULE_paramList = 3, RULE_param = 4, RULE_term = 5, RULE_variableTerm = 6;
 	public static final String[] ruleNames = {
-		"compilationUnit", "moduleDeclaration", "functionDeclaration", "paramList", 
-		"param", "expression"
+		"compilationUnit", "moduleDeclaration", "functionDefinition", "paramList", 
+		"param", "term", "variableTerm"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -86,8 +86,8 @@ public class FlowScriptParser extends Parser {
 		public ModuleDeclarationContext moduleDeclaration() {
 			return getRuleContext(ModuleDeclarationContext.class,0);
 		}
-		public FunctionDeclarationContext functionDeclaration() {
-			return getRuleContext(FunctionDeclarationContext.class,0);
+		public FunctionDefinitionContext functionDefinition() {
+			return getRuleContext(FunctionDefinitionContext.class,0);
 		}
 		public TerminalNode EOF() { return getToken(FlowScriptParser.EOF, 0); }
 		public CompilationUnitContext(ParserRuleContext parent, int invokingState) {
@@ -102,11 +102,11 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(12);
-			moduleDeclaration();
-			setState(13);
-			functionDeclaration();
 			setState(14);
+			moduleDeclaration();
+			setState(15);
+			functionDefinition();
+			setState(16);
 			match(EOF);
 			}
 		}
@@ -136,9 +136,9 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(16);
+			setState(18);
 			match(MODULE);
-			setState(17);
+			setState(19);
 			match(Identifier);
 			}
 		}
@@ -153,50 +153,50 @@ public class FlowScriptParser extends Parser {
 		return _localctx;
 	}
 
-	public static class FunctionDeclarationContext extends ParserRuleContext {
+	public static class FunctionDefinitionContext extends ParserRuleContext {
 		public TerminalNode DEF() { return getToken(FlowScriptParser.DEF, 0); }
 		public TerminalNode Identifier() { return getToken(FlowScriptParser.Identifier, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
 		}
 		public ParamListContext paramList() {
 			return getRuleContext(ParamListContext.class,0);
 		}
-		public FunctionDeclarationContext(ParserRuleContext parent, int invokingState) {
+		public FunctionDefinitionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_functionDeclaration; }
+		@Override public int getRuleIndex() { return RULE_functionDefinition; }
 	}
 
-	public final FunctionDeclarationContext functionDeclaration() throws RecognitionException {
-		FunctionDeclarationContext _localctx = new FunctionDeclarationContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_functionDeclaration);
+	public final FunctionDefinitionContext functionDefinition() throws RecognitionException {
+		FunctionDefinitionContext _localctx = new FunctionDefinitionContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_functionDefinition);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(19);
-			match(DEF);
-			setState(20);
-			match(Identifier);
 			setState(21);
-			match(T__0);
+			match(DEF);
+			setState(22);
+			match(Identifier);
 			setState(23);
+			match(T__0);
+			setState(25);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Identifier) {
 				{
-				setState(22);
+				setState(24);
 				paramList();
 				}
 			}
 
-			setState(25);
-			match(T__1);
-			setState(26);
-			match(T__2);
 			setState(27);
-			expression();
+			match(T__1);
+			setState(28);
+			match(T__2);
+			setState(29);
+			term();
 			}
 		}
 		catch (RecognitionException re) {
@@ -230,21 +230,21 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29);
+			setState(31);
 			param();
-			setState(34);
+			setState(36);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__3) {
 				{
 				{
-				setState(30);
+				setState(32);
 				match(T__3);
-				setState(31);
+				setState(33);
 				param();
 				}
 				}
-				setState(36);
+				setState(38);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -275,35 +275,6 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(37);
-			match(Identifier);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class ExpressionContext extends ParserRuleContext {
-		public TerminalNode Identifier() { return getToken(FlowScriptParser.Identifier, 0); }
-		public ExpressionContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_expression; }
-	}
-
-	public final ExpressionContext expression() throws RecognitionException {
-		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_expression);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
 			setState(39);
 			match(Identifier);
 			}
@@ -319,18 +290,79 @@ public class FlowScriptParser extends Parser {
 		return _localctx;
 	}
 
+	public static class TermContext extends ParserRuleContext {
+		public VariableTermContext variableTerm() {
+			return getRuleContext(VariableTermContext.class,0);
+		}
+		public TermContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_term; }
+	}
+
+	public final TermContext term() throws RecognitionException {
+		TermContext _localctx = new TermContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_term);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(41);
+			variableTerm();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VariableTermContext extends ParserRuleContext {
+		public TerminalNode Identifier() { return getToken(FlowScriptParser.Identifier, 0); }
+		public VariableTermContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_variableTerm; }
+	}
+
+	public final VariableTermContext variableTerm() throws RecognitionException {
+		VariableTermContext _localctx = new VariableTermContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_variableTerm);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(43);
+			match(Identifier);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13,\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\4\3\4"+
-		"\3\4\3\4\5\4\32\n\4\3\4\3\4\3\4\3\4\3\5\3\5\3\5\7\5#\n\5\f\5\16\5&\13"+
-		"\5\3\6\3\6\3\7\3\7\3\7\2\2\b\2\4\6\b\n\f\2\2\2\'\2\16\3\2\2\2\4\22\3\2"+
-		"\2\2\6\25\3\2\2\2\b\37\3\2\2\2\n\'\3\2\2\2\f)\3\2\2\2\16\17\5\4\3\2\17"+
-		"\20\5\6\4\2\20\21\7\2\2\3\21\3\3\2\2\2\22\23\7\b\2\2\23\24\7\13\2\2\24"+
-		"\5\3\2\2\2\25\26\7\7\2\2\26\27\7\13\2\2\27\31\7\3\2\2\30\32\5\b\5\2\31"+
-		"\30\3\2\2\2\31\32\3\2\2\2\32\33\3\2\2\2\33\34\7\4\2\2\34\35\7\5\2\2\35"+
-		"\36\5\f\7\2\36\7\3\2\2\2\37$\5\n\6\2 !\7\6\2\2!#\5\n\6\2\" \3\2\2\2#&"+
-		"\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%\t\3\2\2\2&$\3\2\2\2\'(\7\13\2\2(\13\3\2"+
-		"\2\2)*\7\13\2\2*\r\3\2\2\2\4\31$";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13\60\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\3\2\3\2\3\2\3\3\3\3\3"+
+		"\3\3\4\3\4\3\4\3\4\5\4\34\n\4\3\4\3\4\3\4\3\4\3\5\3\5\3\5\7\5%\n\5\f\5"+
+		"\16\5(\13\5\3\6\3\6\3\7\3\7\3\b\3\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2\2*\2"+
+		"\20\3\2\2\2\4\24\3\2\2\2\6\27\3\2\2\2\b!\3\2\2\2\n)\3\2\2\2\f+\3\2\2\2"+
+		"\16-\3\2\2\2\20\21\5\4\3\2\21\22\5\6\4\2\22\23\7\2\2\3\23\3\3\2\2\2\24"+
+		"\25\7\b\2\2\25\26\7\13\2\2\26\5\3\2\2\2\27\30\7\7\2\2\30\31\7\13\2\2\31"+
+		"\33\7\3\2\2\32\34\5\b\5\2\33\32\3\2\2\2\33\34\3\2\2\2\34\35\3\2\2\2\35"+
+		"\36\7\4\2\2\36\37\7\5\2\2\37 \5\f\7\2 \7\3\2\2\2!&\5\n\6\2\"#\7\6\2\2"+
+		"#%\5\n\6\2$\"\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'\3\2\2\2\'\t\3\2\2\2(&\3\2"+
+		"\2\2)*\7\13\2\2*\13\3\2\2\2+,\5\16\b\2,\r\3\2\2\2-.\7\13\2\2.\17\3\2\2"+
+		"\2\4\33&";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
