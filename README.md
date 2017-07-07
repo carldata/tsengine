@@ -23,13 +23,15 @@ This language is intended for use cases like:
  ```bash
  sbt test
  ```
- 
- REPL console:
- 
- ```bash
-  sbt console
-  ```
 
+## FlowScript examples
+
+```
+module Test1
+
+// Read channel A2 and convert inches to millimeters
+def onRead(fromDate, toDate) = load_series('A2', fromDate, toDate) * 2.54 
+```
 
 # Join in!
 
