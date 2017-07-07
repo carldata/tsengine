@@ -19,15 +19,27 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
-//  "SemanticAnalyzer" should "catch: Unresolved variable error" in {
-//    val code =
-//      """
-//        |module Test1
-//        |
-//        |def my_fun() = a
-//      """.stripMargin
-//    val ast = Compiler.compile(code)
-//    ast.isRight shouldBe false
-//  }
+  "SemanticAnalyzer" should "catch: Unresolved variable error" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def my_fun() = a
+      """.stripMargin
+    val ast = Compiler.compile(code)
+    ast.isRight shouldBe false
+  }
+
+
+  "SemanticAnalyzer" should "catch: 'a' is already defined in the scope" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def my_fun(a, a) = a
+      """.stripMargin
+    val ast = Compiler.compile(code)
+    ast.isRight shouldBe false
+  }
 
 }

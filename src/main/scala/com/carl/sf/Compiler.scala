@@ -11,7 +11,8 @@ import com.carl.sf.compiler.{Parser, SemanticAnalyzer}
 object Compiler {
 
   def compile(code: String): Either[String, Module] = {
-    Parser.parse(code)
-      .flatMap(SemanticAnalyzer.analyze)
+    val ast = Parser.parse(code)
+    ast.flatMap(SemanticAnalyzer.analyze)
+      .flatMap(_ => ast)
   }
 }
