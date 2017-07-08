@@ -19,7 +19,7 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isLeft shouldBe true
   }
 
-  "Parser" should "compile simple function expression" in {
+  it should "compile simple function expression" in {
     val code =
       """
         |module Test1

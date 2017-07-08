@@ -19,7 +19,7 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
-  "SemanticAnalyzer" should "catch: Unresolved variable error" in {
+  it should "catch: Unresolved variable error" in {
     val code =
       """
         |module Test1
@@ -31,7 +31,7 @@ class CompilerTest extends FlatSpec with Matchers {
   }
 
 
-  "SemanticAnalyzer" should "catch: 'a' is already defined in the scope" in {
+  it should "catch: 'a' is already defined in the scope" in {
     val code =
       """
         |module Test1

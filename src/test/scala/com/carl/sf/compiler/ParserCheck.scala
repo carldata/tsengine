@@ -22,7 +22,7 @@ object ParserCheck extends Properties("Parser") {
   } yield Module(moduleName, FunctionDef(funName, funParams, bodyExpr))
 
 
-  property("prettyPrint -> parse") = forAll(moduleGen) { module: Module =>
+  property("parse") = forAll(moduleGen) { module: Module =>
     val code = AST.prettyPrint(module)
     Parser.parse(code) match {
       case Left(error) =>
