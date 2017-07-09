@@ -29,12 +29,9 @@ object VariableChecker {
     st.flatMap(check(f.body, _))
   }
 
-  def check(expr: Term, table: SymbolTable): Either[String, Unit] = {
+  def check(expr: Expression, table: SymbolTable): Either[String, Unit] = {
     expr match {
-//      case ApplicationTerm(name, params) => Right()
-      case VariableTerm(x) => if(table.hasSymbol(x)) { Right() } else { Left("Unresolved variable: %s".format(x)) }
-//      case StringTerm(_) => Right()
-//      case NumberTerm(_) => Right()
+      case VariableExpr(x) => if(table.hasSymbol(x)) { Right() } else { Left("Unresolved variable: %s".format(x)) }
     }
   }
 }

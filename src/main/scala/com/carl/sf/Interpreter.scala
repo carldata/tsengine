@@ -1,7 +1,7 @@
 package com.carl.sf
 
 import com.carl.sf.compiler.AST
-import com.carl.sf.compiler.AST.{FunctionDef, Module, Term, VariableTerm}
+import com.carl.sf.compiler.AST.{FunctionDef, Module, Expression, VariableExpr}
 
 import scala.collection.mutable
 
@@ -32,9 +32,9 @@ object Interpreter {
   }
 
   /** Execute node with the function declaration */
-  def execExpr(expr: Term, symbolMemory: Map[String, Value]): Either[String, Value] = {
+  def execExpr(expr: Expression, symbolMemory: Map[String, Value]): Either[String, Value] = {
     expr match {
-      case VariableTerm(name) => Right(symbolMemory.getOrElse(name, UnitValue))
+      case VariableExpr(name) => Right(symbolMemory.getOrElse(name, UnitValue))
     }
   }
 

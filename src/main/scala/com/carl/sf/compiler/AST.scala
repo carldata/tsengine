@@ -8,13 +8,10 @@ object AST {
   type MathOp = String
 
   case class Module(name: String, funDecl: FunctionDef)
-  case class FunctionDef(name: String, params: Seq[String], body: Term)
-//  case class Assign(varName: String, expr: Term)
-  sealed trait Term
-//  case class ApplicationTerm(name: String, params: Seq[Term]) extends Term
-  case class VariableTerm(name: String) extends Term
-//  case class StringTerm(value: String) extends Term
-//  case class NumberTerm(value: Double) extends Term
+  case class FunctionDef(name: String, params: Seq[String], body: Expression)
+  sealed trait Expression
+//  case class AppExpr(name: String, params: Seq[Expression]) extends Expression
+  case class VariableExpr(name: String) extends Expression
 
 
   // Write AST as source code
@@ -30,12 +27,10 @@ object AST {
     "def %s(%s) = %s\n".format(funDecl.name, params, body)
   }
 
-  def prettyPrint(expr: Term): String = {
+  def prettyPrint(expr: Expression): String = {
     expr match {
-//      case ApplicationTerm(name, params) => "def " + name + "(%s)".format(params.map(prettyPrint).mkString(","))
-      case VariableTerm(name) => name
-//      case StringTerm(str) => '"' + str + '"'
-//      case NumberTerm(v) => v.toString
+//      case AppExpr(name, params) => "def " + name + "(%s)".format(params.map(prettyPrint).mkString(","))
+      case VariableExpr(name) => name
     }
   }
 }

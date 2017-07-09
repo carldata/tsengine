@@ -1,6 +1,6 @@
 package com.carl.sf.compiler
 
-import com.carl.sf.compiler.AST.{FunctionDef, Module, Term, VariableTerm}
+import com.carl.sf.compiler.AST.{FunctionDef, Module, Expression, VariableExpr}
 import com.carl.sf.compiler.gen.FlowScriptParser._
 import com.carl.sf.compiler.gen.{FlowScriptLexer, FlowScriptParser}
 import org.antlr.v4.runtime._
@@ -47,14 +47,14 @@ object Parser {
     } else {
       ctx.paramList().param().asScala.map(pctx => pctx.Identifier().getText)
     }
-    val body = convertTerm(ctx.term())
+    val body = convertExpr(ctx.expression())
     FunctionDef(funName, params, body)
 
   }
 
   /** Convert ANTLR Context into Term node */
-  def convertTerm(ctx: TermContext): Term = {
-    VariableTerm(ctx.variableTerm().Identifier().getText)
+  def convertExpr(ctx: ExpressionContext): Expression = {
+    VariableExpr(ctx.variableExpr().Identifier().getText)
   }
 
 }

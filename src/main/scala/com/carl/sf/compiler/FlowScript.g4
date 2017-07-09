@@ -10,7 +10,7 @@ moduleDeclaration
     ;
 
 functionDefinition
-    : DEF Identifier '(' paramList? ')' '=' term
+    : DEF Identifier '(' paramList? ')' '=' expression
     ;
 
 paramList
@@ -21,11 +21,11 @@ param
 	: Identifier
     ;
 
-term
-    : variableTerm
+expression
+    : variableExpr
     ;
 
-variableTerm
+variableExpr
     : Identifier
     ;
 

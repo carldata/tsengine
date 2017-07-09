@@ -21,10 +21,10 @@ public class FlowScriptParser extends Parser {
 		Identifier=9;
 	public static final int
 		RULE_compilationUnit = 0, RULE_moduleDeclaration = 1, RULE_functionDefinition = 2, 
-		RULE_paramList = 3, RULE_param = 4, RULE_term = 5, RULE_variableTerm = 6;
+		RULE_paramList = 3, RULE_param = 4, RULE_expression = 5, RULE_variableExpr = 6;
 	public static final String[] ruleNames = {
 		"compilationUnit", "moduleDeclaration", "functionDefinition", "paramList", 
-		"param", "term", "variableTerm"
+		"param", "expression", "variableExpr"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -156,8 +156,8 @@ public class FlowScriptParser extends Parser {
 	public static class FunctionDefinitionContext extends ParserRuleContext {
 		public TerminalNode DEF() { return getToken(FlowScriptParser.DEF, 0); }
 		public TerminalNode Identifier() { return getToken(FlowScriptParser.Identifier, 0); }
-		public TermContext term() {
-			return getRuleContext(TermContext.class,0);
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public ParamListContext paramList() {
 			return getRuleContext(ParamListContext.class,0);
@@ -196,7 +196,7 @@ public class FlowScriptParser extends Parser {
 			setState(28);
 			match(T__2);
 			setState(29);
-			term();
+			expression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -290,24 +290,24 @@ public class FlowScriptParser extends Parser {
 		return _localctx;
 	}
 
-	public static class TermContext extends ParserRuleContext {
-		public VariableTermContext variableTerm() {
-			return getRuleContext(VariableTermContext.class,0);
+	public static class ExpressionContext extends ParserRuleContext {
+		public VariableExprContext variableExpr() {
+			return getRuleContext(VariableExprContext.class,0);
 		}
-		public TermContext(ParserRuleContext parent, int invokingState) {
+		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_term; }
+		@Override public int getRuleIndex() { return RULE_expression; }
 	}
 
-	public final TermContext term() throws RecognitionException {
-		TermContext _localctx = new TermContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_term);
+	public final ExpressionContext expression() throws RecognitionException {
+		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_expression);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(41);
-			variableTerm();
+			variableExpr();
 			}
 		}
 		catch (RecognitionException re) {
@@ -321,17 +321,17 @@ public class FlowScriptParser extends Parser {
 		return _localctx;
 	}
 
-	public static class VariableTermContext extends ParserRuleContext {
+	public static class VariableExprContext extends ParserRuleContext {
 		public TerminalNode Identifier() { return getToken(FlowScriptParser.Identifier, 0); }
-		public VariableTermContext(ParserRuleContext parent, int invokingState) {
+		public VariableExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_variableTerm; }
+		@Override public int getRuleIndex() { return RULE_variableExpr; }
 	}
 
-	public final VariableTermContext variableTerm() throws RecognitionException {
-		VariableTermContext _localctx = new VariableTermContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_variableTerm);
+	public final VariableExprContext variableExpr() throws RecognitionException {
+		VariableExprContext _localctx = new VariableExprContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_variableExpr);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
