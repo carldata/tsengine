@@ -1,6 +1,8 @@
-name := "tsengine"
+name := "flow-script"
 
 version := "0.1.0"
+
+organization := "com.carl"
 
 scalaVersion := "2.12.1"
 
