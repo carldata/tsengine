@@ -26,7 +26,7 @@ This language is intended for use cases like:
 
 ## FlowScript examples
 
-```scala
+```flowscript
 module Test1
 
 // Read channel A2 and convert inches to centimeters
