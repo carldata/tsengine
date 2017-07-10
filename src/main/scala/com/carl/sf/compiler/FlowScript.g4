@@ -31,10 +31,19 @@ typeName
 
 expression
     : variableExpr
+    | funApp
     ;
 
 variableExpr
     : Identifier
+    ;
+
+funApp
+    : Identifier '(' expressionList? ')'
+    ;
+
+expressionList
+	: expression (',' expression)*
     ;
 
 // LEXER

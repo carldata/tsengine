@@ -71,7 +71,11 @@ object Parser {
 
   /** Convert ANTLR Context into Term node */
   def convertExpr(ctx: ExpressionContext): Expression = {
-    VariableExpr(ctx.variableExpr().Identifier().getText)
+    if(ctx.funApp() != null) {
+      VariableExpr("")
+    } else {
+      VariableExpr(ctx.variableExpr().Identifier().getText)
+    }
   }
 
 }
