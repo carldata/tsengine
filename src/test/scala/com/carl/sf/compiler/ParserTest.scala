@@ -29,4 +29,15 @@ class ParserTest extends FlatSpec with Matchers {
     val ast = Parser.parse(code)
     ast.isRight shouldBe true
   }
+
+  it should "compile typed function" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def my_fun(a: Int, xs: String): Int = a
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
 }

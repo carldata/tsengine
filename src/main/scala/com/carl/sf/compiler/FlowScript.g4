@@ -10,7 +10,7 @@ moduleDeclaration
     ;
 
 functionDefinition
-    : DEF Identifier '(' paramList? ')' '=' expression
+    : DEF Identifier '(' paramList? ')' typeDefinition? '=' expression
     ;
 
 paramList
@@ -18,7 +18,15 @@ paramList
     ;
 
 param
-	: Identifier
+	: Identifier typeDefinition?
+    ;
+
+typeDefinition
+    : ':' typeName
+    ;
+
+typeName
+    : Identifier
     ;
 
 expression
