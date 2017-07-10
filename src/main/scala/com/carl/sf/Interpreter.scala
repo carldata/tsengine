@@ -24,7 +24,7 @@ object Interpreter {
     */
   def run(module: Module, params: Seq[Value]): Either[String, Value] = {
     if(params.size == module.funDecl.params.size) {
-      val symbolMemory = module.funDecl.params.zip(params).map(x => x._1 -> x._2).toMap
+      val symbolMemory = module.funDecl.params.zip(params).map(x => x._1.name -> x._2).toMap
       execExpr(module.funDecl.body, symbolMemory)
     } else {
       Left("Wrong number of parameters")

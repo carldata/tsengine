@@ -1,6 +1,6 @@
 package com.carl.sf.compiler
 
-import com.carl.sf.compiler.AST.{FunctionDef, Module, Expression, VariableExpr}
+import com.carl.sf.compiler.AST._
 import com.carl.sf.compiler.gen.FlowScriptParser._
 import com.carl.sf.compiler.gen.{FlowScriptLexer, FlowScriptParser}
 import org.antlr.v4.runtime._
@@ -41,14 +41,31 @@ object Parser {
 
   /** Convert ANTLR Context into Function Definition node */
   def convertFunDef(ctx: FunctionDefinitionContext): FunctionDef = {
+    // Function name
     val funName = ctx.Identifier().getText
+    // Function params
     val params = if(ctx.paramList() == null) {
       Seq()
     } else {
-      ctx.paramList().param().asScala.map(pctx => pctx.Identifier().getText)
+      ctx.paramList().param().asScala.map{pctx =>
+        val typeName = if(pctx.typeDefinition() == null) {
+          None
+        } else {
+          Some(pctx.typeDefinition().typeName().Identifier().getText)
+        }
+        FunParam(pctx.Identifier().getText, typeName)
+      }
     }
+    // Function type
+    val typeDefCtx = ctx.typeDefinition()
+    val typeName = if(typeDefCtx == null) {
+      None
+    } else {
+      Some(typeDefCtx.typeName().Identifier().getText)
+    }
+    // function body
     val body = convertExpr(ctx.expression())
-    FunctionDef(funName, params, body)
+    FunctionDef(funName, params, typeName, body)
 
   }
 

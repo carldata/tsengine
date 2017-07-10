@@ -19,10 +19,10 @@ object VariableChecker {
   def check(f: FunctionDef, table: SymbolTable): Either[String, Unit] = {
     val st = f.params.foldLeft[Either[String, SymbolTable]](Right(table)) { (e, x) =>
       e.flatMap { t =>
-        if (t.checkScope(x)) {
+        if (t.checkScope(x.name)) {
           Left("Variable '%s' is already defined in the scope".format(x))
         } else {
-          Right(t.addSymbol(x))
+          Right(t.addSymbol(x.name))
         }
       }
     }

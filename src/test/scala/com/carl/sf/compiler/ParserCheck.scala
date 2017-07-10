@@ -1,6 +1,6 @@
 package com.carl.sf.compiler
 
-import com.carl.sf.compiler.AST.{FunctionDef, Module, VariableExpr}
+import com.carl.sf.compiler.AST.{FunParam, FunctionDef, Module, VariableExpr}
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Gen, Properties}
 
@@ -14,12 +14,18 @@ object ParserCheck extends Properties("Parser") {
     varName <- Gen.identifier
   } yield VariableExpr(varName)
 
+  private val paramsGen = for {
+    name <- Gen.identifier
+    typeName <- Gen.identifier
+  } yield FunParam(name, Some(typeName))
+
   private val moduleGen = for {
     moduleName <- Gen.identifier
     funName <- Gen.identifier
-    funParams <- Gen.listOf(Gen.identifier)
+    funParams <- Gen.listOf(paramsGen)
+    funTypeName <- Gen.identifier
     bodyExpr <- exprGen
-  } yield Module(moduleName, FunctionDef(funName, funParams, bodyExpr))
+  } yield Module(moduleName, FunctionDef(funName, funParams, Some(funTypeName), bodyExpr))
 
 
   property("parse") = forAll(moduleGen) { module: Module =>

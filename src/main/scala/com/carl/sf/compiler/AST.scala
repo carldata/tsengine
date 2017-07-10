@@ -8,7 +8,8 @@ object AST {
   type MathOp = String
 
   case class Module(name: String, funDecl: FunctionDef)
-  case class FunctionDef(name: String, params: Seq[String], body: Expression)
+  case class FunctionDef(name: String, params: Seq[FunParam], typeName: Option[String], body: Expression)
+  case class FunParam(name: String, typeName: Option[String])
   sealed trait Expression
 //  case class AppExpr(name: String, params: Seq[Expression]) extends Expression
   case class VariableExpr(name: String) extends Expression
@@ -21,10 +22,14 @@ object AST {
     "module %s\n%s".format(m.name, fstr)
   }
 
-  def prettyPrint(funDecl: FunctionDef): String = {
-    val params = funDecl.params.mkString(",")
-    val body = prettyPrint(funDecl.body)
-    "def %s(%s) = %s\n".format(funDecl.name, params, body)
+  def prettyPrint(funDef: FunctionDef): String = {
+    val params = funDef.params.map(prettyPrint).mkString(",")
+    val body = prettyPrint(funDef.body)
+    "def %s(%s):%s = %s\n".format(funDef.name, params, funDef.typeName.getOrElse("Type"), body)
+  }
+
+  def prettyPrint(param: FunParam): String = {
+    param.name + param.typeName.map(x => ": " + x).getOrElse("")
   }
 
   def prettyPrint(expr: Expression): String = {
