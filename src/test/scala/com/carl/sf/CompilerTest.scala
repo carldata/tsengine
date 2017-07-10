@@ -30,7 +30,6 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
-
   it should "catch: 'a' is already defined in the scope" in {
     val code =
       """
@@ -42,4 +41,25 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "compile correctly typed code" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def my_fun(a: Int, xs: String): Int = a
+      """.stripMargin
+    val ast = Compiler.compile(code)
+    ast.isRight shouldBe true
+  }
+
+  it should "catch function return type error" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def my_fun(a: Int, xs: String): String = a
+      """.stripMargin
+    val ast = Compiler.compile(code)
+    ast.isRight shouldBe false
+  }
 }
