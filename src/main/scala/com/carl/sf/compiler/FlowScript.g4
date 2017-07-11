@@ -2,11 +2,15 @@ grammar FlowScript;
 
 /* Main compilation unit */
 compilationUnit
-    : moduleDeclaration functionDefinition EOF
+    : moduleDeclaration externalFunDef* functionDefinition EOF
     ;
 
 moduleDeclaration
     : MODULE Identifier
+    ;
+
+externalFunDef
+    : EXTERNAL DEF Identifier '(' paramList? ')' ':' typeDefinition
     ;
 
 functionDefinition
@@ -44,6 +48,7 @@ expressionList
 
 // LEXER
 DEF : 'def';
+EXTERNAL: 'external';
 MODULE : 'module';
 
 // Whitespace and comments

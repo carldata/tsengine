@@ -19,7 +19,17 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isLeft shouldBe true
   }
 
-  it should "compile simple function expression" in {
+  "Parser" should "at least one function definition is required" in {
+    val code =
+      """
+        |module Test1 aaa
+        |
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isLeft shouldBe true
+  }
+
+  it should "parse simple function expression" in {
     val code =
       """
         |module Test1
@@ -30,7 +40,7 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
-  it should "compile function application" in {
+  it should "parse function application" in {
     val code =
       """
         |module Test1
@@ -41,7 +51,7 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
-  it should "compile function application without params" in {
+  it should "parse function application without params" in {
     val code =
       """
         |module Test1
@@ -51,4 +61,18 @@ class ParserTest extends FlatSpec with Matchers {
     val ast = Parser.parse(code)
     ast.isRight shouldBe true
   }
+
+  it should "parse external function definitions" in {
+    val code =
+      """
+        |module Test1
+        |
+        |external def min(v1: Int, v2: Int): Int
+        |
+        |def my_fun(a: Int, b: Int): Int = min(a, b)
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
 }
