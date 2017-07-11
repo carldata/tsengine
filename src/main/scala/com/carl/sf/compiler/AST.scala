@@ -34,7 +34,7 @@ object AST {
 
   def prettyPrint(expr: Expression): String = {
     expr match {
-      case AppExpr(name, params) => "def " + name + "(%s)".format(params.map(prettyPrint).mkString(","))
+      case AppExpr(name, params) => name + "(%s)".format(params.map(prettyPrint).mkString(","))
       case VariableExpr(name) => name
     }
   }

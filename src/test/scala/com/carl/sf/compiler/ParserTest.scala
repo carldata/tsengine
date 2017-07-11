@@ -40,4 +40,15 @@ class ParserTest extends FlatSpec with Matchers {
     val ast = Parser.parse(code)
     ast.isRight shouldBe true
   }
+
+  it should "compile function application without params" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def my_fun(a: Int, b: Int): Int = min()
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
 }

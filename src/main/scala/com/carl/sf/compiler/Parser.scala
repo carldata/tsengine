@@ -63,7 +63,13 @@ object Parser {
   /** Convert ANTLR Context into Term node */
   def convertExpr(ctx: ExpressionContext): Expression = {
     if(ctx.funApp() != null) {
-      VariableExpr("")
+      val name = ctx.funApp().Identifier().getText
+      val params = if(ctx.funApp().expressionList() == null) {
+        Seq()
+      } else {
+        ctx.funApp().expressionList().expression().asScala.map(convertExpr)
+      }
+      AppExpr(name, params)
     } else {
       VariableExpr(ctx.variableExpr().Identifier().getText)
     }
