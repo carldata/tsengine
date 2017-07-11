@@ -35,7 +35,9 @@ object TypeChecker {
 
   /** Check for errors in the module. Returns None if no error was found */
   def check(module: Module): Either[String, Module] = {
-    val tt = new TypeTable()
+    val tt = module.externalFun.foldLeft(new TypeTable()) {(t, x) =>
+      t.addType(x.name, x.typeName)
+    }
     checkFunction(module.funDecl, tt).map(f => Module(module.name, module.externalFun, f))
   }
 
@@ -58,7 +60,8 @@ object TypeChecker {
     */
   def exprType(expr: Expression, table: TypeTable): String = {
     expr match {
-      case VariableExpr(name) => table.symbolType(name).getOrElse("")
+      case VariableExpr(name) => table.symbolType(name).getOrElse("T")
+      case AppExpr(name, _) => table.symbolType(name).getOrElse("T")
     }
   }
 }

@@ -51,4 +51,39 @@ class CompilerTest extends FlatSpec with Matchers {
     val ast = Compiler.compile(code)
     ast.isRight shouldBe false
   }
+
+  it should "compile external functions" in {
+    val code =
+      """
+        |module Test1
+        |external def min(a: Int, b: Int): Int
+        |
+        |def main(a: Int, b: Int): Int = min(a, b)
+      """.stripMargin
+    val ast = Compiler.compile(code)
+    ast.isRight shouldBe true
+  }
+
+  it should "catch no external function definition" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def my_fun(a: Int, b: Int): Int = min(a, b)
+      """.stripMargin
+    val ast = Compiler.compile(code)
+    ast.isRight shouldBe false
+  }
+
+  it should "catch external function type mismatch" in {
+    val code =
+      """
+        |module Test1
+        |external def min(a: Int, b: Int): Int
+        |def my_fun(a: Int, b: Int): String = min(a, b)
+      """.stripMargin
+    val ast = Compiler.compile(code)
+    ast.isRight shouldBe false
+  }
+
 }

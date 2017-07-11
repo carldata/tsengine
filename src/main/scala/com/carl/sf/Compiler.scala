@@ -1,7 +1,7 @@
 package com.carl.sf
 
 import com.carl.sf.compiler.AST.Module
-import com.carl.sf.compiler.{Parser, TypeChecker, VariableChecker}
+import com.carl.sf.compiler.{Parser, TypeChecker, SymbolChecker}
 
 /**
   * Compiler for FlowScript. It consists of the following phases:
@@ -14,9 +14,8 @@ import com.carl.sf.compiler.{Parser, TypeChecker, VariableChecker}
 object Compiler {
 
   def compile(code: String): Either[String, Module] = {
-    val ast = Parser.parse(code)
-    ast.flatMap(VariableChecker.check)
-      .flatMap(_ => ast)
+    Parser.parse(code)
+      .flatMap(SymbolChecker.check)
       .flatMap(TypeChecker.check)
   }
 }
