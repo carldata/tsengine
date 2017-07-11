@@ -7,7 +7,8 @@ object AST {
 
   type MathOp = String
 
-  case class Module(name: String, funDecl: FunctionDef)
+  case class Module(name: String, externalFun: Seq[ExternalFun], funDecl: FunctionDef)
+  case class ExternalFun(name: String, params: Seq[FunParam], typeName: String)
   case class FunctionDef(name: String, params: Seq[FunParam], typeName: String, body: Expression)
   case class FunParam(name: String, typeName: String)
   sealed trait Expression
@@ -17,9 +18,15 @@ object AST {
 
   // Write AST as source code
   def prettyPrint(m: Module): String = {
+    val xs = m.externalFun.map(prettyPrint).mkString("")
     val fstr = prettyPrint(m.funDecl)
 
-    "module %s\n%s".format(m.name, fstr)
+    "module %s\n%s\n%s".format(m.name, xs, fstr)
+  }
+
+  def prettyPrint(f: ExternalFun): String = {
+    val params = f.params.map(prettyPrint).mkString(",")
+    "external def %s(%s):%s\n".format(f.name, params, f.typeName)
   }
 
   def prettyPrint(funDef: FunctionDef): String = {

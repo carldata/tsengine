@@ -36,7 +36,7 @@ object TypeChecker {
   /** Check for errors in the module. Returns None if no error was found */
   def check(module: Module): Either[String, Module] = {
     val tt = new TypeTable()
-    checkFunction(module.funDecl, tt).map(f => Module(module.name, f))
+    checkFunction(module.funDecl, tt).map(f => Module(module.name, module.externalFun, f))
   }
 
   /** Update symbol table and at the same time look for duplicate variables */

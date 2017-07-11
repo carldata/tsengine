@@ -7,6 +7,7 @@ import org.scalacheck.{Gen, Properties}
 /**
   * This test check the following property:
   * AST pretty printed and then parsed should be the same.
+  * The size of the list of external function is reduced to make this tests faster
   */
 object ParserCheck extends Properties("Parser") {
 
@@ -30,13 +31,20 @@ object ParserCheck extends Properties("Parser") {
     typeName <- Gen.identifier
   } yield FunParam(name, typeName)
 
+  private val externFunGen = for {
+    funName <- Gen.identifier
+    funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
+    funTypeName <- Gen.identifier
+  } yield ExternalFun(funName, funParams, funTypeName)
+
   private val moduleGen = for {
     moduleName <- Gen.identifier
+    efs <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, externFunGen) }
     funName <- Gen.identifier
     funParams <- Gen.listOf(paramsGen)
     funTypeName <- Gen.identifier
     bodyExpr <- exprGen
-  } yield Module(moduleName, FunctionDef(funName, funParams, funTypeName, bodyExpr))
+  } yield Module(moduleName, efs, FunctionDef(funName, funParams, funTypeName, bodyExpr))
 
 
   property("parse") = forAll(moduleGen) { module: Module =>
