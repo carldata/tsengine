@@ -17,7 +17,7 @@ object ParserCheck extends Properties("Parser") {
   private val paramsGen = for {
     name <- Gen.identifier
     typeName <- Gen.identifier
-  } yield FunParam(name, Some(typeName))
+  } yield FunParam(name, typeName)
 
   private val moduleGen = for {
     moduleName <- Gen.identifier
@@ -25,7 +25,7 @@ object ParserCheck extends Properties("Parser") {
     funParams <- Gen.listOf(paramsGen)
     funTypeName <- Gen.identifier
     bodyExpr <- exprGen
-  } yield Module(moduleName, FunctionDef(funName, funParams, Some(funTypeName), bodyExpr))
+  } yield Module(moduleName, FunctionDef(funName, funParams, funTypeName, bodyExpr))
 
 
   property("parse") = forAll(moduleGen) { module: Module =>

@@ -13,7 +13,7 @@ class CompilerTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def my_fun(a, xs) = a
+        |def my_fun(a: Int, xs: Int): Int = a
       """.stripMargin
     val ast = Compiler.compile(code)
     ast.isRight shouldBe true
@@ -24,7 +24,7 @@ class CompilerTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def my_fun() = a
+        |def my_fun(): Int = a
       """.stripMargin
     val ast = Compiler.compile(code)
     ast.isRight shouldBe false
@@ -35,21 +35,10 @@ class CompilerTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def my_fun(a, a) = a
+        |def my_fun(a: String, a: Int): Int = a
       """.stripMargin
     val ast = Compiler.compile(code)
     ast.isRight shouldBe false
-  }
-
-  it should "compile correctly typed code" in {
-    val code =
-      """
-        |module Test1
-        |
-        |def my_fun(a: Int, xs: String): Int = a
-      """.stripMargin
-    val ast = Compiler.compile(code)
-    ast.isRight shouldBe true
   }
 
   it should "catch function return type error" in {

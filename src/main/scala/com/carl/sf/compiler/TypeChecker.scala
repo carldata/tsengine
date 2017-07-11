@@ -41,29 +41,24 @@ object TypeChecker {
 
   /** Update symbol table and at the same time look for duplicate variables */
   def checkFunction(f: FunctionDef, table: TypeTable): Either[String, FunctionDef] = {
-    // Add param types to the Type Table. Only add defined types
-    val table2 = f.params
-      .filter(_.typeName.isDefined)
-      .foldLeft(table)((t, x) => t.addType(x.name, x.typeName.getOrElse("")))
-    // Compare expression type with function return type
-    // Also update AST with type information if necessary
+    // Add param types to the Type Table.
+    val table2 = f.params.foldLeft(table)((t, x) => t.addType(x.name, x.typeName))
+    // Compare expression type with function return type. Also update AST with type information if necessary
     val t1 = exprType(f.body, table2)
-    if(f.typeName.isEmpty) {
-      Right(FunctionDef(f.name, f.params, t1, f.body))
-    } else if(t1.isEmpty || f.typeName == t1) {
+    if(f.typeName == t1) {
       Right(f)
     } else {
       Left("Wrong return type for function %s\n Expected: %s\nGot: %s\n".format(
-        f.name, f.typeName.getOrElse(""), t1.getOrElse("")))
+        f.name, f.typeName, t1))
     }
   }
 
   /** Deduce Expression type.
     * Return Error or expression type
     */
-  def exprType(expr: Expression, table: TypeTable): Option[String] = {
+  def exprType(expr: Expression, table: TypeTable): String = {
     expr match {
-      case VariableExpr(name) => table.symbolType(name)
+      case VariableExpr(name) => table.symbolType(name).getOrElse("")
     }
   }
 }

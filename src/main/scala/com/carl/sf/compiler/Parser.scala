@@ -48,21 +48,12 @@ object Parser {
       Seq()
     } else {
       ctx.paramList().param().asScala.map{pctx =>
-        val typeName = if(pctx.typeDefinition() == null) {
-          None
-        } else {
-          Some(pctx.typeDefinition().typeName().Identifier().getText)
-        }
-        FunParam(pctx.Identifier().getText, typeName)
+        FunParam(pctx.Identifier().getText, pctx.typeDefinition().Identifier().getText)
       }
     }
     // Function type
     val typeDefCtx = ctx.typeDefinition()
-    val typeName = if(typeDefCtx == null) {
-      None
-    } else {
-      Some(typeDefCtx.typeName().Identifier().getText)
-    }
+    val typeName = typeDefCtx.Identifier().getText
     // function body
     val body = convertExpr(ctx.expression())
     FunctionDef(funName, params, typeName, body)

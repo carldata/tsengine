@@ -14,7 +14,7 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a, xs) = a
+        |def main(a: Int, xs: Int): Int = a
       """.stripMargin
     val result = Compiler.compile(code).flatMap { ast =>
       Interpreter.run(ast, Seq())
@@ -27,7 +27,7 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a, xs) = a
+        |def main(a: Int, xs: Int): Int = a
       """.stripMargin
     val result = Compiler.compile(code).flatMap { ast =>
       Interpreter.run(ast, Seq(IntValue(1), IntValue(2)))
@@ -40,7 +40,7 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a, xs) = a
+        |def main(a: Int, xs: Int): Int = a
       """.stripMargin
     val result = Compiler.compile(code).flatMap { ast =>
       Interpreter.run(ast, Seq(IntValue(1), IntValue(2)))
