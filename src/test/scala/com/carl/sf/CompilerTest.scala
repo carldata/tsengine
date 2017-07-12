@@ -23,6 +23,7 @@ class CompilerTest extends FlatSpec with Matchers {
     val code =
       """
         |module Test1
+        |external def min(a: Int, b: Int): Int
         |
         |def my_fun(): Int = a
       """.stripMargin
