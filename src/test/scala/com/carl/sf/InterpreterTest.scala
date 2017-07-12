@@ -1,6 +1,6 @@
 package com.carl.sf
 
-import com.carl.sf.runtime.Core.IntValue
+import com.carl.sf.runtime.Core.NumberValue
 import org.scalatest._
 
 
@@ -14,7 +14,7 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a: Int, xs: Int): Int = a
+        |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code).flatMap { ast =>
       Interpreter.run(ast, "main", Seq())
@@ -27,10 +27,10 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a: Int, xs: Int): Int = a
+        |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code).flatMap { ast =>
-      Interpreter.run(ast, "main", Seq(IntValue(1), IntValue(2)))
+      Interpreter.run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
     }
     result.isRight shouldBe true
   }
@@ -40,26 +40,26 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a: Int, xs: Int): Int = a
+        |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code).flatMap { ast =>
-      Interpreter.run(ast, "main", Seq(IntValue(1), IntValue(2)))
+      Interpreter.run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
     }
-    result shouldBe Right(IntValue(1))
+    result shouldBe Right(NumberValue(1))
   }
 
   it should "call external function" in {
     val code =
       """
         |module Test1
-        |external def min(a: Int, b: Int): Int
+        |external def min(a: Number, b: Number): Number
         |
-        |def main(a: Int, b: Int): Int = min(a, b)
+        |def main(a: Number, b: Number): Number = min(a, b)
       """.stripMargin
     val result = Compiler.compile(code).flatMap { ast =>
-      Interpreter.run(ast, "main", Seq(IntValue(11), IntValue(2)))
+      Interpreter.run(ast, "main", Seq(NumberValue(11), NumberValue(2)))
     }
-    result shouldBe Right(IntValue(2))
+    result shouldBe Right(NumberValue(2))
   }
 
 }
