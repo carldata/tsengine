@@ -13,7 +13,11 @@ import com.carl.sf.compiler.{Parser, TypeChecker, SymbolChecker}
   */
 object Compiler {
 
-  def compile(code: String): Either[String, Module] = {
+  /**
+    * Compile given code and zero or more library modules.
+    * Library modules are used to add definition of external function and types
+    */
+  def compile(code: String, libs: Seq[String]): Either[String, Module] = {
     Parser.parse(code)
       .flatMap(SymbolChecker.check)
       .flatMap(TypeChecker.check)

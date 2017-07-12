@@ -15,7 +15,7 @@ class CompilerTest extends FlatSpec with Matchers {
         |
         |def my_fun(a: Int, xs: Int): Int = a
       """.stripMargin
-    val ast = Compiler.compile(code)
+    val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe true
   }
 
@@ -27,7 +27,7 @@ class CompilerTest extends FlatSpec with Matchers {
         |
         |def my_fun(): Int = a
       """.stripMargin
-    val ast = Compiler.compile(code)
+    val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false
   }
 
@@ -38,7 +38,7 @@ class CompilerTest extends FlatSpec with Matchers {
         |
         |def my_fun(a: String, a: Int): Int = a
       """.stripMargin
-    val ast = Compiler.compile(code)
+    val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false
   }
 
@@ -49,7 +49,7 @@ class CompilerTest extends FlatSpec with Matchers {
         |
         |def my_fun(a: Int, xs: String): String = a
       """.stripMargin
-    val ast = Compiler.compile(code)
+    val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false
   }
 
@@ -61,7 +61,7 @@ class CompilerTest extends FlatSpec with Matchers {
         |
         |def main(a: Int, b: Int): Int = min(a, b)
       """.stripMargin
-    val ast = Compiler.compile(code)
+    val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe true
   }
 
@@ -72,7 +72,7 @@ class CompilerTest extends FlatSpec with Matchers {
         |
         |def my_fun(a: Int, b: Int): Int = min(a, b)
       """.stripMargin
-    val ast = Compiler.compile(code)
+    val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false
   }
 
@@ -83,7 +83,7 @@ class CompilerTest extends FlatSpec with Matchers {
         |external def min(a: Int, b: Int): Int
         |def my_fun(a: Int, b: Int): String = min(a, b)
       """.stripMargin
-    val ast = Compiler.compile(code)
+    val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false
   }
 

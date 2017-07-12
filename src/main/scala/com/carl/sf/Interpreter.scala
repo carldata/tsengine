@@ -1,16 +1,15 @@
 package com.carl.sf
 
 import com.carl.sf.compiler.AST._
-import com.carl.sf.runtime.Core
-import com.carl.sf.runtime.Core.{UnitValue, Value}
 
 import scala.util.Try
+import com.carl.sf.Runtime._
 
 
 /**
   * Run Script with given parameters
   */
-object Interpreter {
+class Interpreter(runtime: Runtime) {
 
   /**
     * The runtime return either error string or computed value.
@@ -32,12 +31,12 @@ object Interpreter {
   }
 
   /** Execute node with the function declaration */
-  def execExpr(expr: Expression, symbolMemory: Map[String, Value]): Value = {
+  private def execExpr(expr: Expression, symbolMemory: Map[String, Value]): Value = {
     expr match {
       case VariableExpr(name) => symbolMemory.getOrElse(name, UnitValue)
       case AppExpr(name, params) =>
         val xs = params.map(x => execExpr(x, symbolMemory))
-        Core.executeFunction(name, xs)
+        runtime.executeFunction(name, xs)
     }
   }
 

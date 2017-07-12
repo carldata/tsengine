@@ -1,6 +1,7 @@
 package com.carl.sf
 
-import com.carl.sf.runtime.Core.NumberValue
+import com.carl.sf.Runtime.NumberValue
+import com.carl.sf.core.Core
 import org.scalatest._
 
 
@@ -16,8 +17,8 @@ class InterpreterTest extends FlatSpec with Matchers {
         |
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
-    val result = Compiler.compile(code).flatMap { ast =>
-      Interpreter.run(ast, "main", Seq())
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq())
     }
     result.isRight shouldBe false
   }
@@ -29,8 +30,8 @@ class InterpreterTest extends FlatSpec with Matchers {
         |
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
-    val result = Compiler.compile(code).flatMap { ast =>
-      Interpreter.run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
     }
     result.isRight shouldBe true
   }
@@ -42,8 +43,8 @@ class InterpreterTest extends FlatSpec with Matchers {
         |
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
-    val result = Compiler.compile(code).flatMap { ast =>
-      Interpreter.run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
     }
     result shouldBe Right(NumberValue(1))
   }
@@ -56,8 +57,8 @@ class InterpreterTest extends FlatSpec with Matchers {
         |
         |def main(a: Number, b: Number): Number = min(a, b)
       """.stripMargin
-    val result = Compiler.compile(code).flatMap { ast =>
-      Interpreter.run(ast, "main", Seq(NumberValue(11), NumberValue(2)))
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq(NumberValue(11), NumberValue(2)))
     }
     result shouldBe Right(NumberValue(2))
   }
