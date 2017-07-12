@@ -17,31 +17,31 @@ object AST {
 
 
   // Write AST as source code
-  def prettyPrint(m: Module): String = {
-    val xs = m.externalFun.map(prettyPrint).mkString("")
-    val fstr = m.funDecl.map(prettyPrint).mkString("\n")
+  def printModule(m: Module): String = {
+    val xs = m.externalFun.map(printExternalFun).mkString("")
+    val fstr = m.funDecl.map(printFunDef).mkString("\n")
 
     "module %s\n%s\n%s".format(m.name, xs, fstr)
   }
 
-  def prettyPrint(f: ExternalFun): String = {
-    val params = f.params.map(prettyPrint).mkString(",")
+  def printExternalFun(f: ExternalFun): String = {
+    val params = f.params.map(printParam).mkString(",")
     "external def %s(%s):%s\n".format(f.name, params, f.typeName)
   }
 
-  def prettyPrint(funDef: FunctionDef): String = {
-    val params = funDef.params.map(prettyPrint).mkString(",")
-    val body = prettyPrint(funDef.body)
+  def printFunDef(funDef: FunctionDef): String = {
+    val params = funDef.params.map(printParam).mkString(",")
+    val body = printExpr(funDef.body)
     "def %s(%s):%s = %s\n".format(funDef.name, params, funDef.typeName, body)
   }
 
-  def prettyPrint(param: FunParam): String = {
+  def printParam(param: FunParam): String = {
     param.name + ": " + param.typeName
   }
 
-  def prettyPrint(expr: Expression): String = {
+  def printExpr(expr: Expression): String = {
     expr match {
-      case AppExpr(name, params) => name + "(%s)".format(params.map(prettyPrint).mkString(","))
+      case AppExpr(name, params) => name + "(%s)".format(params.map(printExpr).mkString(","))
       case VariableExpr(name) => name
     }
   }

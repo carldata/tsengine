@@ -52,7 +52,7 @@ object ParserCheck extends Properties("Parser") {
 
 
   property("parse") = forAll(moduleGen) { module: Module =>
-    val code = AST.prettyPrint(module)
+    val code = AST.printModule(module)
     Parser.parse(code) match {
       case Left(error) =>
         println("EXPECTED:\n%s\n".format(module.toString))
