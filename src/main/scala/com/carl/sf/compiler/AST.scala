@@ -7,7 +7,7 @@ object AST {
 
   type MathOp = String
 
-  case class Module(name: String, externalFun: Seq[ExternalFun], funDecl: FunctionDef)
+  case class Module(name: String, externalFun: Seq[ExternalFun], funDecl: Seq[FunctionDef])
   case class ExternalFun(name: String, params: Seq[FunParam], typeName: String)
   case class FunctionDef(name: String, params: Seq[FunParam], typeName: String, body: Expression)
   case class FunParam(name: String, typeName: String)
@@ -19,7 +19,7 @@ object AST {
   // Write AST as source code
   def prettyPrint(m: Module): String = {
     val xs = m.externalFun.map(prettyPrint).mkString("")
-    val fstr = prettyPrint(m.funDecl)
+    val fstr = m.funDecl.map(prettyPrint).mkString("\n")
 
     "module %s\n%s\n%s".format(m.name, xs, fstr)
   }

@@ -36,7 +36,7 @@ object Parser {
   def convertCompilationUnit(ctx: CompilationUnitContext): Module = {
     val moduleName = ctx.moduleDeclaration().Identifier().getText
     val xs = ctx.externalFunDef().asScala.map(convertExternFun)
-    val funDecl = convertFunDef(ctx.functionDefinition())
+    val funDecl = ctx.functionDefinition().asScala.map(x => convertFunDef(x))
     Module(moduleName, xs, funDecl)
   }
 

@@ -1,6 +1,8 @@
 package com.carl.sf.compiler
 
 import com.carl.sf.compiler.AST._
+import com.carl.sf.compiler.Result.{Err, Ok, Result}
+import com.carl.sf.compiler.SymbolChecker.checkFunDef
 
 
 /** Symbol table helper for Type Checker */
@@ -38,7 +40,12 @@ object TypeChecker {
     val tt = module.externalFun.foldLeft(new TypeTable()) {(t, x) =>
       t.addType(x.name, x.typeName)
     }
-    checkFunction(module.funDecl, tt).map(f => Module(module.name, module.externalFun, f))
+    module.funDecl
+      .map(f => checkFunction(f, tt))
+      .foldLeft[Either[String, Seq[FunctionDef]]](Right(Seq())) {(e, f) =>
+        e.flatMap(xs => f.map(x => xs :+ x))
+      }
+      .map(fs => Module(module.name, module.externalFun, fs))
   }
 
   /** Update symbol table and at the same time look for duplicate variables */

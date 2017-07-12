@@ -2,7 +2,7 @@ grammar FlowScript;
 
 /* Main compilation unit */
 compilationUnit
-    : moduleDeclaration externalFunDef* functionDefinition EOF
+    : moduleDeclaration externalFunDef* functionDefinition* EOF
     ;
 
 moduleDeclaration

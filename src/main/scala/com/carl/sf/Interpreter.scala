@@ -18,14 +18,16 @@ object Interpreter {
     *   - The program can only be run if number of provided parameters
     *     matches number of parameters in function declaration
     */
-  def run(module: Module, params: Seq[Value]): Either[String, Value] = {
+  def run(module: Module, funName: String, params: Seq[Value]): Either[String, Value] = {
     Try {
-      if (params.size == module.funDecl.params.size) {
-        val symbolMemory = module.funDecl.params.zip(params).map(x => x._1.name -> x._2).toMap
-        Right(execExpr(module.funDecl.body, symbolMemory))
-      } else {
-        Left("Wrong number of parameters")
-      }
+      module.funDecl.find(_.name == funName).map { f =>
+        if (params.size == f.params.size) {
+          val symbolMemory = f.params.zip(params).map(x => x._1.name -> x._2).toMap
+          Right(execExpr(f.body, symbolMemory))
+        } else {
+          Left("Wrong number of parameters")
+        }
+      }.getOrElse(Left("Can't find function: %s".format(funName)))
     }.getOrElse(Left("Can't execute module: %s".format(module.name)))
   }
 

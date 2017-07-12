@@ -89,15 +89,18 @@ public class FlowScriptParser extends Parser {
 		public ModuleDeclarationContext moduleDeclaration() {
 			return getRuleContext(ModuleDeclarationContext.class,0);
 		}
-		public FunctionDefinitionContext functionDefinition() {
-			return getRuleContext(FunctionDefinitionContext.class,0);
-		}
 		public TerminalNode EOF() { return getToken(FlowScriptParser.EOF, 0); }
 		public List<ExternalFunDefContext> externalFunDef() {
 			return getRuleContexts(ExternalFunDefContext.class);
 		}
 		public ExternalFunDefContext externalFunDef(int i) {
 			return getRuleContext(ExternalFunDefContext.class,i);
+		}
+		public List<FunctionDefinitionContext> functionDefinition() {
+			return getRuleContexts(FunctionDefinitionContext.class);
+		}
+		public FunctionDefinitionContext functionDefinition(int i) {
+			return getRuleContext(FunctionDefinitionContext.class,i);
 		}
 		public CompilationUnitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -128,9 +131,21 @@ public class FlowScriptParser extends Parser {
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(29);
-			functionDefinition();
-			setState(30);
+			setState(32);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==DEF) {
+				{
+				{
+				setState(29);
+				functionDefinition();
+				}
+				}
+				setState(34);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(35);
 			match(EOF);
 			}
 		}
@@ -160,9 +175,9 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(32);
+			setState(37);
 			match(MODULE);
-			setState(33);
+			setState(38);
 			match(Identifier);
 			}
 		}
@@ -200,29 +215,29 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(35);
-			match(EXTERNAL);
-			setState(36);
-			match(DEF);
-			setState(37);
-			match(Identifier);
-			setState(38);
-			match(T__0);
 			setState(40);
+			match(EXTERNAL);
+			setState(41);
+			match(DEF);
+			setState(42);
+			match(Identifier);
+			setState(43);
+			match(T__0);
+			setState(45);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Identifier) {
 				{
-				setState(39);
+				setState(44);
 				paramList();
 				}
 			}
 
-			setState(42);
+			setState(47);
 			match(T__1);
-			setState(43);
+			setState(48);
 			match(T__2);
-			setState(44);
+			setState(49);
 			typeDefinition();
 			}
 		}
@@ -262,31 +277,31 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(46);
+			setState(51);
 			match(DEF);
-			setState(47);
+			setState(52);
 			match(Identifier);
-			setState(48);
+			setState(53);
 			match(T__0);
-			setState(50);
+			setState(55);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Identifier) {
 				{
-				setState(49);
+				setState(54);
 				paramList();
 				}
 			}
 
-			setState(52);
+			setState(57);
 			match(T__1);
-			setState(53);
+			setState(58);
 			match(T__2);
-			setState(54);
+			setState(59);
 			typeDefinition();
-			setState(55);
+			setState(60);
 			match(T__3);
-			setState(56);
+			setState(61);
 			expression();
 			}
 		}
@@ -321,21 +336,21 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(58);
-			param();
 			setState(63);
+			param();
+			setState(68);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(59);
+				setState(64);
 				match(T__4);
-				setState(60);
+				setState(65);
 				param();
 				}
 				}
-				setState(65);
+				setState(70);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -369,11 +384,11 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(66);
+			setState(71);
 			match(Identifier);
-			setState(67);
+			setState(72);
 			match(T__2);
-			setState(68);
+			setState(73);
 			typeDefinition();
 			}
 		}
@@ -402,7 +417,7 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(70);
+			setState(75);
 			match(Identifier);
 			}
 		}
@@ -434,20 +449,20 @@ public class FlowScriptParser extends Parser {
 		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
 		enterRule(_localctx, 14, RULE_expression);
 		try {
-			setState(74);
+			setState(79);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(72);
+				setState(77);
 				variableExpr();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(73);
+				setState(78);
 				funApp();
 				}
 				break;
@@ -478,7 +493,7 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(76);
+			setState(81);
 			match(Identifier);
 			}
 		}
@@ -511,21 +526,21 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(78);
+			setState(83);
 			match(Identifier);
-			setState(79);
+			setState(84);
 			match(T__0);
-			setState(81);
+			setState(86);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Identifier) {
 				{
-				setState(80);
+				setState(85);
 				expressionList();
 				}
 			}
 
-			setState(83);
+			setState(88);
 			match(T__1);
 			}
 		}
@@ -560,21 +575,21 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(85);
-			expression();
 			setState(90);
+			expression();
+			setState(95);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(86);
+				setState(91);
 				match(T__4);
-				setState(87);
+				setState(92);
 				expression();
 				}
 				}
-				setState(92);
+				setState(97);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -592,28 +607,30 @@ public class FlowScriptParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\r`\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\re\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
-		"\f\t\f\3\2\3\2\7\2\33\n\2\f\2\16\2\36\13\2\3\2\3\2\3\2\3\3\3\3\3\3\3\4"+
-		"\3\4\3\4\3\4\3\4\5\4+\n\4\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\5\5\65\n\5\3"+
-		"\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\7\6@\n\6\f\6\16\6C\13\6\3\7\3\7\3\7"+
-		"\3\7\3\b\3\b\3\t\3\t\5\tM\n\t\3\n\3\n\3\13\3\13\3\13\5\13T\n\13\3\13\3"+
-		"\13\3\f\3\f\3\f\7\f[\n\f\f\f\16\f^\13\f\3\f\2\2\r\2\4\6\b\n\f\16\20\22"+
-		"\24\26\2\2\2[\2\30\3\2\2\2\4\"\3\2\2\2\6%\3\2\2\2\b\60\3\2\2\2\n<\3\2"+
-		"\2\2\fD\3\2\2\2\16H\3\2\2\2\20L\3\2\2\2\22N\3\2\2\2\24P\3\2\2\2\26W\3"+
-		"\2\2\2\30\34\5\4\3\2\31\33\5\6\4\2\32\31\3\2\2\2\33\36\3\2\2\2\34\32\3"+
-		"\2\2\2\34\35\3\2\2\2\35\37\3\2\2\2\36\34\3\2\2\2\37 \5\b\5\2 !\7\2\2\3"+
-		"!\3\3\2\2\2\"#\7\n\2\2#$\7\r\2\2$\5\3\2\2\2%&\7\t\2\2&\'\7\b\2\2\'(\7"+
-		"\r\2\2(*\7\3\2\2)+\5\n\6\2*)\3\2\2\2*+\3\2\2\2+,\3\2\2\2,-\7\4\2\2-.\7"+
-		"\5\2\2./\5\16\b\2/\7\3\2\2\2\60\61\7\b\2\2\61\62\7\r\2\2\62\64\7\3\2\2"+
-		"\63\65\5\n\6\2\64\63\3\2\2\2\64\65\3\2\2\2\65\66\3\2\2\2\66\67\7\4\2\2"+
-		"\678\7\5\2\289\5\16\b\29:\7\6\2\2:;\5\20\t\2;\t\3\2\2\2<A\5\f\7\2=>\7"+
-		"\7\2\2>@\5\f\7\2?=\3\2\2\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2B\13\3\2\2\2C"+
-		"A\3\2\2\2DE\7\r\2\2EF\7\5\2\2FG\5\16\b\2G\r\3\2\2\2HI\7\r\2\2I\17\3\2"+
-		"\2\2JM\5\22\n\2KM\5\24\13\2LJ\3\2\2\2LK\3\2\2\2M\21\3\2\2\2NO\7\r\2\2"+
-		"O\23\3\2\2\2PQ\7\r\2\2QS\7\3\2\2RT\5\26\f\2SR\3\2\2\2ST\3\2\2\2TU\3\2"+
-		"\2\2UV\7\4\2\2V\25\3\2\2\2W\\\5\20\t\2XY\7\7\2\2Y[\5\20\t\2ZX\3\2\2\2"+
-		"[^\3\2\2\2\\Z\3\2\2\2\\]\3\2\2\2]\27\3\2\2\2^\\\3\2\2\2\t\34*\64ALS\\";
+		"\f\t\f\3\2\3\2\7\2\33\n\2\f\2\16\2\36\13\2\3\2\7\2!\n\2\f\2\16\2$\13\2"+
+		"\3\2\3\2\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\5\4\60\n\4\3\4\3\4\3\4\3\4\3"+
+		"\5\3\5\3\5\3\5\5\5:\n\5\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\7\6E\n\6\f"+
+		"\6\16\6H\13\6\3\7\3\7\3\7\3\7\3\b\3\b\3\t\3\t\5\tR\n\t\3\n\3\n\3\13\3"+
+		"\13\3\13\5\13Y\n\13\3\13\3\13\3\f\3\f\3\f\7\f`\n\f\f\f\16\fc\13\f\3\f"+
+		"\2\2\r\2\4\6\b\n\f\16\20\22\24\26\2\2\2a\2\30\3\2\2\2\4\'\3\2\2\2\6*\3"+
+		"\2\2\2\b\65\3\2\2\2\nA\3\2\2\2\fI\3\2\2\2\16M\3\2\2\2\20Q\3\2\2\2\22S"+
+		"\3\2\2\2\24U\3\2\2\2\26\\\3\2\2\2\30\34\5\4\3\2\31\33\5\6\4\2\32\31\3"+
+		"\2\2\2\33\36\3\2\2\2\34\32\3\2\2\2\34\35\3\2\2\2\35\"\3\2\2\2\36\34\3"+
+		"\2\2\2\37!\5\b\5\2 \37\3\2\2\2!$\3\2\2\2\" \3\2\2\2\"#\3\2\2\2#%\3\2\2"+
+		"\2$\"\3\2\2\2%&\7\2\2\3&\3\3\2\2\2\'(\7\n\2\2()\7\r\2\2)\5\3\2\2\2*+\7"+
+		"\t\2\2+,\7\b\2\2,-\7\r\2\2-/\7\3\2\2.\60\5\n\6\2/.\3\2\2\2/\60\3\2\2\2"+
+		"\60\61\3\2\2\2\61\62\7\4\2\2\62\63\7\5\2\2\63\64\5\16\b\2\64\7\3\2\2\2"+
+		"\65\66\7\b\2\2\66\67\7\r\2\2\679\7\3\2\28:\5\n\6\298\3\2\2\29:\3\2\2\2"+
+		":;\3\2\2\2;<\7\4\2\2<=\7\5\2\2=>\5\16\b\2>?\7\6\2\2?@\5\20\t\2@\t\3\2"+
+		"\2\2AF\5\f\7\2BC\7\7\2\2CE\5\f\7\2DB\3\2\2\2EH\3\2\2\2FD\3\2\2\2FG\3\2"+
+		"\2\2G\13\3\2\2\2HF\3\2\2\2IJ\7\r\2\2JK\7\5\2\2KL\5\16\b\2L\r\3\2\2\2M"+
+		"N\7\r\2\2N\17\3\2\2\2OR\5\22\n\2PR\5\24\13\2QO\3\2\2\2QP\3\2\2\2R\21\3"+
+		"\2\2\2ST\7\r\2\2T\23\3\2\2\2UV\7\r\2\2VX\7\3\2\2WY\5\26\f\2XW\3\2\2\2"+
+		"XY\3\2\2\2YZ\3\2\2\2Z[\7\4\2\2[\25\3\2\2\2\\a\5\20\t\2]^\7\7\2\2^`\5\20"+
+		"\t\2_]\3\2\2\2`c\3\2\2\2a_\3\2\2\2ab\3\2\2\2b\27\3\2\2\2ca\3\2\2\2\n\34"+
+		"\"/9FQXa";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

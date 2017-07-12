@@ -23,7 +23,9 @@ object SymbolChecker {
       t.addSymbol(x)
     }
     val st = SymbolTables(new SymbolTable(), fsymbols)
-    checkFunDef(module.funDecl, st) match {
+    module.funDecl.map(f => checkFunDef(f, st)).foldLeft[Result](Ok){ (r1, r2) =>
+      if(r1 == Ok) r2 else r1
+    } match {
       case Err(str) => Left(str)
       case Ok => Right(module)
     }

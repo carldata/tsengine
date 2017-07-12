@@ -25,8 +25,6 @@ object Core {
   def $test(a: String): String = a
 
   def executeFunction(name: String, params: Seq[Value]): Value = {
-    println("Invoke: %s".format(name))
-    params.foreach(println)
     val fname = "$" + name
     val args = params.map(_.toValue)
     val method = getClass.getMethods.filter(_.getName.contains(fname)).head
