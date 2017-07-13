@@ -15,16 +15,10 @@ with custom functions.
 This language is intended for use cases like:
 
  * Add script to convert units in Time Series during data exports
- * Merging 2 Time Series to create new Series
+ * Build custom report which will be run every 24h
 
- 
-## Build
- 
- ```bash
- sbt test
- ```
 
-## FlowScript examples
+Example of unit converter:
 
 ```flowscript
 module Test1
@@ -32,6 +26,21 @@ module Test1
 // Read channel A2 and convert inches to centimeters
 def onRead(fromDate, toDate) = load_series("A2", fromDate, toDate) * 2.54 
 ```
+ 
+## Build project
+ 
+ ```bash
+ sbt test
+ ```
+
+
+## How to include this library in your project
+
+  * Extend the Core
+  * Call compiler
+  * Cal interpreter
+  * Mind the types (Basic literal types: String, Numeric, Bool)
+
 
 # Join in!
 
