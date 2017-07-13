@@ -1,5 +1,6 @@
 package com.carl.sf
 
+import com.carl.sf.core.Core
 import org.scalatest._
 
 
@@ -85,6 +86,16 @@ class CompilerTest extends FlatSpec with Matchers {
       """.stripMargin
     val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false
+  }
+
+  it should "use library script" in {
+    val code =
+      """
+        |module Test1
+        |def min(a: Number, b: Number): Number = min(a, b)
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe true
   }
 
 }

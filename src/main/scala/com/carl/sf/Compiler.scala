@@ -1,7 +1,7 @@
 package com.carl.sf
 
 import com.carl.sf.compiler.AST.Module
-import com.carl.sf.compiler.{Parser, TypeChecker, SymbolChecker}
+import com.carl.sf.compiler.{AST, Parser, SymbolChecker, TypeChecker}
 
 /**
   * Compiler for FlowScript. It consists of the following phases:
@@ -18,8 +18,16 @@ object Compiler {
     * Library modules are used to add definition of external function and types
     */
   def compile(code: String, libs: Seq[String]): Either[String, Module] = {
-    Parser.parse(code)
-      .flatMap(SymbolChecker.check)
-      .flatMap(TypeChecker.check)
+    val ast = Parser.parse(code)
+    val ast2 = libs.map(Parser.parse).foldLeft(ast)(joinAst)
+
+      ast2.flatMap(SymbolChecker.check)
+        .flatMap(TypeChecker.check)
   }
+
+  /** Helper function for joining parser results */
+  def joinAst(ast1: Either[String, Module], ast2: Either[String, Module]): Either[String, Module] = {
+    ast1.flatMap(a => ast2.map(b => AST.mergeModules(a, b)))
+  }
+
 }

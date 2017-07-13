@@ -15,6 +15,9 @@ object AST {
   case class AppExpr(name: String, params: Seq[Expression]) extends Expression
   case class VariableExpr(name: String) extends Expression
 
+  def mergeModules(m1: Module, m2: Module): Module = {
+    Module(m1.name, m1.externalFun ++ m2.externalFun, m1.funDecl ++ m2.funDecl)
+  }
 
   // Write AST as source code
   def printModule(m: Module): String = {

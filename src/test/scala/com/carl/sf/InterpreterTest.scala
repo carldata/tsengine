@@ -1,7 +1,7 @@
 package com.carl.sf
 
-import com.carl.sf.Runtime.NumberValue
 import com.carl.sf.core.Core
+import com.carl.sf.core.Core.NumberValue
 import org.scalatest._
 
 

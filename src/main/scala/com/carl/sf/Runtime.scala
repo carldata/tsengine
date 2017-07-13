@@ -1,36 +1,33 @@
-package com.carl.sf
-
 /**
   * Specification of Runtime system.
   * Runtime is used to provide external types and functions during program execution
+  * Custom Runtime should:
+  *   - Provide custom types which extends TypeValue interface
+  *   - Provide script with function and types definition
+  *   - override valueFromJavaObject for each ValueType
   */
+package com.carl.sf
+
+import com.carl.sf.Runtime.Value
+
 object Runtime {
 
-  sealed trait Value {
-    val toValue: Object
-  }
-  case object UnitValue extends Value {
-    override val toValue: Object = Unit
-  }
-  case class NumberValue(v: Float) extends Value {
-    override val toValue: java.lang.Float = v
-  }
-  case class StringValue(str: String) extends Value {
-    override val toValue: String = str
+  trait Value {
+    val toJavaObject: Object
   }
 }
 
 trait Runtime {
-  import com.carl.sf.Runtime._
+
+  val header: String
+
+  def valueFromJavaObject(x: Object): Value
 
   def executeFunction(name: String, params: Seq[Value]): Value = {
     val fname = "$" + name
-    val args = params.map(_.toValue)
+    val args = params.map(_.toJavaObject)
     val method = getClass.getMethods.filter(_.getName.contains(fname)).head
-    method.invoke(this, args: _*) match {
-      case v: java.lang.Float => NumberValue(v)
-      case str: String => StringValue(str)
-      case x => UnitValue
-    }
+    valueFromJavaObject(method.invoke(this, args: _*))
   }
+
 }
