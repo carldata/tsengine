@@ -2,14 +2,13 @@
 
 [![Build status](https://travis-ci.org/carldata/flow-script.svg?branch=master)](https://travis-ci.org/carldata/flow-script)
 
-This project consists of a compiler and basic runtime system for FlowScript.
+This project consists of a compiler and an interpreter for FlowScript.
 
-The main design goal for this language is a security. It should be safe to run any script written by the user 
+The reason for yet another script language is security. It should be safe to run script written by the user 
 on the server. 
-The program written in FlowScript is executed by runtime which provide base functions for the script. 
-Basic runtime implementation provides only few functions, which doesn't communicate with the OS.
+The program written in FlowScript is executed by interpreter with the help of basic runtime, which provides some basic functions.
 
-Projects which want to use FlowScript and give scripts written in this language more power will extend runtime
+Projects which want to use FlowScript and give scripts written in this language more power will need to extend runtime
 with custom functions.
 
 This language is intended for use cases like:
