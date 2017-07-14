@@ -98,4 +98,14 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "use string literal" in {
+    val code =
+      """
+        |module Test1
+        |def main(): String = 'hello'
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe true
+  }
+
 }

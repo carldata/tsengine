@@ -15,13 +15,15 @@ import scala.collection.JavaConverters._
 object Parser {
 
   def parse(code: String): Either[String, Module] = {
+    val errorListener = new SyntaxErrorListener()
     val input = CharStreams.fromString(code)
     val lexer = new FlowScriptLexer(input)
+    lexer.removeErrorListeners()
+    lexer.addErrorListener(errorListener)
     val tokens = new CommonTokenStream(lexer)
     val parser = new FlowScriptParser(tokens)
     // Don't show parser error on the console
     parser.removeErrorListeners()
-    val errorListener = new SyntaxErrorListener()
     parser.addErrorListener(errorListener)
     // Now we are ready to run ANTLR parser
     val compilationUnit = parser.compilationUnit()
@@ -90,8 +92,11 @@ object Parser {
         ctx.funApp().expressionList().expression().asScala.map(convertExpr)
       }
       AppExpr(name, params)
-    } else {
+    } else if(ctx.variableExpr() != null) {
       VariableExpr(ctx.variableExpr().Identifier().getText)
+    } else {
+      val str = ctx.stringLiteral().QUOTED_STRING.getText
+      StringLiteral(str.substring(1,str.length-1))
     }
   }
 

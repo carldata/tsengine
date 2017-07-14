@@ -54,6 +54,7 @@ object SymbolChecker {
         if(st.varSymbols.hasSymbol(x)) { Ok } else { Err("Unresolved variable: %s".format(x)) }
       case AppExpr(name, _) =>
         if(st.funSymbols.hasSymbol(name)) { Ok } else { Err("Unresolved function: %s".format(name)) }
+      case StringLiteral(_) => Ok
     }
   }
 }

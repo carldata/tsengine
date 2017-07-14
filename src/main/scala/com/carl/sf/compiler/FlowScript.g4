@@ -32,6 +32,7 @@ typeDefinition
 expression
     : variableExpr
     | funApp
+    | stringLiteral
     ;
 
 variableExpr
@@ -46,6 +47,10 @@ expressionList
 	: expression (',' expression)*
     ;
 
+stringLiteral
+    : QUOTED_STRING
+    ;
+
 // LEXER
 DEF : 'def';
 EXTERNAL: 'external';
@@ -57,6 +62,11 @@ LINE_COMMENT:   '//' ~[\r\n]* -> skip;
 
 Identifier
 	: Letter LetterOrDigit*
+    ;
+
+QUOTED_STRING
+    : '\'' (~('\n'|'\r'))* '\''
+    | '"' ('\\"' | ~('\n'|'\r'))* '"'
     ;
 
 fragment

@@ -8,20 +8,45 @@
   */
 package com.carl.sf
 
-import com.carl.sf.Runtime.Value
+import com.carl.sf.Runtime._
 
 object Runtime {
 
   trait Value {
     val toJavaObject: Object
   }
+
+  // Hardcoded type definition
+  case object UnitValue extends Value {
+    override val toJavaObject: Object = Unit
+  }
+  case class NumberValue(v: Float) extends Value {
+    override val toJavaObject: java.lang.Float = v
+  }
+  case class StringValue(str: String) extends Value {
+    override val toJavaObject: String = str
+  }
+  case class BoolValue(v: Boolean) extends Value {
+    override val toJavaObject: java.lang.Boolean = v
+  }
+
 }
 
 trait Runtime {
 
   val header: String
 
-  def valueFromJavaObject(x: Object): Value
+  // Convert Java object to Value
+  // Basic implementation do it for Hardcoded types
+  def valueFromJavaObject(x: Object): Value = {
+    x match {
+      case v: java.lang.Float => NumberValue(v)
+      case str: String => StringValue(str)
+      case b: java.lang.Boolean => BoolValue(b)
+      case _ => UnitValue
+    }
+  }
+
 
   def executeFunction(name: String, params: Seq[Value]): Value = {
     val fname = "$" + name

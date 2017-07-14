@@ -69,6 +69,7 @@ object TypeChecker {
     expr match {
       case VariableExpr(name) => table.symbolType(name).getOrElse("T")
       case AppExpr(name, _) => table.symbolType(name).getOrElse("T")
+      case StringLiteral(_) => "String"
     }
   }
 }

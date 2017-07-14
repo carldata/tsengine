@@ -9,6 +9,7 @@ MODULE=8
 WS=9
 LINE_COMMENT=10
 Identifier=11
+QUOTED_STRING=12
 '('=1
 ')'=2
 ':'=3

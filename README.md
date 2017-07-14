@@ -39,7 +39,7 @@ def onRead(fromDate, toDate) = load_series("A2", fromDate, toDate) * 2.54
   * Extend the Core
   * Call compiler
   * Cal interpreter
-  * Mind the types (Basic literal types: String, Numeric, Bool)
+  * Mind the hardcoded types (Basic literal types: String, Numeric, Bool)
 
 
 # Join in!

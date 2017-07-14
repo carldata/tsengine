@@ -20,10 +20,15 @@ object ParserCheck extends Properties("Parser") {
     params <- Gen.listOf(varGen)
   } yield AppExpr(name, params)
 
+  private val strLiteralGen = for {
+    varName <- Gen.alphaNumStr
+  } yield StringLiteral(varName)
+
   private val exprGen: Gen[Expression] = for {
     appExpr <- appExprGen
     varExpr <- varGen
-    expr <- Gen.oneOf(Seq(appExpr, varExpr))
+    strLiteral <- strLiteralGen
+    expr <- Gen.oneOf(Seq(appExpr, varExpr, strLiteral))
   } yield expr
 
   private val paramsGen = for {
