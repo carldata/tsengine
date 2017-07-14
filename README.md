@@ -18,15 +18,6 @@ This language is intended for use cases like:
  * Build script for custom report which will be run every 24h
 
 
-Example of unit converter:
-
-```flowscript
-module Test1
-
-// Read channel A2 and convert inches to centimeters
-def onRead(fromDate, toDate) = load_series("A2", fromDate, toDate) * 2.54 
-```
- 
 ## Build project
  
  ```bash
@@ -36,10 +27,45 @@ def onRead(fromDate, toDate) = load_series("A2", fromDate, toDate) * 2.54
 
 ## How to include this library in your project
 
-  * Extend the Core
-  * Call compiler
-  * Cal interpreter
-  * Mind the hardcoded types (Basic literal types: String, Numeric, Bool)
+Lets say that we have this minimalistic script
+
+```flowscript
+module Demo1
+
+// Read channel A2 and convert inches to centimeters
+def main(a: Number, b: Number): Number = a 
+```
+ 
+### Compile script
+
+```scala
+import com.carl.sf.core.Core
+val script: String = loadScript()
+val ast: Either[String, Module] = Compiler.compile(code, Seq(Core.header))
+```
+[Core.header](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core/Core.scala) 
+contains basic function definitions.
+ 
+The compiler returns either error string or compiled module AST. 
+
+### Execute script
+
+```scala
+import com.carl.sf.core.Core
+val result: Either[String, Value] = new Interpreter(Core).run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
+```
+
+Interpreter returns either error string or computed value.
+
+### Extend the Runtime
+The Runtime extends script with custom types and functions. Some basic types are implemented in 
+the [Core.header](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core/Core.scala).
+
+Also the following types are build in the compiler (because of the literals):
+
+  * String
+  * Numeric
+  * Bool
 
 
 # Join in!
