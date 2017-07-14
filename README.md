@@ -39,9 +39,12 @@ def main(a: Number, b: Number): Number = a
 ### Compile script
 
 ```scala
+import com.carl.sf.Compiler
 import com.carl.sf.core.Core
-val script: String = loadScript()
-val ast: Either[String, Module] = Compiler.compile(code, Seq(Core.header))
+import com.carl.sf.compiler.AST.Module
+
+val script: String = "..."
+val ast: Either[String, Module] = Compiler.compile(script, Seq(Core.header))
 ```
 [Core.header](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core/Core.scala) 
 contains basic function definitions.
@@ -51,7 +54,12 @@ The compiler returns either error string or compiled module AST.
 ### Execute script
 
 ```scala
+import com.carl.sf.Interpreter
+import com.carl.sf.compiler.AST.Module
 import com.carl.sf.core.Core
+import com.carl.sf.Runtime.{Value, NumberValue}
+
+val ast: Module = ???
 val result: Either[String, Value] = new Interpreter(Core).run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
 ```
 
