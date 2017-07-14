@@ -2,7 +2,7 @@
 
 [![Build status](https://travis-ci.org/carldata/flow-script.svg?branch=master)](https://travis-ci.org/carldata/flow-script)
 
-This project consists of compiler and basic runtime system for FlowScript.
+This project consists of a compiler and basic runtime system for FlowScript.
 
 The main design goal for this language is a security. It should be safe to run any script written by the user 
 on the server. 
@@ -15,7 +15,7 @@ with custom functions.
 This language is intended for use cases like:
 
  * Add script to convert units in Time Series during data exports
- * Build custom report which will be run every 24h
+ * Build script for custom report which will be run every 24h
 
 
 Example of unit converter:

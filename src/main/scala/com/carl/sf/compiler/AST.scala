@@ -15,6 +15,7 @@ object AST {
   case class AppExpr(name: String, params: Seq[Expression]) extends Expression
   case class VariableExpr(name: String) extends Expression
   case class StringLiteral(text: String) extends Expression
+  case class NumberLiteral(v: Float) extends Expression
 
 
   def mergeModules(m1: Module, m2: Module): Module = {
@@ -49,6 +50,7 @@ object AST {
       case AppExpr(name, params) => name + "(%s)".format(params.map(printExpr).mkString(","))
       case VariableExpr(name) => name
       case StringLiteral(text) => '\'' + text + '\''
+      case NumberLiteral(v) => v.toString
     }
   }
 }

@@ -1,6 +1,6 @@
 package com.carl.sf
 
-import com.carl.sf.Runtime.{StringValue, UnitValue, Value}
+import com.carl.sf.Runtime.{NumberValue, StringValue, UnitValue, Value}
 import com.carl.sf.compiler.AST._
 
 import scala.util.Try
@@ -38,6 +38,7 @@ class Interpreter(runtime: Runtime) {
         val xs = params.map(x => execExpr(x, symbolMemory))
         runtime.executeFunction(name, xs)
       case StringLiteral(text) => StringValue(text)
+      case NumberLiteral(v) => NumberValue(v)
     }
   }
 

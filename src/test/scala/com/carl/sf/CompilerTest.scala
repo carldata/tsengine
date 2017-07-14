@@ -108,4 +108,14 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "use number literal" in {
+    val code =
+      """
+        |module Test1
+        |def main(): Number = 12
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe true
+  }
+
 }

@@ -17,25 +17,26 @@ public class FlowScriptParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, DEF=6, EXTERNAL=7, MODULE=8, WS=9, 
-		LINE_COMMENT=10, Identifier=11, QUOTED_STRING=12;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, DEF=7, EXTERNAL=8, MODULE=9, 
+		WS=10, LINE_COMMENT=11, Identifier=12, QuotedString=13, Integer=14;
 	public static final int
 		RULE_compilationUnit = 0, RULE_moduleDeclaration = 1, RULE_externalFunDef = 2, 
 		RULE_functionDefinition = 3, RULE_paramList = 4, RULE_param = 5, RULE_typeDefinition = 6, 
 		RULE_expression = 7, RULE_variableExpr = 8, RULE_funApp = 9, RULE_expressionList = 10, 
-		RULE_stringLiteral = 11;
+		RULE_stringLiteral = 11, RULE_numberLiteral = 12;
 	public static final String[] ruleNames = {
 		"compilationUnit", "moduleDeclaration", "externalFunDef", "functionDefinition", 
 		"paramList", "param", "typeDefinition", "expression", "variableExpr", 
-		"funApp", "expressionList", "stringLiteral"
+		"funApp", "expressionList", "stringLiteral", "numberLiteral"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'('", "')'", "':'", "'='", "','", "'def'", "'external'", "'module'"
+		null, "'('", "')'", "':'", "'='", "','", "'.'", "'def'", "'external'", 
+		"'module'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, null, "DEF", "EXTERNAL", "MODULE", "WS", 
-		"LINE_COMMENT", "Identifier", "QUOTED_STRING"
+		null, null, null, null, null, null, null, "DEF", "EXTERNAL", "MODULE", 
+		"WS", "LINE_COMMENT", "Identifier", "QuotedString", "Integer"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -116,37 +117,37 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(24);
+			setState(26);
 			moduleDeclaration();
-			setState(28);
+			setState(30);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==EXTERNAL) {
 				{
 				{
-				setState(25);
+				setState(27);
 				externalFunDef();
 				}
 				}
-				setState(30);
+				setState(32);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(34);
+			setState(36);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==DEF) {
 				{
 				{
-				setState(31);
+				setState(33);
 				functionDefinition();
 				}
 				}
-				setState(36);
+				setState(38);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(37);
+			setState(39);
 			match(EOF);
 			}
 		}
@@ -176,9 +177,9 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(39);
+			setState(41);
 			match(MODULE);
-			setState(40);
+			setState(42);
 			match(Identifier);
 			}
 		}
@@ -216,29 +217,29 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(42);
-			match(EXTERNAL);
-			setState(43);
-			match(DEF);
 			setState(44);
-			match(Identifier);
+			match(EXTERNAL);
 			setState(45);
-			match(T__0);
+			match(DEF);
+			setState(46);
+			match(Identifier);
 			setState(47);
+			match(T__0);
+			setState(49);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Identifier) {
 				{
-				setState(46);
+				setState(48);
 				paramList();
 				}
 			}
 
-			setState(49);
-			match(T__1);
-			setState(50);
-			match(T__2);
 			setState(51);
+			match(T__1);
+			setState(52);
+			match(T__2);
+			setState(53);
 			typeDefinition();
 			}
 		}
@@ -278,31 +279,31 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(53);
-			match(DEF);
-			setState(54);
-			match(Identifier);
 			setState(55);
-			match(T__0);
+			match(DEF);
+			setState(56);
+			match(Identifier);
 			setState(57);
+			match(T__0);
+			setState(59);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Identifier) {
 				{
-				setState(56);
+				setState(58);
 				paramList();
 				}
 			}
 
-			setState(59);
-			match(T__1);
-			setState(60);
-			match(T__2);
 			setState(61);
-			typeDefinition();
+			match(T__1);
 			setState(62);
-			match(T__3);
+			match(T__2);
 			setState(63);
+			typeDefinition();
+			setState(64);
+			match(T__3);
+			setState(65);
 			expression();
 			}
 		}
@@ -337,21 +338,21 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(65);
+			setState(67);
 			param();
-			setState(70);
+			setState(72);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(66);
+				setState(68);
 				match(T__4);
-				setState(67);
+				setState(69);
 				param();
 				}
 				}
-				setState(72);
+				setState(74);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -385,11 +386,11 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(73);
-			match(Identifier);
-			setState(74);
-			match(T__2);
 			setState(75);
+			match(Identifier);
+			setState(76);
+			match(T__2);
+			setState(77);
 			typeDefinition();
 			}
 		}
@@ -418,7 +419,7 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(77);
+			setState(79);
 			match(Identifier);
 			}
 		}
@@ -443,6 +444,9 @@ public class FlowScriptParser extends Parser {
 		public StringLiteralContext stringLiteral() {
 			return getRuleContext(StringLiteralContext.class,0);
 		}
+		public NumberLiteralContext numberLiteral() {
+			return getRuleContext(NumberLiteralContext.class,0);
+		}
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -453,28 +457,35 @@ public class FlowScriptParser extends Parser {
 		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
 		enterRule(_localctx, 14, RULE_expression);
 		try {
-			setState(82);
+			setState(85);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(79);
+				setState(81);
 				variableExpr();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(80);
+				setState(82);
 				funApp();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(81);
+				setState(83);
 				stringLiteral();
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(84);
+				numberLiteral();
 				}
 				break;
 			}
@@ -504,7 +515,7 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84);
+			setState(87);
 			match(Identifier);
 			}
 		}
@@ -537,21 +548,21 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(86);
-			match(Identifier);
-			setState(87);
-			match(T__0);
 			setState(89);
+			match(Identifier);
+			setState(90);
+			match(T__0);
+			setState(92);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==Identifier || _la==QUOTED_STRING) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Identifier) | (1L << QuotedString) | (1L << Integer))) != 0)) {
 				{
-				setState(88);
+				setState(91);
 				expressionList();
 				}
 			}
 
-			setState(91);
+			setState(94);
 			match(T__1);
 			}
 		}
@@ -586,21 +597,21 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(93);
+			setState(96);
 			expression();
-			setState(98);
+			setState(101);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(94);
+				setState(97);
 				match(T__4);
-				setState(95);
+				setState(98);
 				expression();
 				}
 				}
-				setState(100);
+				setState(103);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -618,7 +629,7 @@ public class FlowScriptParser extends Parser {
 	}
 
 	public static class StringLiteralContext extends ParserRuleContext {
-		public TerminalNode QUOTED_STRING() { return getToken(FlowScriptParser.QUOTED_STRING, 0); }
+		public TerminalNode QuotedString() { return getToken(FlowScriptParser.QuotedString, 0); }
 		public StringLiteralContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -631,8 +642,53 @@ public class FlowScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(101);
-			match(QUOTED_STRING);
+			setState(104);
+			match(QuotedString);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class NumberLiteralContext extends ParserRuleContext {
+		public List<TerminalNode> Integer() { return getTokens(FlowScriptParser.Integer); }
+		public TerminalNode Integer(int i) {
+			return getToken(FlowScriptParser.Integer, i);
+		}
+		public NumberLiteralContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_numberLiteral; }
+	}
+
+	public final NumberLiteralContext numberLiteral() throws RecognitionException {
+		NumberLiteralContext _localctx = new NumberLiteralContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_numberLiteral);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(106);
+			match(Integer);
+			setState(109);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__5) {
+				{
+				setState(107);
+				match(T__5);
+				setState(108);
+				match(Integer);
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -647,31 +703,33 @@ public class FlowScriptParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16j\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20r\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
-		"\f\t\f\4\r\t\r\3\2\3\2\7\2\35\n\2\f\2\16\2 \13\2\3\2\7\2#\n\2\f\2\16\2"+
-		"&\13\2\3\2\3\2\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\5\4\62\n\4\3\4\3\4\3\4"+
-		"\3\4\3\5\3\5\3\5\3\5\5\5<\n\5\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\7\6"+
-		"G\n\6\f\6\16\6J\13\6\3\7\3\7\3\7\3\7\3\b\3\b\3\t\3\t\3\t\5\tU\n\t\3\n"+
-		"\3\n\3\13\3\13\3\13\5\13\\\n\13\3\13\3\13\3\f\3\f\3\f\7\fc\n\f\f\f\16"+
-		"\ff\13\f\3\r\3\r\3\r\2\2\16\2\4\6\b\n\f\16\20\22\24\26\30\2\2\2f\2\32"+
-		"\3\2\2\2\4)\3\2\2\2\6,\3\2\2\2\b\67\3\2\2\2\nC\3\2\2\2\fK\3\2\2\2\16O"+
-		"\3\2\2\2\20T\3\2\2\2\22V\3\2\2\2\24X\3\2\2\2\26_\3\2\2\2\30g\3\2\2\2\32"+
-		"\36\5\4\3\2\33\35\5\6\4\2\34\33\3\2\2\2\35 \3\2\2\2\36\34\3\2\2\2\36\37"+
-		"\3\2\2\2\37$\3\2\2\2 \36\3\2\2\2!#\5\b\5\2\"!\3\2\2\2#&\3\2\2\2$\"\3\2"+
-		"\2\2$%\3\2\2\2%\'\3\2\2\2&$\3\2\2\2\'(\7\2\2\3(\3\3\2\2\2)*\7\n\2\2*+"+
-		"\7\r\2\2+\5\3\2\2\2,-\7\t\2\2-.\7\b\2\2./\7\r\2\2/\61\7\3\2\2\60\62\5"+
-		"\n\6\2\61\60\3\2\2\2\61\62\3\2\2\2\62\63\3\2\2\2\63\64\7\4\2\2\64\65\7"+
-		"\5\2\2\65\66\5\16\b\2\66\7\3\2\2\2\678\7\b\2\289\7\r\2\29;\7\3\2\2:<\5"+
-		"\n\6\2;:\3\2\2\2;<\3\2\2\2<=\3\2\2\2=>\7\4\2\2>?\7\5\2\2?@\5\16\b\2@A"+
-		"\7\6\2\2AB\5\20\t\2B\t\3\2\2\2CH\5\f\7\2DE\7\7\2\2EG\5\f\7\2FD\3\2\2\2"+
-		"GJ\3\2\2\2HF\3\2\2\2HI\3\2\2\2I\13\3\2\2\2JH\3\2\2\2KL\7\r\2\2LM\7\5\2"+
-		"\2MN\5\16\b\2N\r\3\2\2\2OP\7\r\2\2P\17\3\2\2\2QU\5\22\n\2RU\5\24\13\2"+
-		"SU\5\30\r\2TQ\3\2\2\2TR\3\2\2\2TS\3\2\2\2U\21\3\2\2\2VW\7\r\2\2W\23\3"+
-		"\2\2\2XY\7\r\2\2Y[\7\3\2\2Z\\\5\26\f\2[Z\3\2\2\2[\\\3\2\2\2\\]\3\2\2\2"+
-		"]^\7\4\2\2^\25\3\2\2\2_d\5\20\t\2`a\7\7\2\2ac\5\20\t\2b`\3\2\2\2cf\3\2"+
-		"\2\2db\3\2\2\2de\3\2\2\2e\27\3\2\2\2fd\3\2\2\2gh\7\16\2\2h\31\3\2\2\2"+
-		"\n\36$\61;HT[d";
+		"\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\7\2\37\n\2\f\2\16\2\"\13\2\3\2\7\2%\n"+
+		"\2\f\2\16\2(\13\2\3\2\3\2\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\5\4\64\n\4\3"+
+		"\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\5\5>\n\5\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3"+
+		"\6\3\6\7\6I\n\6\f\6\16\6L\13\6\3\7\3\7\3\7\3\7\3\b\3\b\3\t\3\t\3\t\3\t"+
+		"\5\tX\n\t\3\n\3\n\3\13\3\13\3\13\5\13_\n\13\3\13\3\13\3\f\3\f\3\f\7\f"+
+		"f\n\f\f\f\16\fi\13\f\3\r\3\r\3\16\3\16\3\16\5\16p\n\16\3\16\2\2\17\2\4"+
+		"\6\b\n\f\16\20\22\24\26\30\32\2\2\2o\2\34\3\2\2\2\4+\3\2\2\2\6.\3\2\2"+
+		"\2\b9\3\2\2\2\nE\3\2\2\2\fM\3\2\2\2\16Q\3\2\2\2\20W\3\2\2\2\22Y\3\2\2"+
+		"\2\24[\3\2\2\2\26b\3\2\2\2\30j\3\2\2\2\32l\3\2\2\2\34 \5\4\3\2\35\37\5"+
+		"\6\4\2\36\35\3\2\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!&\3\2\2\2\" \3"+
+		"\2\2\2#%\5\b\5\2$#\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'\3\2\2\2\')\3\2\2\2("+
+		"&\3\2\2\2)*\7\2\2\3*\3\3\2\2\2+,\7\13\2\2,-\7\16\2\2-\5\3\2\2\2./\7\n"+
+		"\2\2/\60\7\t\2\2\60\61\7\16\2\2\61\63\7\3\2\2\62\64\5\n\6\2\63\62\3\2"+
+		"\2\2\63\64\3\2\2\2\64\65\3\2\2\2\65\66\7\4\2\2\66\67\7\5\2\2\678\5\16"+
+		"\b\28\7\3\2\2\29:\7\t\2\2:;\7\16\2\2;=\7\3\2\2<>\5\n\6\2=<\3\2\2\2=>\3"+
+		"\2\2\2>?\3\2\2\2?@\7\4\2\2@A\7\5\2\2AB\5\16\b\2BC\7\6\2\2CD\5\20\t\2D"+
+		"\t\3\2\2\2EJ\5\f\7\2FG\7\7\2\2GI\5\f\7\2HF\3\2\2\2IL\3\2\2\2JH\3\2\2\2"+
+		"JK\3\2\2\2K\13\3\2\2\2LJ\3\2\2\2MN\7\16\2\2NO\7\5\2\2OP\5\16\b\2P\r\3"+
+		"\2\2\2QR\7\16\2\2R\17\3\2\2\2SX\5\22\n\2TX\5\24\13\2UX\5\30\r\2VX\5\32"+
+		"\16\2WS\3\2\2\2WT\3\2\2\2WU\3\2\2\2WV\3\2\2\2X\21\3\2\2\2YZ\7\16\2\2Z"+
+		"\23\3\2\2\2[\\\7\16\2\2\\^\7\3\2\2]_\5\26\f\2^]\3\2\2\2^_\3\2\2\2_`\3"+
+		"\2\2\2`a\7\4\2\2a\25\3\2\2\2bg\5\20\t\2cd\7\7\2\2df\5\20\t\2ec\3\2\2\2"+
+		"fi\3\2\2\2ge\3\2\2\2gh\3\2\2\2h\27\3\2\2\2ig\3\2\2\2jk\7\17\2\2k\31\3"+
+		"\2\2\2lo\7\20\2\2mn\7\b\2\2np\7\20\2\2om\3\2\2\2op\3\2\2\2p\33\3\2\2\2"+
+		"\13 &\63=JW^go";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

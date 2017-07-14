@@ -94,9 +94,17 @@ object Parser {
       AppExpr(name, params)
     } else if(ctx.variableExpr() != null) {
       VariableExpr(ctx.variableExpr().Identifier().getText)
-    } else {
-      val str = ctx.stringLiteral().QUOTED_STRING.getText
+    } else if(ctx.stringLiteral() != null){
+      val str = ctx.stringLiteral().QuotedString.getText
       StringLiteral(str.substring(1,str.length-1))
+    } else {
+      val v1 = ctx.numberLiteral().Integer(0).getText
+      val v2 = if(ctx.numberLiteral().Integer().size() > 1){
+        v1 + "." + ctx.numberLiteral().Integer(1).getText
+      } else {
+        v1
+      }
+      NumberLiteral(v2.toFloat)
     }
   }
 

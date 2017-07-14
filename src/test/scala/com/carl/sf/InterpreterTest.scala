@@ -63,7 +63,7 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(NumberValue(2))
   }
 
-  it should "return value string literal" in {
+  it should "return value of the string literal" in {
     val code =
       """
         |module Test1
@@ -74,6 +74,19 @@ class InterpreterTest extends FlatSpec with Matchers {
       new Interpreter(Core).run(ast, "main", Seq())
     }
     result shouldBe Right(StringValue("hello"))
+  }
+
+  it should "return value of the number literal" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(): Number = 0.23
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq())
+    }
+    result shouldBe Right(NumberValue(0.23f))
   }
 
 }

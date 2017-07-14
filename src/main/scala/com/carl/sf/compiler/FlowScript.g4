@@ -33,6 +33,7 @@ expression
     : variableExpr
     | funApp
     | stringLiteral
+    | numberLiteral
     ;
 
 variableExpr
@@ -48,7 +49,11 @@ expressionList
     ;
 
 stringLiteral
-    : QUOTED_STRING
+    : QuotedString
+    ;
+
+numberLiteral
+    : Integer ('.' Integer)?
     ;
 
 // LEXER
@@ -64,9 +69,13 @@ Identifier
 	: Letter LetterOrDigit*
     ;
 
-QUOTED_STRING
+QuotedString
     : '\'' (~('\n'|'\r'))* '\''
     | '"' ('\\"' | ~('\n'|'\r'))* '"'
+    ;
+
+Integer
+    : Digit+
     ;
 
 fragment
@@ -77,5 +86,10 @@ Letter
 fragment
 LetterOrDigit
 	: [a-zA-Z0-9$_] // these are the allowed characters or digits
+    ;
+
+fragment
+Digit
+    : ('0'..'9')
     ;
 

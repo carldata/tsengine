@@ -97,4 +97,15 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "parse numeric literal" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(): Number = 123.45
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
 }
