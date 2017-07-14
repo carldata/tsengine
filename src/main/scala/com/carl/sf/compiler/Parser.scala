@@ -97,7 +97,7 @@ object Parser {
     } else if(ctx.stringLiteral() != null){
       val str = ctx.stringLiteral().QuotedString.getText
       StringLiteral(str.substring(1,str.length-1))
-    } else {
+    } else if(ctx.numberLiteral() != null){
       val v1 = ctx.numberLiteral().Integer(0).getText
       val v2 = if(ctx.numberLiteral().Integer().size() > 1){
         v1 + "." + ctx.numberLiteral().Integer(1).getText
@@ -105,6 +105,8 @@ object Parser {
         v1
       }
       NumberLiteral(v2.toFloat)
+    } else {
+      BoolLiteral(ctx.boolLiteral().TRUE() != null)
     }
   }
 

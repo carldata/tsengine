@@ -1,6 +1,6 @@
 package com.carl.sf
 
-import com.carl.sf.Runtime.{NumberValue, StringValue}
+import com.carl.sf.Runtime.{BoolValue, NumberValue, StringValue}
 import com.carl.sf.core.Core
 import org.scalatest._
 
@@ -87,6 +87,19 @@ class InterpreterTest extends FlatSpec with Matchers {
       new Interpreter(Core).run(ast, "main", Seq())
     }
     result shouldBe Right(NumberValue(0.23f))
+  }
+
+  it should "return value of the bool literal" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(): Bool = False
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq())
+    }
+    result shouldBe Right(BoolValue(false))
   }
 
 }

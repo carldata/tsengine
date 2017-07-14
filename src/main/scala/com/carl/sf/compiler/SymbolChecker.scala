@@ -56,6 +56,7 @@ object SymbolChecker {
         if(st.funSymbols.hasSymbol(name)) { Ok } else { Err("Unresolved function: %s".format(name)) }
       case StringLiteral(_) => Ok
       case NumberLiteral(_) => Ok
+      case BoolLiteral(_) => Ok
     }
   }
 }

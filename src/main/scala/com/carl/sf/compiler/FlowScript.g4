@@ -30,10 +30,24 @@ typeDefinition
     ;
 
 expression
-    : variableExpr
-    | funApp
+    : boolLiteral
     | stringLiteral
     | numberLiteral
+    | variableExpr
+    | funApp
+    ;
+
+boolLiteral
+    : TRUE
+    | FALSE
+    ;
+
+stringLiteral
+    : QuotedString
+    ;
+
+numberLiteral
+    : Integer ('.' Integer)?
     ;
 
 variableExpr
@@ -48,18 +62,12 @@ expressionList
 	: expression (',' expression)*
     ;
 
-stringLiteral
-    : QuotedString
-    ;
-
-numberLiteral
-    : Integer ('.' Integer)?
-    ;
-
 // LEXER
 DEF : 'def';
 EXTERNAL: 'external';
 MODULE : 'module';
+TRUE: 'True';
+FALSE: 'False';
 
 // Whitespace and comments
 WS  :  [ \t\r\n\u000C]+ -> skip;

@@ -71,6 +71,7 @@ object TypeChecker {
       case AppExpr(name, _) => table.symbolType(name).getOrElse("T")
       case StringLiteral(_) => "String"
       case NumberLiteral(_) => "Number"
+      case BoolLiteral(_) => "Bool"
     }
   }
 }

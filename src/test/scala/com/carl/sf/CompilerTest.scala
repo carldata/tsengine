@@ -118,4 +118,14 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "compile bool literal" in {
+    val code =
+      """
+        |module Test1
+        |def main(): Bool = False
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe true
+  }
+
 }

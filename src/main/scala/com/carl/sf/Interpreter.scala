@@ -1,6 +1,6 @@
 package com.carl.sf
 
-import com.carl.sf.Runtime.{NumberValue, StringValue, UnitValue, Value}
+import com.carl.sf.Runtime._
 import com.carl.sf.compiler.AST._
 
 import scala.util.Try
@@ -39,6 +39,7 @@ class Interpreter(runtime: Runtime) {
         runtime.executeFunction(name, xs)
       case StringLiteral(text) => StringValue(text)
       case NumberLiteral(v) => NumberValue(v)
+      case BoolLiteral(v) => BoolValue(v)
     }
   }
 

@@ -28,12 +28,17 @@ object ParserCheck extends Properties("Parser") {
     v <- Gen.posNum[Float]
   } yield NumberLiteral(v)
 
+  private val boolLiteralGen = for {
+    b <- Gen.oneOf(true, false)
+  } yield BoolLiteral(b)
+
   private val exprGen: Gen[Expression] = for {
     appExpr <- appExprGen
     varExpr <- varGen
     strLiteral <- strLiteralGen
     numLiteral <- numLiteralGen
-    expr <- Gen.oneOf(Seq(appExpr, varExpr, strLiteral, numLiteral))
+    boolLiteral <- boolLiteralGen
+    expr <- Gen.oneOf(Seq(appExpr, varExpr, strLiteral, numLiteral, boolLiteral))
   } yield expr
 
   private val paramsGen = for {

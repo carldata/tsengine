@@ -14,8 +14,9 @@ object AST {
   sealed trait Expression
   case class AppExpr(name: String, params: Seq[Expression]) extends Expression
   case class VariableExpr(name: String) extends Expression
-  case class StringLiteral(text: String) extends Expression
+  case class BoolLiteral(b: Boolean) extends Expression
   case class NumberLiteral(v: Float) extends Expression
+  case class StringLiteral(text: String) extends Expression
 
 
   def mergeModules(m1: Module, m2: Module): Module = {
@@ -51,6 +52,7 @@ object AST {
       case VariableExpr(name) => name
       case StringLiteral(text) => '\'' + text + '\''
       case NumberLiteral(v) => v.toString
+      case BoolLiteral(b) => if(b) "True" else "False"
     }
   }
 }
