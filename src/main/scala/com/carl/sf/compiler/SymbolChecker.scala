@@ -19,10 +19,13 @@ object SymbolChecker {
 
   /** Check for errors in the module. */
   def check(module: Module): Either[String, Module] = {
-    val fsymbols = module.externalFun.map(_.name).foldLeft(new SymbolTable()) {(t, x) =>
+    val fs1 = module.externalFun.map(_.name).foldLeft(new SymbolTable()) {(t, x) =>
       t.addSymbol(x)
     }
-    val st = SymbolTables(new SymbolTable(), fsymbols)
+    val fs2 = module.funDecl.map(_.name).foldLeft(fs1) {(t, x) =>
+      t.addSymbol(x)
+    }
+    val st = SymbolTables(new SymbolTable(), fs2)
     module.funDecl.map(f => checkFunDef(f, st)).foldLeft[Result](Ok){ (r1, r2) =>
       if(r1 == Ok) r2 else r1
     } match {

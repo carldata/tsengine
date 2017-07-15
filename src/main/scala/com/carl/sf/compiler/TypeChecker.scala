@@ -37,11 +37,15 @@ object TypeChecker {
 
   /** Check for errors in the module. Returns None if no error was found */
   def check(module: Module): Either[String, Module] = {
-    val tt = module.externalFun.foldLeft(new TypeTable()) {(t, x) =>
+    val tt1 = module.externalFun.foldLeft(new TypeTable()) {(t, x) =>
       t.addType(x.name, x.typeName)
     }
+    val tt2 = module.funDecl.foldLeft(tt1) {(t, x) =>
+      t.addType(x.name, x.typeName)
+    }
+
     module.funDecl
-      .map(f => checkFunction(f, tt))
+      .map(f => checkFunction(f, tt2))
       .foldLeft[Either[String, Seq[FunctionDef]]](Right(Seq())) {(e, f) =>
         e.flatMap(xs => f.map(x => xs :+ x))
       }

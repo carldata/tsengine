@@ -4,4 +4,4 @@ module Param1
 def main(a: Number, b: Number): Number = a
 
 // Assert
-//def assert(): Bool = main(1, 2) == 1
+def assert(): Number = main(1, 2) //== 1
