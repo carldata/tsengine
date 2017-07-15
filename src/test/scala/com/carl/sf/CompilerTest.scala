@@ -128,4 +128,23 @@ class CompilerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "not compile wrong relation type" in {
+    val code =
+      """
+        |module Test1
+        |def main(a: Number, b: Number): String = a == b
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe false
+  }
+
+  it should "compile relation type" in {
+    val code =
+      """
+        |module Test1
+        |def main(a: Number, b: Number): Bool = a != b
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe true
+  }
 }

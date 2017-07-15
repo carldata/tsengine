@@ -71,6 +71,7 @@ object TypeChecker {
     */
   def exprType(expr: Expression, table: TypeTable): String = {
     expr match {
+      case RelationExpr(_, _ , _) => "Bool"
       case VariableExpr(name) => table.symbolType(name).getOrElse("T")
       case AppExpr(name, _) => table.symbolType(name).getOrElse("T")
       case StringLiteral(_) => "String"

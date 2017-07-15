@@ -33,6 +33,7 @@ class Interpreter(runtime: Runtime) {
   /** Execute node with the function declaration */
   private def execExpr(expr: Expression, symbolMemory: Map[String, Value]): Value = {
     expr match {
+      case RelationExpr(e1, op, e2) => execRelationExpr(e1, op, e2, symbolMemory)
       case VariableExpr(name) => symbolMemory.getOrElse(name, UnitValue)
       case AppExpr(name, params) =>
         val xs = params.map(x => execExpr(x, symbolMemory))
@@ -40,6 +41,28 @@ class Interpreter(runtime: Runtime) {
       case StringLiteral(text) => StringValue(text)
       case NumberLiteral(v) => NumberValue(v)
       case BoolLiteral(v) => BoolValue(v)
+    }
+  }
+
+  def execRelationExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Value]): BoolValue = {
+    val a = execExpr(e1, mem)
+    val b = execExpr(e2, mem)
+    val v = op match {
+      case "==" => a == b
+      case "!=" => a != b
+      case ">"  => mkFloat(a) > mkFloat(b)
+      case "<"  => mkFloat(a) < mkFloat(b)
+      case ">=" => mkFloat(a) >= mkFloat(b)
+      case "<=" => mkFloat(a) < mkFloat(b)
+    }
+    BoolValue(v)
+  }
+
+  def mkFloat(a: Value): Float = {
+    a match {
+      case NumberValue(v) => v
+      case BoolValue(v) => if(v) 1f else 0f
+      case _ => 0f
     }
   }
 

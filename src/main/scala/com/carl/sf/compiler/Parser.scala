@@ -84,7 +84,12 @@ object Parser {
 
   /** Convert ANTLR Context into Term node */
   def convertExpr(ctx: ExpressionContext): Expression = {
-    if(ctx.funApp() != null) {
+    if(ctx.RelationOp() != null) {
+      val e1 = convertExpr(ctx.expression(0))
+      val e2 = convertExpr(ctx.expression(1))
+      val op = ctx.RelationOp().getText
+      RelationExpr(e1, op, e2)
+    } else if(ctx.funApp() != null) {
       val name = ctx.funApp().Identifier().getText
       val params = if(ctx.funApp().expressionList() == null) {
         Seq()

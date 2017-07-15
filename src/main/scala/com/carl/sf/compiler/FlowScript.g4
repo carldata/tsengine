@@ -30,7 +30,8 @@ typeDefinition
     ;
 
 expression
-    : boolLiteral
+    : expression RelationOp expression
+    | boolLiteral
     | stringLiteral
     | numberLiteral
     | variableExpr
@@ -84,6 +85,10 @@ QuotedString
 
 Integer
     : Digit+
+    ;
+
+RelationOp
+    : '==' | '>' | '<' | '>=' | '<=' | '!='
     ;
 
 fragment

@@ -14,6 +14,7 @@ LINE_COMMENT=13
 Identifier=14
 QuotedString=15
 Integer=16
+RelationOp=17
 '('=1
 ')'=2
 ':'=3

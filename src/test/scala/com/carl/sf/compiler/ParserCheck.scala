@@ -15,6 +15,12 @@ object ParserCheck extends Properties("Parser") {
     varName <- Gen.identifier
   } yield VariableExpr(varName)
 
+  private val relExprGen = for {
+    e1 <- varGen
+    op <- Gen.oneOf("==", "!=", ">", "<", ">=", "<=")
+    e2 <- varGen
+  } yield RelationExpr(e1, op, e2)
+
   private val appExprGen = for {
     name <- Gen.identifier
     params <- Gen.listOf(varGen)
@@ -38,7 +44,8 @@ object ParserCheck extends Properties("Parser") {
     strLiteral <- strLiteralGen
     numLiteral <- numLiteralGen
     boolLiteral <- boolLiteralGen
-    expr <- Gen.oneOf(Seq(appExpr, varExpr, strLiteral, numLiteral, boolLiteral))
+    relExpr <- relExprGen
+    expr <- Gen.oneOf(Seq(appExpr, varExpr, strLiteral, numLiteral, boolLiteral, relExpr))
   } yield expr
 
   private val paramsGen = for {

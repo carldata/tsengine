@@ -102,4 +102,30 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(BoolValue(false))
   }
 
+  it should "return true for relation" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Bool = a == b
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq(NumberValue(2), NumberValue(2)))
+    }
+    result shouldBe Right(BoolValue(true))
+  }
+
+  it should "return false for relation" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Bool = a != b
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(Core).run(ast, "main", Seq(NumberValue(2), NumberValue(2)))
+    }
+    result shouldBe Right(BoolValue(false))
+  }
+
 }

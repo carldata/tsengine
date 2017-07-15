@@ -119,4 +119,15 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "parse '=='" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Bool = a == b
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
 }

@@ -53,10 +53,16 @@ object SymbolChecker {
   /** Return unit if all symbols can be correctly resolved */
   def checkExpr(expr: Expression, st: SymbolTables): Result = {
     expr match {
+      case RelationExpr(e1, _, e2) =>
+        val r1 = checkExpr(e1, st)
+        if(r1 != Ok) r1 else checkExpr(e2, st)
+
       case VariableExpr(x) =>
         if(st.varSymbols.hasSymbol(x)) { Ok } else { Err("Unresolved variable: %s".format(x)) }
+
       case AppExpr(name, _) =>
         if(st.funSymbols.hasSymbol(name)) { Ok } else { Err("Unresolved function: %s".format(name)) }
+
       case StringLiteral(_) => Ok
       case NumberLiteral(_) => Ok
       case BoolLiteral(_) => Ok
