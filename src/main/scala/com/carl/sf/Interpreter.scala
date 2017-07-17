@@ -27,7 +27,7 @@ class Interpreter(runtime: Runtime) {
           Left("Wrong number of parameters")
         }
       }.getOrElse(Left("Can't find function: %s".format(funName)))
-    }.getOrElse(Left("Can't execute module: %s".format(module.name)))
+    }.getOrElse(Left("Runtime exception executing module: %s".format(module.name)))
   }
 
   /** Execute node with the function declaration */
@@ -54,6 +54,9 @@ class Interpreter(runtime: Runtime) {
       case "<"  => mkFloat(a) < mkFloat(b)
       case ">=" => mkFloat(a) >= mkFloat(b)
       case "<=" => mkFloat(a) < mkFloat(b)
+      case err =>
+        println("Wrong relation operator: " + err)
+        false
     }
     BoolValue(v)
   }

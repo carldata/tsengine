@@ -11,7 +11,7 @@ The program written in FlowScript is executed by interpreter with the help of ba
 Projects which want to use FlowScript and give scripts written in this language more power will need to extend runtime
 with custom functions.
 
-This language is intended for use cases like:
+This language is intended more as a "glue" then full blown language. Typical use cases:
 
  * Add script to convert units in Time Series during data exports
  * Build script for custom report which will be run every 24h
@@ -24,7 +24,7 @@ This language is intended for use cases like:
  ```
 
 
-## How to include this library in your project
+## How to include this library in your own project
 
 Lets say that we have this minimalistic script
 

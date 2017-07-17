@@ -128,4 +128,18 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(BoolValue(false))
   }
 
+//  it should "execute other function defined in the script" in {
+//    val code =
+//      """
+//        |module Test1
+//        |
+//        |def main(a: Number, b: Number): Bool = a != b
+//        |def test(): Bool = main(1, 2)
+//      """.stripMargin
+//    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+//      new Interpreter(Core).run(ast, "main", Seq(NumberValue(2), NumberValue(2)))
+//    }
+//    result shouldBe Right(BoolValue(true))
+//  }
+
 }
