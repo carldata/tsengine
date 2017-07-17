@@ -73,8 +73,15 @@ object SymbolChecker {
       case VariableExpr(x) =>
         if(st.varSymbols.hasSymbol(x)) { Ok } else { Err("Unresolved variable: %s".format(x)) }
 
-      case AppExpr(name, _) =>
-        if(st.funSymbols.hasSymbol(name)) { Ok } else { Err("Unresolved function: %s".format(name)) }
+      case AppExpr(name, params) =>
+        val xs = params.map(x => checkExpr(x, st)).filter(_ != Ok)
+        if(xs.nonEmpty){
+          xs.head
+        } else if(st.funSymbols.hasSymbol(name)) {
+          Ok
+        } else {
+          Err("Unresolved function: %s".format(name))
+        }
 
       case StringLiteral(_) => Ok
       case NumberLiteral(_) => Ok

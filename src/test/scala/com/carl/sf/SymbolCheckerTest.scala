@@ -80,4 +80,16 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "check function call params" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def min(a: Number, b: Number): Number = a
+        |def main(a: Number, b: Number): Number = min(a, x)
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
 }
