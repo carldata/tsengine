@@ -31,12 +31,17 @@ class TypeTable private(symbolType: Map[String, String], parent: Option[TypeTabl
 
 /**
   * Check Type correctness.
-  * Type checker add missing Type information.
+  * This implementation uses multiple passes. One for each type check.
+  * This is made for clarity event if it is not optimal.
   */
 object TypeChecker {
 
-  /** Check for errors in the module. Returns None if no error was found */
   def check(module: Module): Either[String, Module] = {
+    checkFunctionReturnTypes(module)
+  }
+
+  /** Check for errors in the module. Returns Right if no error was found */
+  def checkFunctionReturnTypes(module: Module): Either[String, Module] = {
     val tt1 = module.externalFun.foldLeft(new TypeTable()) {(t, x) =>
       t.addType(x.name, x.typeName)
     }
@@ -44,8 +49,7 @@ object TypeChecker {
       t.addType(x.name, x.typeName)
     }
 
-    module.funDecl
-      .map(f => checkFunction(f, tt2))
+    module.funDecl.map(f => checkFunction(f, tt2))
       .foldLeft[Either[String, Seq[FunctionDef]]](Right(Seq())) {(e, f) =>
         e.flatMap(xs => f.map(x => xs :+ x))
       }
@@ -58,7 +62,7 @@ object TypeChecker {
     val table2 = f.params.foldLeft(table)((t, x) => t.addType(x.name, x.typeName))
     // Compare expression type with function return type. Also update AST with type information if necessary
     val t1 = exprType(f.body, table2)
-    if(t1 == Right(f.typeName)) {
+    if(t1 == f.typeName) {
       Right(f)
     } else {
       Left("Wrong return type for function %s\n Expected: %s\nGot: %s\n".format(
@@ -66,22 +70,15 @@ object TypeChecker {
     }
   }
 
-  /** Deduce Expression type.
-    * Return Error or expression type
-    */
-  def exprType(expr: Expression, table: TypeTable): Either[String, String] = {
+  /** Deduce Expression type. */
+  def exprType(expr: Expression, table: TypeTable): String = {
     expr match {
-      case RelationExpr(_, _ , _) => Right("Bool")
-
-      case VariableExpr(name) =>
-        table.symbolType(name).toRight("Type for variable %s not defined".format(name))
-
-      case AppExpr(name, _) =>
-        table.symbolType(name).toRight("Type for function %s not defined".format(name))
-
-      case StringLiteral(_) => Right("String")
-      case NumberLiteral(_) => Right("Number")
-      case BoolLiteral(_) => Right("Bool")
+      case RelationExpr(_, _ , _) => "Bool"
+      case VariableExpr(name) => table.symbolType(name).getOrElse("T")
+      case AppExpr(name, _) => table.symbolType(name).getOrElse("T")
+      case StringLiteral(_) => "String"
+      case NumberLiteral(_) => "Number"
+      case BoolLiteral(_) => "Bool"
     }
   }
 }
