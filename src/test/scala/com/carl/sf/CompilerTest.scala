@@ -81,8 +81,21 @@ class CompilerTest extends FlatSpec with Matchers {
     val code =
       """
         |module Test1
-        |external def min(a: Int, b: Int): Int
-        |def my_fun(a: Int, b: Int): String = min(a, b)
+        |external def min(a: Number, b: Number): Number
+        |def my_fun(a: Number, b: Number): String = min(a, b)
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
+  it should "catch function redefinition" in {
+    val code =
+      """
+        |module Test1
+        |external def min(a: Number, b: Number): Number
+        |
+        |def min(a: Number, b: Number): Number = a
+        |def my_fun(a: Number, b: Number): Number = min(a, b)
       """.stripMargin
     val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false
@@ -92,7 +105,7 @@ class CompilerTest extends FlatSpec with Matchers {
     val code =
       """
         |module Test1
-        |def min(a: Number, b: Number): Number = min(a, b)
+        |def main(a: Number, b: Number): Number = min(a, b)
       """.stripMargin
     val ast = Compiler.compile(code, Seq(Core.header))
     ast.isRight shouldBe true
@@ -147,4 +160,30 @@ class CompilerTest extends FlatSpec with Matchers {
     val ast = Compiler.compile(code, Seq(Core.header))
     ast.isRight shouldBe true
   }
+
+  it should "compile function reference" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def min(a: Number, b: Number): Number = a
+        |def main(a: Number, b: Number): Number = min(a, b)
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe true
+  }
+
+//  it should "catch function parameter type mismatch" in {
+//    val code =
+//      """
+//        |module Test1
+//        |
+//        |def my_fun(a: Number, b: String): Number = a
+//        |def main(a: Number, b: String): Number = my_fun(a, b)
+//      """.stripMargin
+//    val ast = Compiler.compile(code, Seq())
+//    println(ast)
+//    ast.isRight shouldBe false
+//  }
+
 }

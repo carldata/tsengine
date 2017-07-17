@@ -19,18 +19,31 @@ object SymbolChecker {
 
   /** Check for errors in the module. */
   def check(module: Module): Either[String, Module] = {
-    val fs1 = module.externalFun.map(_.name).foldLeft(new SymbolTable()) {(t, x) =>
-      t.addSymbol(x)
-    }
-    val fs2 = module.funDecl.map(_.name).foldLeft(fs1) {(t, x) =>
-      t.addSymbol(x)
-    }
-    val st = SymbolTables(new SymbolTable(), fs2)
-    module.funDecl.map(f => checkFunDef(f, st)).foldLeft[Result](Ok){ (r1, r2) =>
-      if(r1 == Ok) r2 else r1
-    } match {
-      case Err(str) => Left(str)
-      case Ok => Right(module)
+    addSymbolList(module.externalFun.map(_.name), new SymbolTable())
+      .flatMap(t => addSymbolList(module.funDecl.map(_.name), t))
+      .map(st => SymbolTables(new SymbolTable(), st))
+      .flatMap { st =>
+        module.funDecl.map(f => checkFunDef(f, st)).foldLeft[Result](Ok) { (r1, r2) =>
+          if (r1 == Ok) r2 else r1
+        } match {
+          case Err(str) => Left(str)
+          case Ok => Right(module)
+        }
+      }
+  }
+
+  /** Add list of symbols to the table. Ensure that symbol are unique. */
+  def addSymbolList(names: Seq[String], st: SymbolTable): Either[String, SymbolTable] = {
+    names.foldLeft[Either[String, SymbolTable]](Right(st)) {(t, x) =>
+      t match {
+        case Right(table) =>
+          if(table.hasSymbol(x)) {
+            Left("Symbol %s already defined".format(x))
+          } else {
+            Right(table.addSymbol(x))
+          }
+        case err => err
+      }
     }
   }
 
@@ -50,7 +63,7 @@ object SymbolChecker {
     }
   }
 
-  /** Return unit if all symbols can be correctly resolved */
+  /** Check symbols used in expressions */
   def checkExpr(expr: Expression, st: SymbolTables): Result = {
     expr match {
       case RelationExpr(e1, _, e2) =>

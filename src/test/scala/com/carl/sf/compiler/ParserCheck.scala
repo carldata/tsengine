@@ -11,9 +11,13 @@ import org.scalacheck.{Gen, Properties}
   */
 object ParserCheck extends Properties("Parser") {
 
+  /** Keywords can't be used as identifiers */
   private val varGen = for {
     varName <- Gen.identifier
-  } yield VariableExpr(varName)
+  } yield {
+    val v = if(varName == "def") "df" else varName
+    VariableExpr(v)
+  }
 
   private val relExprGen = for {
     e1 <- varGen

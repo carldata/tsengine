@@ -58,7 +58,7 @@ object TypeChecker {
     val table2 = f.params.foldLeft(table)((t, x) => t.addType(x.name, x.typeName))
     // Compare expression type with function return type. Also update AST with type information if necessary
     val t1 = exprType(f.body, table2)
-    if(f.typeName == t1) {
+    if(t1 == Right(f.typeName)) {
       Right(f)
     } else {
       Left("Wrong return type for function %s\n Expected: %s\nGot: %s\n".format(
@@ -69,14 +69,19 @@ object TypeChecker {
   /** Deduce Expression type.
     * Return Error or expression type
     */
-  def exprType(expr: Expression, table: TypeTable): String = {
+  def exprType(expr: Expression, table: TypeTable): Either[String, String] = {
     expr match {
-      case RelationExpr(_, _ , _) => "Bool"
-      case VariableExpr(name) => table.symbolType(name).getOrElse("T")
-      case AppExpr(name, _) => table.symbolType(name).getOrElse("T")
-      case StringLiteral(_) => "String"
-      case NumberLiteral(_) => "Number"
-      case BoolLiteral(_) => "Bool"
+      case RelationExpr(_, _ , _) => Right("Bool")
+
+      case VariableExpr(name) =>
+        table.symbolType(name).toRight("Type for variable %s not defined".format(name))
+
+      case AppExpr(name, _) =>
+        table.symbolType(name).toRight("Type for function %s not defined".format(name))
+
+      case StringLiteral(_) => Right("String")
+      case NumberLiteral(_) => Right("Number")
+      case BoolLiteral(_) => Right("Bool")
     }
   }
 }
