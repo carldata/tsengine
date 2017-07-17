@@ -32,7 +32,7 @@ object SymbolChecker {
       }
   }
 
-  /** Add list of symbols to the table. Ensure that symbol are unique. */
+  /** Add list of symbols to the table. Ensure that symbols are unique. */
   def addSymbolList(names: Seq[String], st: SymbolTable): Either[String, SymbolTable] = {
     names.foldLeft[Either[String, SymbolTable]](Right(st)) {(t, x) =>
       t match {
