@@ -18,7 +18,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq())
+      new Interpreter(ast, Core).run("main", Seq())
     }
     result.isRight shouldBe false
   }
@@ -31,7 +31,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
+      new Interpreter(ast, Core).run("main", Seq(NumberValue(1), NumberValue(2)))
     }
     result.isRight shouldBe true
   }
@@ -44,7 +44,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
+      new Interpreter(ast, Core).run("main", Seq(NumberValue(1), NumberValue(2)))
     }
     result shouldBe Right(NumberValue(1))
   }
@@ -58,7 +58,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Number = min(a, b)
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq(NumberValue(11), NumberValue(2)))
+      new Interpreter(ast, Core).run("main", Seq(NumberValue(11), NumberValue(2)))
     }
     result shouldBe Right(NumberValue(2))
   }
@@ -71,7 +71,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(): String = 'hello'
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq())
+      new Interpreter(ast, Core).run("main", Seq())
     }
     result shouldBe Right(StringValue("hello"))
   }
@@ -84,7 +84,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(): Number = 0.23
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq())
+      new Interpreter(ast, Core).run("main", Seq())
     }
     result shouldBe Right(NumberValue(0.23f))
   }
@@ -97,7 +97,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(): Bool = False
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq())
+      new Interpreter(ast, Core).run("main", Seq())
     }
     result shouldBe Right(BoolValue(false))
   }
@@ -110,7 +110,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Bool = a == b
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq(NumberValue(2), NumberValue(2)))
+      new Interpreter(ast, Core).run("main", Seq(NumberValue(2), NumberValue(2)))
     }
     result shouldBe Right(BoolValue(true))
   }
@@ -123,23 +123,23 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Bool = a != b
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      new Interpreter(Core).run(ast, "main", Seq(NumberValue(2), NumberValue(2)))
+      new Interpreter(ast, Core).run("main", Seq(NumberValue(2), NumberValue(2)))
     }
     result shouldBe Right(BoolValue(false))
   }
 
-//  it should "execute other function defined in the script" in {
-//    val code =
-//      """
-//        |module Test1
-//        |
-//        |def main(a: Number, b: Number): Bool = a != b
-//        |def test(): Bool = main(1, 2)
-//      """.stripMargin
-//    val result = Compiler.compile(code, Seq()).flatMap { ast =>
-//      new Interpreter(Core).run(ast, "main", Seq(NumberValue(2), NumberValue(2)))
-//    }
-//    result shouldBe Right(BoolValue(true))
-//  }
+  it should "execute other function defined in the script" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Bool = a != b
+        |def test(): Bool = main(1, 2)
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(ast, Core).run("test", Seq())
+    }
+    result shouldBe Right(BoolValue(true))
+  }
 
 }

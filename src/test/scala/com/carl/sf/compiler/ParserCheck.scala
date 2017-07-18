@@ -12,12 +12,13 @@ import org.scalacheck.{Gen, Properties}
 object ParserCheck extends Properties("Parser") {
 
   /** Keywords can't be used as identifiers */
-  private val varGen = for {
+  private val idGen = for {
     varName <- Gen.identifier
-  } yield {
-    val v = if(varName == "def") "df" else varName
-    VariableExpr(v)
-  }
+  } yield if(varName == "def") "df" else varName
+
+  private val varGen = for {
+    varName <- idGen
+  } yield VariableExpr(varName)
 
   private val relExprGen = for {
     e1 <- varGen
@@ -26,7 +27,7 @@ object ParserCheck extends Properties("Parser") {
   } yield RelationExpr(e1, op, e2)
 
   private val appExprGen = for {
-    name <- Gen.identifier
+    name <- idGen
     params <- Gen.listOf(varGen)
   } yield AppExpr(name, params)
 
@@ -53,25 +54,25 @@ object ParserCheck extends Properties("Parser") {
   } yield expr
 
   private val paramsGen = for {
-    name <- Gen.identifier
-    typeName <- Gen.identifier
+    name <- idGen
+    typeName <- idGen
   } yield FunParam(name, typeName)
 
   private val externFunGen = for {
-    funName <- Gen.identifier
+    funName <- idGen
     funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
-    funTypeName <- Gen.identifier
+    funTypeName <- idGen
   } yield ExternalFun(funName, funParams, funTypeName)
 
   private val funDefGen = for {
-    funName <- Gen.identifier
+    funName <- idGen
     funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
-    funTypeName <- Gen.identifier
+    funTypeName <- idGen
     bodyExpr <- exprGen
   } yield FunctionDef(funName, funParams, funTypeName, bodyExpr)
 
   private val moduleGen = for {
-    moduleName <- Gen.identifier
+    moduleName <- idGen
     efs <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, externFunGen) }
     funDefs <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, funDefGen) }
   } yield Module(moduleName, efs, funDefs)

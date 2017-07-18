@@ -9,7 +9,7 @@ import scala.util.Try
 /**
   * Run Script with given parameters
   */
-class Interpreter(runtime: Runtime) {
+class Interpreter(module: Module, runtime: Runtime) {
 
   /**
     * The runtime return either error string or computed value.
@@ -17,17 +17,19 @@ class Interpreter(runtime: Runtime) {
     *   - The program can only be run if number of provided parameters
     *     matches number of parameters in function declaration
     */
-  def run(module: Module, funName: String, params: Seq[Value]): Either[String, Value] = {
+  def run(funName: String, params: Seq[Value]): Either[String, Value] = {
     Try {
-      module.funDecl.find(_.name == funName).map { f =>
-        if (params.size == f.params.size) {
-          val symbolMemory = f.params.zip(params).map(x => x._1.name -> x._2).toMap
-          Right(execExpr(f.body, symbolMemory))
-        } else {
-          Left("Wrong number of parameters")
-        }
-      }.getOrElse(Left("Can't find function: %s".format(funName)))
+      Right(execFunction(funName, params, Map()))
     }.getOrElse(Left("Runtime exception executing module: %s".format(module.name)))
+  }
+
+  def execFunction(name: String, params: Seq[Value], symbolMemory: Map[String, Value]): Value = {
+    module.funDecl.find(f => f.name == name && params.size == f.params.size)
+      .map{f =>
+        val sm = symbolMemory ++ f.params.zip(params).map(x => x._1.name -> x._2).toMap
+        execExpr(f.body, sm)
+      }
+      .getOrElse(runtime.executeFunction(name, params))
   }
 
   /** Execute node with the function declaration */
@@ -37,7 +39,7 @@ class Interpreter(runtime: Runtime) {
       case VariableExpr(name) => symbolMemory.getOrElse(name, UnitValue)
       case AppExpr(name, params) =>
         val xs = params.map(x => execExpr(x, symbolMemory))
-        runtime.executeFunction(name, xs)
+        execFunction(name, xs, symbolMemory)
       case StringLiteral(text) => StringValue(text)
       case NumberLiteral(v) => NumberValue(v)
       case BoolLiteral(v) => BoolValue(v)
