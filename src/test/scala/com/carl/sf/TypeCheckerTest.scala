@@ -105,4 +105,15 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "catch relation operation type mismatch" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: String): Bool = a > b
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
 }

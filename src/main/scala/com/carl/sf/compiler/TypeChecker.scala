@@ -84,7 +84,12 @@ object TypeChecker {
       case StringLiteral(_) => Right("String")
       case NumberLiteral(_) => Right("Number")
       case BoolLiteral(_) => Right("Bool")
-      case RelationExpr(_, _ , _) => Right("Bool")
+      case RelationExpr(e1, op, e2) =>
+        if(checkExpr(e1, env) == Right("Number") && checkExpr(e2, env) == Right("Number")) {
+          Right("Bool")
+        } else {
+          Left("type error for relation: " + op)
+        }
       case VariableExpr(name) =>
         env.getSymbolType(name).toRight("variable type not defined: " + name)
       case AppExpr(name, params) =>
