@@ -25,27 +25,25 @@ class ScriptTestCases extends FlatSpec with Matchers {
       printErrors(compileErrors)
       false
     } else {
-      true // The following test requires changes to the interpreter first
-//      // All files were compiled. Time to run them
-//      val interpreter = new Interpreter(Core)
-//      val executed = compiled.map(x => (x._1, x._2.flatMap(y => interpreter.run(y, "assert", Seq()))))
-//      val runErrors =  executed.filter(_._2.isLeft)
-//      if(runErrors.nonEmpty){
-//        printErrors(runErrors)
-//        false
-//      } else {
-//        // Check if the result of each module is true
-//        val results = executed.map(x => (x._1, x._2.getOrElse(BoolValue(false))))
-//        val resultErrors = results.filter(_._2 == BoolValue(false))
-//        if (resultErrors.nonEmpty) {
-//          println("Returned false instead of true in files:")
-//          resultErrors.map(_._1).foreach(println)
-//          false
-//        } else {
-//          println(Console.GREEN + "All %d scripts passed.".format(xs.length) + Console.RESET)
-//          true
-//        }
-//      }
+      // All files were compiled. Time to run them
+      val executed = compiled.map(x => (x._1, x._2.flatMap(ast => new Interpreter(ast, Core).run("assert", Seq()))))
+      val runErrors =  executed.filter(_._2.isLeft)
+      if(runErrors.nonEmpty){
+        printErrors(runErrors)
+        false
+      } else {
+        // Check if the result of each module is true
+        val results = executed.map(x => (x._1, x._2.getOrElse(BoolValue(false))))
+        val resultErrors = results.filter(_._2 == BoolValue(false))
+        if (resultErrors.nonEmpty) {
+          println("Returned false instead of true in files:")
+          resultErrors.map(_._1).foreach(println)
+          false
+        } else {
+          println(Console.GREEN + "All %d scripts passed.".format(xs.length) + Console.RESET)
+          true
+        }
+      }
     }
 
     passed shouldBe true
