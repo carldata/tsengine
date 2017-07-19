@@ -2,6 +2,7 @@ package com.carl.sf
 
 import com.carl.sf.Runtime._
 import com.carl.sf.compiler.AST._
+import com.carl.sf.compiler.Executable.ExecCode
 
 import scala.util.Try
 
@@ -9,7 +10,7 @@ import scala.util.Try
 /**
   * Run Script with given parameters
   */
-class Interpreter(module: Module, runtime: Runtime) {
+class Interpreter(exec: ExecCode, runtime: Runtime) {
 
   /**
     * The runtime return either error string or computed value.
@@ -20,11 +21,11 @@ class Interpreter(module: Module, runtime: Runtime) {
   def run(funName: String, params: Seq[Value]): Either[String, Value] = {
     Try {
       Right(execFunction(funName, params, Map()))
-    }.getOrElse(Left("Runtime exception executing module: %s".format(module.name)))
+    }.getOrElse(Left("Runtime exception"))
   }
 
   def execFunction(name: String, params: Seq[Value], symbolMemory: Map[String, Value]): Value = {
-    module.funDecl.find(f => f.name == name && params.size == f.params.size)
+    exec.functions.find(f => f.name == name && params.size == f.params.size)
       .map{f =>
         val sm = symbolMemory ++ f.params.zip(params).map(x => x._1.name -> x._2).toMap
         execExpr(f.body, sm)
