@@ -140,4 +140,16 @@ class ParserTest extends FlatSpec with Matchers {
     val ast = Parser.parse(code)
     ast.isRight shouldBe true
   }
+
+  it should "parse parens" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Number = (a + b) * 0.5 - a
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
 }

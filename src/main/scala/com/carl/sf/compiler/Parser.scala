@@ -120,8 +120,11 @@ object Parser {
         v1
       }
       NumberLiteral(v2.toFloat)
-    } else {
+    } else if(ctx.boolLiteral() != null){
       BoolLiteral(ctx.boolLiteral().TRUE() != null)
+    } else {
+      // Convert: '(' expression ')'
+      convertExpr(ctx.expression(0))
     }
   }
 

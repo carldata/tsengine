@@ -30,7 +30,8 @@ typeDefinition
     ;
 
 expression
-    : expression MultiplyOp expression
+    : '(' expression ')'
+    | expression MultiplyOp expression
     | expression AddOp expression
     | expression RelationOp expression
     | boolLiteral
