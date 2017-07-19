@@ -30,7 +30,8 @@ typeDefinition
     ;
 
 expression
-    : expression BinaryOp expression
+    : expression MultiplyOp expression
+    | expression AddOp expression
     | expression RelationOp expression
     | boolLiteral
     | stringLiteral
@@ -88,8 +89,12 @@ Integer
     : Digit+
     ;
 
-BinaryOp
-    : '+' | '-' | '*' | '/'
+AddOp
+    : '+' | '-'
+    ;
+
+MultiplyOp
+    : '*' | '/'
     ;
 
 RelationOp

@@ -155,4 +155,30 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(BoolValue(true))
   }
 
+  it should "calculate a+b*2" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Number = a+b*2
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(ast, Core).run("main", Seq(NumberValue(1), NumberValue(3)))
+    }
+    result shouldBe Right(NumberValue(7))
+  }
+
+  it should "calculate 2*b+a" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Number = 2*b+a
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      new Interpreter(ast, Core).run("main", Seq(NumberValue(1), NumberValue(3)))
+    }
+    result shouldBe Right(NumberValue(7))
+  }
+
 }
