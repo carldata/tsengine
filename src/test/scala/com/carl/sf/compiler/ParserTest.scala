@@ -141,7 +141,7 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
-  it should "parse parens" in {
+  it should "parse brackets" in {
     val code =
       """
         |module Test1
@@ -151,5 +151,17 @@ class ParserTest extends FlatSpec with Matchers {
     val ast = Parser.parse(code)
     ast.isRight shouldBe true
   }
+
+//  it should "parse '-' operation" in {
+//    val code =
+//      """
+//        |module Test1
+//        |
+//        |def main(a: Number): Number = -1
+//      """.stripMargin
+//    val ast = Parser.parse(code)
+//    println(ast)
+//    ast.isRight shouldBe true
+//  }
 
 }
