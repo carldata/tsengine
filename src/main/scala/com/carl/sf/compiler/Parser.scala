@@ -84,7 +84,12 @@ object Parser {
 
   /** Convert ANTLR Context into Term node */
   def convertExpr(ctx: ExpressionContext): Expression = {
-    if(ctx.RelationOp() != null) {
+    if(ctx.BinaryOp() != null) {
+      val e1 = convertExpr(ctx.expression(0))
+      val e2 = convertExpr(ctx.expression(1))
+      val op = ctx.BinaryOp().getText
+      BinaryOpExpr(e1, op, e2)
+    } else if(ctx.RelationOp() != null) {
       val e1 = convertExpr(ctx.expression(0))
       val e2 = convertExpr(ctx.expression(1))
       val op = ctx.RelationOp().getText

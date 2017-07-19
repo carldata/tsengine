@@ -116,4 +116,26 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "catch binary operation type mismatch" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: String): Number = a + b
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
+  it should "catch binary operation return type" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Bool = a + b
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
 }

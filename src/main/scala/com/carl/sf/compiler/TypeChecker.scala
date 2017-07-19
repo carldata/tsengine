@@ -84,6 +84,12 @@ object TypeChecker {
       case StringLiteral(_) => Right("String")
       case NumberLiteral(_) => Right("Number")
       case BoolLiteral(_) => Right("Bool")
+      case BinaryOpExpr(e1, op, e2) =>
+        if(checkExpr(e1, env) == Right("Number") && checkExpr(e2, env) == Right("Number")) {
+          Right("Number")
+        } else {
+          Left("type error for operation: " + op)
+        }
       case RelationExpr(e1, op, e2) =>
         if(checkExpr(e1, env) == Right("Number") && checkExpr(e2, env) == Right("Number")) {
           Right("Bool")

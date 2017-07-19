@@ -36,6 +36,7 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
   /** Execute node with the function declaration */
   private def execExpr(expr: Expression, symbolMemory: Map[String, Value]): Value = {
     expr match {
+      case BinaryOpExpr(e1, op, e2) => execBinaryOpExpr(e1, op, e2, symbolMemory)
       case RelationExpr(e1, op, e2) => execRelationExpr(e1, op, e2, symbolMemory)
       case VariableExpr(name) => symbolMemory.getOrElse(name, UnitValue)
       case AppExpr(name, params) =>
@@ -45,6 +46,21 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
       case NumberLiteral(v) => NumberValue(v)
       case BoolLiteral(v) => BoolValue(v)
     }
+  }
+
+  def execBinaryOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Value]): NumberValue = {
+    val a = execExpr(e1, mem)
+    val b = execExpr(e2, mem)
+    val v = op match {
+      case "+" => mkFloat(a) + mkFloat(b)
+      case "-" => mkFloat(a) - mkFloat(b)
+      case "*"  => mkFloat(a) * mkFloat(b)
+      case "/"  => mkFloat(a) / mkFloat(b)
+      case err =>
+        println("Wrong binary operator: " + err)
+        0f
+    }
+    NumberValue(v)
   }
 
   def execRelationExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Value]): BoolValue = {
