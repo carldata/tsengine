@@ -54,12 +54,12 @@ The compiler returns either error string or compiled module AST.
 
 ```scala
 import com.carl.sf.Interpreter
-import com.carl.sf.compiler.AST.Module
+import com.carl.sf.compiler.Executable.ExecCode
 import com.carl.sf.core.Core
 import com.carl.sf.Runtime.{Value, NumberValue}
 
-val ast: Module = ???
-val result: Either[String, Value] = new Interpreter(Core).run(ast, "main", Seq(NumberValue(1), NumberValue(2)))
+val exec: ExecCode = ???
+val result: Either[String, Value] = new Interpreter(exec, Core).run("main", Seq(NumberValue(1), NumberValue(2)))
 ```
 
 Interpreter returns either error string or computed value.
