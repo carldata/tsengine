@@ -89,11 +89,14 @@ object Parser {
       val e2 = convertExpr(ctx.expression(1))
       val op = ctx.MultiplyOp().getText
       BinaryOpExpr(e1, op, e2)
-    } else if(ctx.AddOp() != null) {
+    } else if(ctx.minusOp != null) {
         val e1 = convertExpr(ctx.expression(0))
-        val e2 = convertExpr(ctx.expression(1))
-        val op = ctx.AddOp().getText
-        BinaryOpExpr(e1, op, e2)
+        MinusOpExpr(e1)
+    } else if(ctx.addOp != null) {
+      val e1 = convertExpr(ctx.expression(0))
+      val e2 = convertExpr(ctx.expression(1))
+      val op = ctx.addOp.getText
+      BinaryOpExpr(e1, op, e2)
     } else if(ctx.RelationOp() != null) {
       val e1 = convertExpr(ctx.expression(0))
       val e2 = convertExpr(ctx.expression(1))

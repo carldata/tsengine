@@ -66,6 +66,8 @@ object SymbolChecker {
   /** Check symbols used in expressions */
   def checkExpr(expr: Expression, st: SymbolTables): Result = {
     expr match {
+      case MinusOpExpr(e) => checkExpr(e, st)
+
       case BinaryOpExpr(e1, _, e2) =>
         val r1 = checkExpr(e1, st)
         if(r1 != Ok) r1 else checkExpr(e2, st)

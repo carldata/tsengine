@@ -31,8 +31,9 @@ typeDefinition
 
 expression
     : '(' expression ')'
+    | minusOp=MINUS expression
     | expression MultiplyOp expression
-    | expression AddOp expression
+    | expression addOp=(PLUS | MINUS) expression
     | expression RelationOp expression
     | boolLiteral
     | stringLiteral
@@ -72,6 +73,8 @@ EXTERNAL: 'external';
 MODULE : 'module';
 TRUE: 'True';
 FALSE: 'False';
+PLUS: '+';
+MINUS: '-';
 
 // Whitespace and comments
 WS  :  [ \t\r\n\u000C]+ -> skip;

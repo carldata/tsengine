@@ -138,4 +138,24 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "type check minus operator" in {
+    val code =
+      """
+        |module Test1
+        |def main(a: Number): Number = -a*-12
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe true
+  }
+
+  it should "type check minus on wrong type" in {
+    val code =
+      """
+        |module Test1
+        |def main(a: Bool): Number = -a
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(Core.header))
+    ast.isRight shouldBe false
+  }
+
 }
