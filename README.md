@@ -43,7 +43,7 @@ import com.carl.sf.core.Core
 import com.carl.sf.compiler.AST.Module
 
 val script: String = "..."
-val ast: Either[String, Module] = Compiler.compile(script, Seq(Core.header))
+val result: Either[String, Module] = Compiler.compile(script, Seq(Core.header))
 ```
 [Core.header](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core/Core.scala) 
 contains basic function definitions.
