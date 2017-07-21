@@ -24,8 +24,6 @@ object Runtime {
 
 trait Runtime {
 
-  val header: String
-
   def executeFunction(name: String, params: Seq[Value]): Value = {
     val method = getClass.getMethods.filter(_.getName.contains("$"+name)).head
     method.invoke(this, params: _*).asInstanceOf[Value]

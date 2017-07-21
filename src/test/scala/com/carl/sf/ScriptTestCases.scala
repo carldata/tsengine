@@ -26,7 +26,7 @@ class ScriptTestCases extends FlatSpec with Matchers {
       false
     } else {
       // All files were compiled. Time to run them
-      val executed = compiled.map(x => (x._1, x._2.flatMap(ast => new Interpreter(ast, Core).run("assert", Seq()))))
+      val executed = compiled.map(x => (x._1, x._2.flatMap(ast => new Interpreter(ast, new Core()).run("assert", Seq()))))
       val runErrors =  executed.filter(_._2.isLeft)
       if(runErrors.nonEmpty){
         printErrors(runErrors)
