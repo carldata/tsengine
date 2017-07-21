@@ -14,13 +14,11 @@ object Core extends Runtime{
     """
       |module Core
       |
-      |external def if(p: Bool, a: T, b: T): T
       |external def max(a: Number, b: Number): Number
       |external def min(a: Number, b: Number): Number
     """.stripMargin
 
   // Function definition
-  def $if[T](p: Boolean, e1: T, e2: T): T = if(p) e1 else e2
   def $max(a: Float, b: Float): Float = max(a, b)
   def $min(a: Float, b: Float): Float = min(a, b)
 }
