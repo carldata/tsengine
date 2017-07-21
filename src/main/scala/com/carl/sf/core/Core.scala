@@ -1,6 +1,7 @@
 package com.carl.sf.core
 
 import com.carl.sf.Runtime
+import com.carl.sf.Runtime.NumberValue
 
 import scala.math._
 
@@ -19,7 +20,7 @@ object Core extends Runtime{
     """.stripMargin
 
   // Function definition
-  def $max(a: Float, b: Float): Float = max(a, b)
-  def $min(a: Float, b: Float): Float = min(a, b)
+  def $max(a: NumberValue, b: NumberValue): NumberValue = NumberValue(max(a.v, b.v))
+  def $min(a: NumberValue, b: NumberValue): NumberValue = NumberValue(min(a.v, b.v))
 }
 
