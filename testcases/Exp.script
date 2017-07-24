@@ -1,0 +1,7 @@
+// Calculate square root
+module Sqrt
+
+def main(a: Number): Number = exp(a)
+
+// Assert
+def assert(): Bool = main(5) == exp(2)*exp(3)
