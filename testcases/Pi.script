@@ -1,0 +1,7 @@
+// Calculate square root
+module Pi
+
+def main(a: Number): Number = sin(a)
+
+// Assert
+def assert(): Bool = main(pi()/2) == 1

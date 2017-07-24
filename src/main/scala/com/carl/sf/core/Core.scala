@@ -16,6 +16,7 @@ object Core {
       |external def exp(a: Number): Number
       |external def max(a: Number, b: Number): Number
       |external def min(a: Number, b: Number): Number
+      |external def pi(): Number
       |external def pow(a: Number, b: Number): Number
       |external def sin(a: Number): Number
       |external def sqrt(a: Number): Number
@@ -31,6 +32,7 @@ class Core extends Runtime{
   def $exp(a: NumberValue): NumberValue = NumberValue(math.exp(a.v.toDouble).toFloat)
   def $max(a: NumberValue, b: NumberValue): NumberValue = NumberValue(math.max(a.v, b.v))
   def $min(a: NumberValue, b: NumberValue): NumberValue = NumberValue(math.min(a.v, b.v))
+  def $pi(): NumberValue = NumberValue(math.Pi.toFloat)
   def $pow(a: NumberValue, b: NumberValue): NumberValue =
     NumberValue(math.pow(a.v.toDouble, b.v.toDouble).toFloat)
   def $sin(a: NumberValue): NumberValue = NumberValue(math.sin(a.v.toDouble).toFloat)
