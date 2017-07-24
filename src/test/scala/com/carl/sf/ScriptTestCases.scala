@@ -58,8 +58,10 @@ class ScriptTestCases extends FlatSpec with Matchers {
 
   def printErrors(errors: Seq[(String, Either[String,_])]): Unit = {
     errors.foreach { x =>
-      println(Console.RED + "Error in file: " + x._1 + Console.RESET)
+      println(Console.RED)
+      println("Error in file: " + x._1)
       println(x._2.left.getOrElse(""))
+      println(Console.RESET)
     }
   }
 }
