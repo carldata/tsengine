@@ -1,6 +1,7 @@
 # FlowScript language
 
 [![Build status](https://travis-ci.org/carldata/flow-script.svg?branch=master)](https://travis-ci.org/carldata/flow-script)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12)
 
 This project consists of a compiler and an interpreter for FlowScript.
 
@@ -17,15 +18,14 @@ This language is intended more as a "glue" then full blown language. Typical use
  * Build script for custom report which will be run every 24h
 
 
-## Build project
+## Quick start
  
- ```bash
- sbt test
+ Add the following dependency to the build.sbt
+ ```
+ libraryDependencies += "io.github.carldata" %% "flow-script" % "0.5.3"
  ```
 
-
-## How to include this library in your own project
-
+### Create test script
 Lets say that we have this minimalistic script
 
 ```flowscript
