@@ -6,9 +6,9 @@
   *   - Provide script with function and types definition
   *   - override valueFromJavaObject for each ValueType
   */
-package com.carl.sf
+package carldata.sf
 
-import com.carl.sf.Runtime._
+import carldata.sf.Runtime.Value
 
 object Runtime {
 

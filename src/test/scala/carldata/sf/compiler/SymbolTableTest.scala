@@ -1,4 +1,4 @@
-package com.carl.sf.compiler
+package carldata.sf.compiler
 
 import org.scalatest._
 

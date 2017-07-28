@@ -1,9 +1,9 @@
-package com.carl.sf
+package carldata.sf
 
 import java.io.File
 
-import com.carl.sf.Runtime.{BoolValue, NumberValue}
-import com.carl.sf.core.Core
+import carldata.sf.Runtime.BoolValue
+import carldata.sf.core.Core
 import org.scalatest._
 
 import scala.io.Source

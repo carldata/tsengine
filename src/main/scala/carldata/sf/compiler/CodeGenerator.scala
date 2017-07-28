@@ -1,7 +1,7 @@
-package com.carl.sf.compiler
+package carldata.sf.compiler
 
-import com.carl.sf.compiler.AST.Module
-import com.carl.sf.compiler.Executable.ExecCode
+import carldata.sf.compiler.AST.Module
+import carldata.sf.compiler.Executable.ExecCode
 
 /**
   * Generate executable code from AST

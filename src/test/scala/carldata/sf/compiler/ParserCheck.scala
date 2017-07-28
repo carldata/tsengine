@@ -1,6 +1,6 @@
-package com.carl.sf.compiler
+package carldata.sf.compiler
 
-import com.carl.sf.compiler.AST._
+import carldata.sf.compiler.AST._
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Gen, Properties}
 

@@ -1,7 +1,7 @@
-package com.carl.sf.core
+package carldata.sf.core
 
-import com.carl.sf.Runtime
-import com.carl.sf.Runtime.NumberValue
+import carldata.sf.Runtime.NumberValue
+import carldata.sf.Runtime
 
 /**
   * Core functions and types which can be accessed from the script

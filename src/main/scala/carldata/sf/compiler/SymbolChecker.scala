@@ -1,7 +1,7 @@
-package com.carl.sf.compiler
+package carldata.sf.compiler
 
-import com.carl.sf.compiler.AST._
-import com.carl.sf.compiler.Result.{Err, Ok, Result}
+import carldata.sf.compiler.AST._
+import carldata.sf.compiler.Result.{Err, Ok, Result}
 
 /**
   * Run the following checks

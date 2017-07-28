@@ -1,10 +1,11 @@
+
 name := "flow-script"
 
-version := "0.5.2"
+version := "0.5.3"
 
-organization := "com.carl"
+organization := "io.github.carldata"
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.3"
 
 libraryDependencies ++= Seq(
   // Scala native libraries
@@ -18,3 +19,28 @@ libraryDependencies ++= Seq(
 )
 
 scalacOptions := Seq("-unchecked", "-deprecation")
+
+licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+
+homepage := Some(url("https://github.com/carldata/script-flow"))
+
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/carldata/script-flow"),
+    "scm:git@github.com:carldata/script-flow.git"
+  )
+)
+
+developers := List(
+  Developer(
+    id    = "klangner",
+    name  = "Krzysztof Langner",
+    email = "klangner@gmail.com",
+    url   = url("http://github/klangner")
+  )
+)
+
+useGpg := true
+
+pomIncludeRepository := { _ => false }
+

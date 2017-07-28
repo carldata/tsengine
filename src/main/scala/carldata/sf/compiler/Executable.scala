@@ -1,6 +1,6 @@
-package com.carl.sf.compiler
+package carldata.sf.compiler
 
-import com.carl.sf.compiler.AST.FunctionDef
+import carldata.sf.compiler.AST.FunctionDef
 
 /**
   * Executable code
