@@ -1,0 +1,7 @@
+// Calculate square root
+module Sqrt
+
+def main(a: Number): Number = log10(a)
+
+// Assert
+def assert(): Bool = main(1000) == 3

@@ -14,6 +14,8 @@ object Core {
       |
       |external def cos(a: Number): Number
       |external def exp(a: Number): Number
+      |external def log(a: Number): Number
+      |external def log10(a: Number): Number
       |external def max(a: Number, b: Number): Number
       |external def min(a: Number, b: Number): Number
       |external def pi(): Number
@@ -30,6 +32,8 @@ class Core extends Runtime{
   // Function definition
   def $cos(a: NumberValue): NumberValue = NumberValue(math.cos(a.v.toDouble).toFloat)
   def $exp(a: NumberValue): NumberValue = NumberValue(math.exp(a.v.toDouble).toFloat)
+  def $log(a: NumberValue): NumberValue = NumberValue(math.log(a.v.toDouble).toFloat)
+  def $log10(a: NumberValue): NumberValue = NumberValue(math.log10(a.v.toDouble).toFloat)
   def $max(a: NumberValue, b: NumberValue): NumberValue = NumberValue(math.max(a.v, b.v))
   def $min(a: NumberValue, b: NumberValue): NumberValue = NumberValue(math.min(a.v, b.v))
   def $pi(): NumberValue = NumberValue(math.Pi.toFloat)

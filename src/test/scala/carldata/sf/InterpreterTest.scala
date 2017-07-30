@@ -207,4 +207,17 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(NumberValue(-6))
   }
 
+  it should "calculate log" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number): Number = log10(a)
+      """.stripMargin
+    val result = Compiler.compile(code, Seq(Core.header)).flatMap { ast =>
+      new Interpreter(ast, new Core()).run("main", Seq(NumberValue(1000)))
+    }
+    result shouldBe Right(NumberValue(3))
+  }
+
 }
