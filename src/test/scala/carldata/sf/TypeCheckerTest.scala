@@ -168,4 +168,26 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "check if-then-else - if expression" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Number = if a then b else 100
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
+  it should "check if-then-else - else expression" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Bool, b: Number): Number = if a then b else ''
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
 }

@@ -232,4 +232,17 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(BoolValue(true))
   }
 
+  it should "calculate if-then-else" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: String): String = if a > 10 then "ok" else b
+      """.stripMargin
+    val result = Compiler.compile(code, Seq(Core.header)).flatMap { ast =>
+      new Interpreter(ast, new Core()).run("main", Seq(NumberValue(12), StringValue("not ok")))
+    }
+    result shouldBe Right(StringValue("ok"))
+  }
+
 }

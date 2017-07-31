@@ -110,6 +110,11 @@ object Parser {
       val e2 = convertExpr(ctx.expression(1))
       val op = ctx.RelationOp().getText
       RelationExpr(e1, op, e2)
+    } else if(ctx.ifExpr != null) {
+      val e1 = convertExpr(ctx.expression(0))
+      val e2 = convertExpr(ctx.expression(1))
+      val e3 = convertExpr(ctx.expression(2))
+      IfExpr(e1, e2, e3)
     } else if(ctx.funApp() != null) {
       val name = ctx.funApp().Identifier().getText
       val params = if(ctx.funApp().expressionList() == null) {

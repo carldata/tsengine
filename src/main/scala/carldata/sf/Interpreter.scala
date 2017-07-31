@@ -42,6 +42,7 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
       case BoolOpExpr(e1, op, e2) => execBoolOpExpr(e1, op, e2, symbolMemory)
       case RelationExpr(e1, op, e2) => execRelationExpr(e1, op, e2, symbolMemory)
       case VariableExpr(name) => symbolMemory.getOrElse(name, UnitValue)
+      case IfExpr(p, e1, e2) => execIfExpr(p, e1, e2, symbolMemory)
       case AppExpr(name, params) =>
         val xs = params.map(x => execExpr(x, symbolMemory))
         execFunction(name, xs, symbolMemory)
@@ -106,6 +107,11 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
         false
     }
     BoolValue(v)
+  }
+
+  def execIfExpr(p: Expression, e1: Expression, e2: Expression, mem: Map[String, Value]): Value = {
+    val pred = execExpr(p, mem)
+    if(mkBool(pred)) execExpr(e1, mem) else execExpr(e2, mem)
   }
 
   def mkFloat(a: Value): Float = {

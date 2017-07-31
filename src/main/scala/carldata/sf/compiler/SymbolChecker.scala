@@ -79,6 +79,8 @@ object SymbolChecker {
       case VariableExpr(x) =>
         if(st.varSymbols.hasSymbol(x)) { Ok } else { Err("Unresolved variable: %s".format(x)) }
 
+      case IfExpr(e1, e2, e3) => checkExpr(e1, st).andThen(checkExpr(e2, st)).andThen(checkExpr(e3, st))
+
       case AppExpr(name, params) =>
         val xs = params.map(x => checkExpr(x, st)).filter(_ != Ok)
         if(xs.nonEmpty){

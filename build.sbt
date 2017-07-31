@@ -33,10 +33,10 @@ scmInfo := Some(
 
 developers := List(
   Developer(
-    id    = "klangner",
-    name  = "Krzysztof Langner",
+    id = "klangner",
+    name = "Krzysztof Langner",
     email = "klangner@gmail.com",
-    url   = url("http://github/klangner")
+    url = url("http://github/klangner")
   )
 )
 

@@ -30,7 +30,8 @@ typeDefinition
     ;
 
 expression
-    : '(' expression ')'
+    : IF ifExpr=expression THEN expression ELSE expression
+    | '(' expression ')'
     | minusOp=MINUS expression
     | expression MultiplyOp expression
     | expression addOp=(PLUS | MINUS) expression
@@ -80,6 +81,9 @@ MINUS: '-';
 AND: '&&';
 OR: '||';
 NEG: '!';
+IF: 'if';
+THEN: 'then';
+ELSE: 'else';
 
 // Whitespace and comments
 WS  :  [ \t\r\n\u000C]+ -> skip;

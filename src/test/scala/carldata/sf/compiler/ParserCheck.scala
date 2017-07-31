@@ -11,10 +11,12 @@ import org.scalacheck.{Gen, Properties}
   */
 object ParserCheck extends Properties("Parser") {
 
+  val keywords: Set[String] = Set("def", "if", "then", "else", "let", "in")
+
   /** Keywords can't be used as identifiers */
   private val idGen = for {
     varName <- Gen.identifier
-  } yield if(varName == "def") "df" else varName
+  } yield if(keywords.contains(varName)) "df" else varName
 
   private val varGen = for {
     varName <- idGen
@@ -46,6 +48,12 @@ object ParserCheck extends Properties("Parser") {
     e2 <- varGen
   } yield RelationExpr(e1, op, e2)
 
+  private val ifExprGen = for {
+    e1 <- varGen
+    e2 <- varGen
+    e3 <- varGen
+  } yield IfExpr(e1, e2, e3)
+
   private val appExprGen = for {
     name <- idGen
     params <- Gen.listOf(varGen)
@@ -75,7 +83,8 @@ object ParserCheck extends Properties("Parser") {
     relExpr <- relExprGen
     unaryExpr <- unaryExprGen
     negExpr <- negExprGen
-    expr <- Gen.oneOf(Seq(appExpr, varExpr, literal, binaryOpExpr, boolOpExpr, relExpr, unaryExpr, negExpr))
+    ifExpr <- ifExprGen
+    expr <- Gen.oneOf(Seq(appExpr, varExpr, literal, binaryOpExpr, boolOpExpr, relExpr, unaryExpr, negExpr, ifExpr))
   } yield expr
 
   private val paramsGen = for {

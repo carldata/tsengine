@@ -91,4 +91,15 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "check if-then-else" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Number = if a then b else c
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
 }

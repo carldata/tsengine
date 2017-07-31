@@ -121,6 +121,16 @@ object TypeChecker {
       case VariableExpr(name) =>
         env.getSymbolType(name).toRight("variable type not defined: " + name)
 
+      case IfExpr(e1, e2, e3) =>
+        val c1 = checkExpr(e1, env)
+        val c2 = checkExpr(e2, env)
+        val c3 = checkExpr(e3, env)
+        if(c1 == Right("Bool") && c2.isRight && c2 == c3) {
+          c2
+        } else {
+          Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))
+        }
+
       case AppExpr(name, params) =>
         val xs = params.map(x => checkExpr(x, env).getOrElse(""))
         env.getFunction(name)

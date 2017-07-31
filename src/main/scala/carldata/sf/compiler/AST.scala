@@ -12,6 +12,7 @@ object AST {
   case class FunctionDef(name: String, params: Seq[FunParam], typeName: String, body: Expression)
   case class FunParam(name: String, typeName: String)
   sealed trait Expression
+  case class IfExpr(ifExpr: Expression, thenExpr: Expression, elseExpr: Expression) extends Expression
   case class MinusOpExpr(expr: Expression) extends Expression
   case class BinaryOpExpr(e1: Expression, op: String, e2: Expression) extends Expression
   case class NegOpExpr(expr: Expression) extends Expression
@@ -53,6 +54,7 @@ object AST {
 
   def printExpr(expr: Expression): String = {
     expr match {
+      case IfExpr(e1, e2, e3) => "if " + printExpr(e1) + " then " + printExpr(e2) + " else " + printExpr(e3)
       case MinusOpExpr(e) => "-" + printExpr(e)
       case BinaryOpExpr(e1, op, e2) => printExpr(e1) + op + printExpr(e2)
       case NegOpExpr(e) => "!" + printExpr(e)
