@@ -1,6 +1,5 @@
 package carldata.sf
 
-import carldata.sf.core.Core
 import org.scalatest._
 
 

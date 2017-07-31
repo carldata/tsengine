@@ -1,7 +1,6 @@
 package carldata.sf
 
 import carldata.sf.Runtime.{BoolValue, NumberValue, StringValue}
-import carldata.sf.core.Core
 import org.scalatest._
 
 

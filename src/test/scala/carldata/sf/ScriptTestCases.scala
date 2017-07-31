@@ -3,7 +3,6 @@ package carldata.sf
 import java.io.File
 
 import carldata.sf.Runtime.BoolValue
-import carldata.sf.core.Core
 import org.scalatest._
 
 import scala.io.Source
