@@ -163,4 +163,15 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "parse && and || expression" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Bool, b: Bool): Bool = a || b == a && b
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
 }

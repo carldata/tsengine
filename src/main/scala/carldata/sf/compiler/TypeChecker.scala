@@ -82,26 +82,38 @@ object TypeChecker {
       case StringLiteral(_) => Right("String")
       case NumberLiteral(_) => Right("Number")
       case BoolLiteral(_) => Right("Bool")
+
       case MinusOpExpr(e) =>
         if(checkExpr(e, env) == Right("Number")){
           Right("Number")
         } else {
-          Left("type error for operation: -")
+          Left("Type error for operation: -")
         }
+
       case BinaryOpExpr(e1, op, e2) =>
         if(checkExpr(e1, env) == Right("Number") && checkExpr(e2, env) == Right("Number")) {
           Right("Number")
         } else {
-          Left("type error for operation: " + op)
+          Left("Type error for operation: " + op)
         }
+
+      case BoolOpExpr(e1, op, e2) =>
+        if(checkExpr(e1, env) == Right("Bool") && checkExpr(e2, env) == Right("Bool")) {
+          Right("Bool")
+        } else {
+          Left("Type error for operation: " + op)
+        }
+
       case RelationExpr(e1, op, e2) =>
         if(checkExpr(e1, env) == Right("Number") && checkExpr(e2, env) == Right("Number")) {
           Right("Bool")
         } else {
-          Left("type error for relation: " + op)
+          Left("Type error for relation: " + op)
         }
+
       case VariableExpr(name) =>
         env.getSymbolType(name).toRight("variable type not defined: " + name)
+
       case AppExpr(name, params) =>
         val xs = params.map(x => checkExpr(x, env).getOrElse(""))
         env.getFunction(name)

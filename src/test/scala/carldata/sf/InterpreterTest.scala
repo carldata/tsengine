@@ -220,4 +220,17 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(NumberValue(3))
   }
 
+  it should "calculate && and || expression" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Bool): Bool = (a == 10) && (False || b)
+      """.stripMargin
+    val result = Compiler.compile(code, Seq(Core.header)).flatMap { ast =>
+      new Interpreter(ast, new Core()).run("main", Seq(NumberValue(10), BoolValue(true)))
+    }
+    result shouldBe Right(BoolValue(true))
+  }
+
 }

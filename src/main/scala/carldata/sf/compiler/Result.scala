@@ -6,7 +6,16 @@ package carldata.sf.compiler
   */
 object Result {
 
-  sealed trait Result
-  object Ok extends Result
-  case class Err(reason: String) extends Result
+  sealed trait Result {
+    /** Join 2 results */
+    def andThen(r2: => Result): Result
+  }
+
+  object Ok extends Result {
+    override def andThen(r2: => Result): Result = r2
+  }
+
+  case class Err(reason: String) extends Result {
+    override def andThen(r2: => Result): Result = this
+  }
 }

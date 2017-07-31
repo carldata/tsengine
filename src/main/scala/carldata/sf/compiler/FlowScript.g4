@@ -34,6 +34,7 @@ expression
     | minusOp=MINUS expression
     | expression MultiplyOp expression
     | expression addOp=(PLUS | MINUS) expression
+    | expression boolOp=(AND | OR) expression
     | expression RelationOp expression
     | boolLiteral
     | stringLiteral
@@ -75,6 +76,8 @@ TRUE: 'True';
 FALSE: 'False';
 PLUS: '+';
 MINUS: '-';
+AND: '&&';
+OR: '||';
 
 // Whitespace and comments
 WS  :  [ \t\r\n\u000C]+ -> skip;

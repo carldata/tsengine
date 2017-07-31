@@ -38,6 +38,7 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
     expr match {
       case MinusOpExpr(e1) => execMinusOpExpr(e1, symbolMemory)
       case BinaryOpExpr(e1, op, e2) => execBinaryOpExpr(e1, op, e2, symbolMemory)
+      case BoolOpExpr(e1, op, e2) => execBoolOpExpr(e1, op, e2, symbolMemory)
       case RelationExpr(e1, op, e2) => execRelationExpr(e1, op, e2, symbolMemory)
       case VariableExpr(name) => symbolMemory.getOrElse(name, UnitValue)
       case AppExpr(name, params) =>
@@ -70,6 +71,19 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
     NumberValue(v)
   }
 
+  def execBoolOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Value]): BoolValue = {
+    val a = execExpr(e1, mem)
+    val b = execExpr(e2, mem)
+    val v = op match {
+      case "&&" => mkBool(a) && mkBool(b)
+      case "||" => mkBool(a) || mkBool(b)
+      case err =>
+        println("Wrong boolean operator: " + err)
+        false
+    }
+    BoolValue(v)
+  }
+
   def execRelationExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Value]): BoolValue = {
     val a = execExpr(e1, mem)
     val b = execExpr(e2, mem)
@@ -92,6 +106,13 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
       case NumberValue(v) => v
       case BoolValue(v) => if(v) 1f else 0f
       case _ => 0f
+    }
+  }
+
+  def mkBool(a: Value): Boolean = {
+    a match {
+      case BoolValue(b) => b
+      case _ => false
     }
   }
 

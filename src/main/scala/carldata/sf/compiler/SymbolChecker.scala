@@ -68,13 +68,11 @@ object SymbolChecker {
     expr match {
       case MinusOpExpr(e) => checkExpr(e, st)
 
-      case BinaryOpExpr(e1, _, e2) =>
-        val r1 = checkExpr(e1, st)
-        if(r1 != Ok) r1 else checkExpr(e2, st)
+      case BinaryOpExpr(e1, _, e2) => checkExpr(e1, st).andThen(checkExpr(e2, st))
 
-      case RelationExpr(e1, _, e2) =>
-        val r1 = checkExpr(e1, st)
-        if(r1 != Ok) r1 else checkExpr(e2, st)
+      case BoolOpExpr(e1, _, e2) => checkExpr(e1, st).andThen(checkExpr(e2, st))
+
+      case RelationExpr(e1, _, e2) => checkExpr(e1, st).andThen(checkExpr(e2, st))
 
       case VariableExpr(x) =>
         if(st.varSymbols.hasSymbol(x)) { Ok } else { Err("Unresolved variable: %s".format(x)) }
