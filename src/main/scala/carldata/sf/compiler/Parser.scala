@@ -92,6 +92,9 @@ object Parser {
     } else if(ctx.minusOp != null) {
         val e1 = convertExpr(ctx.expression(0))
         MinusOpExpr(e1)
+    } else if(ctx.negOp != null) {
+      val e1 = convertExpr(ctx.expression(0))
+      NegOpExpr(e1)
     } else if(ctx.addOp != null) {
       val e1 = convertExpr(ctx.expression(0))
       val e2 = convertExpr(ctx.expression(1))

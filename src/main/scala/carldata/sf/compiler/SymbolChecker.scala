@@ -70,6 +70,8 @@ object SymbolChecker {
 
       case BinaryOpExpr(e1, _, e2) => checkExpr(e1, st).andThen(checkExpr(e2, st))
 
+      case NegOpExpr(e) => checkExpr(e, st)
+
       case BoolOpExpr(e1, _, e2) => checkExpr(e1, st).andThen(checkExpr(e2, st))
 
       case RelationExpr(e1, _, e2) => checkExpr(e1, st).andThen(checkExpr(e2, st))

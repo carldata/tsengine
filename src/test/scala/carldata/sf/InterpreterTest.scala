@@ -225,10 +225,10 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a: Number, b: Bool): Bool = (a == 10) && (False || b)
+        |def main(a: Number, b: Bool): Bool = (a == 10) && (False || !b)
       """.stripMargin
     val result = Compiler.compile(code, Seq(Core.header)).flatMap { ast =>
-      new Interpreter(ast, new Core()).run("main", Seq(NumberValue(10), BoolValue(true)))
+      new Interpreter(ast, new Core()).run("main", Seq(NumberValue(10), BoolValue(false)))
     }
     result shouldBe Right(BoolValue(true))
   }

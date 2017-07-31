@@ -168,7 +168,7 @@ class ParserTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a: Bool, b: Bool): Bool = a || b == a && b
+        |def main(a: Bool, b: Bool): Bool = a || b == !a && b
       """.stripMargin
     val ast = Parser.parse(code)
     ast.isRight shouldBe true

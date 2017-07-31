@@ -163,7 +163,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |module Test1
         |
-        |def main(a: Bool, b: Number): Bool = a && b
+        |def main(a: Bool, b: Number): Bool = !a && b
       """.stripMargin
     val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe false

@@ -97,6 +97,13 @@ object TypeChecker {
           Left("Type error for operation: " + op)
         }
 
+      case NegOpExpr(e) =>
+        if(checkExpr(e, env) == Right("Bool")){
+          Right("Bool")
+        } else {
+          Left("Type error for operation: !")
+        }
+
       case BoolOpExpr(e1, op, e2) =>
         if(checkExpr(e1, env) == Right("Bool") && checkExpr(e2, env) == Right("Bool")) {
           Right("Bool")

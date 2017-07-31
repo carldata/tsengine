@@ -14,6 +14,7 @@ object AST {
   sealed trait Expression
   case class MinusOpExpr(expr: Expression) extends Expression
   case class BinaryOpExpr(e1: Expression, op: String, e2: Expression) extends Expression
+  case class NegOpExpr(expr: Expression) extends Expression
   case class BoolOpExpr(e1: Expression, op: String, e2: Expression) extends Expression
   case class RelationExpr(e1: Expression, op: String, e2: Expression) extends Expression
   case class AppExpr(name: String, params: Seq[Expression]) extends Expression
@@ -54,6 +55,7 @@ object AST {
     expr match {
       case MinusOpExpr(e) => "-" + printExpr(e)
       case BinaryOpExpr(e1, op, e2) => printExpr(e1) + op + printExpr(e2)
+      case NegOpExpr(e) => "!" + printExpr(e)
       case BoolOpExpr(e1, op, e2) => printExpr(e1) + " " + op + " " + printExpr(e2)
       case RelationExpr(e1, op, e2) => printExpr(e1) + op + printExpr(e2)
       case AppExpr(name, params) => name + "(%s)".format(params.map(printExpr).mkString(","))

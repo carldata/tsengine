@@ -38,6 +38,7 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
     expr match {
       case MinusOpExpr(e1) => execMinusOpExpr(e1, symbolMemory)
       case BinaryOpExpr(e1, op, e2) => execBinaryOpExpr(e1, op, e2, symbolMemory)
+      case NegOpExpr(e1) => execNegOpExpr(e1, symbolMemory)
       case BoolOpExpr(e1, op, e2) => execBoolOpExpr(e1, op, e2, symbolMemory)
       case RelationExpr(e1, op, e2) => execRelationExpr(e1, op, e2, symbolMemory)
       case VariableExpr(name) => symbolMemory.getOrElse(name, UnitValue)
@@ -69,6 +70,12 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
         0f
     }
     NumberValue(v)
+  }
+
+  def execNegOpExpr(e1: Expression, mem: Map[String, Value]): BoolValue = {
+    val a = execExpr(e1, mem)
+    val b = mkBool(a)
+    BoolValue(!b)
   }
 
   def execBoolOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Value]): BoolValue = {

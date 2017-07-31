@@ -30,6 +30,10 @@ object ParserCheck extends Properties("Parser") {
     e2 <- varGen
   } yield BinaryOpExpr(e1, op, e2)
 
+  private val negExprGen = for {
+    varName <- varGen
+  } yield NegOpExpr(varName)
+
   private val boolExprGen = for {
     e1 <- varGen
     op <- Gen.oneOf("&&", "||")
@@ -70,7 +74,8 @@ object ParserCheck extends Properties("Parser") {
     boolOpExpr <- boolExprGen
     relExpr <- relExprGen
     unaryExpr <- unaryExprGen
-    expr <- Gen.oneOf(Seq(appExpr, varExpr, literal, binaryOpExpr, boolOpExpr, relExpr, unaryExpr))
+    negExpr <- negExprGen
+    expr <- Gen.oneOf(Seq(appExpr, varExpr, literal, binaryOpExpr, boolOpExpr, relExpr, unaryExpr, negExpr))
   } yield expr
 
   private val paramsGen = for {
