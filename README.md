@@ -64,6 +64,9 @@ val result: Either[String, Value] = new Interpreter(exec, Core).run("main", Seq(
 
 Interpreter returns either error string or computed value.
 
+You can also check the folder **examples** for script examples.
+
+
 ### Extend the Runtime
 The Runtime extends script with custom types and functions. Some basic types are implemented in 
 the [Core.header](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core/Core.scala).

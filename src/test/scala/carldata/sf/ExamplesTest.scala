@@ -11,11 +11,11 @@ import scala.io.Source
 /**
   * Run testcases from the folder testcases
   */
-class ScriptTestCases extends FlatSpec with Matchers {
+class ExamplesTest extends FlatSpec with Matchers {
 
   "TestCase runner" should "run all tests in folder: testcases" in {
     // Load and compile scripts
-    val xs = loadTestCases("testcases")
+    val xs = loadTestCases("examples")
     val compiled = xs.map(x => (x._1, Compiler.compile(x._2, Seq(Core.header))))
 
     // First check for compilation errors
