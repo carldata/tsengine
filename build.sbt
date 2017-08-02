@@ -1,7 +1,7 @@
 
 name := "flow-script"
 
-version := "0.5.3"
+version := "0.6.0"
 
 organization := "io.github.carldata"
 
