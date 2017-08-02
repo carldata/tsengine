@@ -4,8 +4,6 @@ import carldata.sf.Runtime._
 import carldata.sf.compiler.AST._
 import carldata.sf.compiler.Executable.ExecCode
 
-import scala.util.Try
-
 
 /**
   * Run Script with given parameters
@@ -19,9 +17,11 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
     *     matches number of parameters in function declaration
     */
   def run(funName: String, params: Seq[Value]): Either[String, Value] = {
-    Try {
+    try {
       Right(execFunction(funName, params, Map()))
-    }.getOrElse(Left("Runtime exception"))
+    } catch {
+      case e: Exception => Left("Runtime exception: " + e);
+    }
   }
 
   def execFunction(name: String, params: Seq[Value], symbolMemory: Map[String, Value]): Value = {

@@ -25,8 +25,12 @@ object Runtime {
 trait Runtime {
 
   def executeFunction(name: String, params: Seq[Value]): Value = {
-    val method = getClass.getMethods.filter(_.getName.contains("$"+name)).head
-    method.invoke(this, params: _*).asInstanceOf[Value]
+    getClass.getMethods
+      .find(_.getName.contains("$" + name))
+      .map(m => m.invoke(this, params: _*).asInstanceOf[Value]) match {
+      case Some(value) => value
+      case None => throw new NoSuchElementException(name)
+    }
   }
 
 }

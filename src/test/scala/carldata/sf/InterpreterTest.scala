@@ -263,4 +263,18 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(NumberValue(30))
   }
 
+  it should "show runtime error message" in {
+    val code =
+      """
+        |module Test1
+        |external def test(a: Number): Number
+        |
+        |def main(a: Number): Number = test(a)
+      """.stripMargin
+    val result = Compiler.compile(code, Seq(Core.header)).flatMap { ast =>
+      new Interpreter(ast, new Core()).run("main", Seq(NumberValue(12)))
+    }
+    result.left.getOrElse("").substring(0, 7) shouldBe "Runtime"
+  }
+
 }
