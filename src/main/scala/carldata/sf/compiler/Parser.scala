@@ -2,7 +2,7 @@ package carldata.sf.compiler
 
 import carldata.sf.compiler.AST._
 import carldata.sf.compiler.gen.{FlowScriptLexer, FlowScriptParser}
-import carldata.sf.compiler.gen.FlowScriptParser.{CompilationUnitContext, ExpressionContext, ExternalFunDefContext, FunctionDefinitionContext}
+import carldata.sf.compiler.gen.FlowScriptParser._
 import org.antlr.v4.runtime._
 
 import scala.collection.JavaConverters._
@@ -77,9 +77,17 @@ object Parser {
     val typeDefCtx = ctx.typeDefinition()
     val typeName = typeDefCtx.Identifier().getText
     // function body
-    val body = convertExpr(ctx.expression())
+    val body = convertBody(ctx.functionBody())
     FunctionDef(funName, params, typeName, body)
 
+  }
+
+  def convertBody(ctx: FunctionBodyContext): FunctionBody = {
+    val as = ctx.assignment().asScala.map { actx =>
+      Assignment(actx.Identifier().getText, convertExpr(actx.expression()))
+    }
+    val e = convertExpr(ctx.expression())
+    FunctionBody(as, e)
   }
 
   /** Convert ANTLR Context into Term node */

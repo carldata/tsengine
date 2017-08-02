@@ -102,4 +102,19 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "check let-in" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number, b: Number): Number =
+        | let
+        |   x = y
+        | in
+        |   2
+      """.stripMargin
+    val result = Compiler.compile(code, Seq())
+    result.isRight shouldBe false
+  }
+
 }

@@ -9,8 +9,10 @@ object AST {
 
   case class Module(name: String, externalFun: Seq[ExternalFun], funDecl: Seq[FunctionDef])
   case class ExternalFun(name: String, params: Seq[FunParam], typeName: String)
-  case class FunctionDef(name: String, params: Seq[FunParam], typeName: String, body: Expression)
+  case class FunctionDef(name: String, params: Seq[FunParam], typeName: String, body: FunctionBody)
   case class FunParam(name: String, typeName: String)
+  case class FunctionBody(assignments: Seq[Assignment], expr: Expression)
+  case class Assignment(varName: String, expr: Expression)
   sealed trait Expression
   case class IfExpr(ifExpr: Expression, thenExpr: Expression, elseExpr: Expression) extends Expression
   case class MinusOpExpr(expr: Expression) extends Expression
@@ -44,12 +46,27 @@ object AST {
 
   def printFunDef(funDef: FunctionDef): String = {
     val params = funDef.params.map(printParam).mkString(",")
-    val body = printExpr(funDef.body)
+    val body = printFunBody(funDef.body)
     "def %s(%s):%s = %s\n".format(funDef.name, params, funDef.typeName, body)
   }
 
   def printParam(param: FunParam): String = {
     param.name + ": " + param.typeName
+  }
+
+  def printFunBody(body: FunctionBody): String = {
+    if(body.assignments.nonEmpty){
+      "let\n" +
+        body.assignments.map(a => printAssign(a) + "\n") +
+      "in\n" +
+        printExpr(body.expr)
+    } else {
+      printExpr(body.expr)
+    }
+  }
+
+  def printAssign(assign: Assignment): String = {
+    assign.varName + "=" + printExpr(assign.expr)
   }
 
   def printExpr(expr: Expression): String = {

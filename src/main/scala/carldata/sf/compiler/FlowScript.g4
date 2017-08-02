@@ -14,8 +14,9 @@ externalFunDef
     ;
 
 functionDefinition
-    : DEF Identifier '(' paramList? ')' ':' typeDefinition '=' expression
+    : DEF Identifier '(' paramList? ')' ':' typeDefinition '=' functionBody
     ;
+
 
 paramList
 	: param (',' param)*
@@ -27,6 +28,15 @@ param
 
 typeDefinition
     : Identifier
+    ;
+
+functionBody
+    : 'let' assignment* 'in' expression
+    | expression
+    ;
+
+assignment
+    : Identifier '=' expression
     ;
 
 expression

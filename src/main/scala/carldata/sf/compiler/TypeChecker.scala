@@ -67,12 +67,22 @@ object TypeChecker {
     // Add param types to the Type Table.
     val table2 = f.params.foldLeft(table)((t, x) => t.addSymbol(x.name, x.typeName))
     // Compare expression type with function return type. Also update AST with type information if necessary
-    val t1 = checkExpr(f.body, table2)
+    val t1 = checkFunctionBody(f.body, table2)
     if(t1 == Right(f.typeName)) {
       Right(f)
     } else {
       Left("Wrong return type for function %s\n Expected: %s\nGot: %s\n".format(
         f.name, f.typeName, t1))
+    }
+  }
+
+  /** Check function body */
+  def checkFunctionBody(body: FunctionBody, env: Environment): Either[String, String] = {
+    body.assignments.foldLeft[Either[String, Environment]](Right(env)) { (e, x) =>
+      e.flatMap(t => checkExpr(x.expr, t).map(t0 => t.addSymbol(x.varName, t0)))
+    } match {
+      case Left(reason) => Left(reason)
+      case Right(env2) => checkExpr(body.expr, env2)
     }
   }
 

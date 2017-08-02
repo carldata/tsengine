@@ -103,7 +103,7 @@ object ParserCheck extends Properties("Parser") {
     funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
     funTypeName <- idGen
     bodyExpr <- exprGen
-  } yield FunctionDef(funName, funParams, funTypeName, bodyExpr)
+  } yield FunctionDef(funName, funParams, funTypeName, FunctionBody(Seq(), bodyExpr))
 
   private val moduleGen = for {
     moduleName <- idGen

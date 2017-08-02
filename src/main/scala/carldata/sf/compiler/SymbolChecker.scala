@@ -59,7 +59,25 @@ object SymbolChecker {
       }
     } match {
       case Left(err) => Err(err)
-      case Right(t) => checkExpr(f.body, t)
+      case Right(t) => checkBody(f.body, t)
+    }
+  }
+
+  def checkBody(body: FunctionBody, st: SymbolTables): Result = {
+    body.assignments.foldLeft[Either[String, SymbolTables]](Right(st)) { (e, x) =>
+      e.flatMap { t =>
+        if (t.varSymbols.checkScope(x.varName)) {
+          Left("Variable '%s' is already defined in the scope".format(x))
+        } else {
+          checkExpr(x.expr, t) match {
+            case Ok => Right(SymbolTables(t.varSymbols.addSymbol(x.varName), t.funSymbols))
+            case Err(reason) => Left(reason)
+          }
+        }
+      }
+    } match {
+      case Left(err) => Err(err)
+      case Right(t) => checkExpr(body.expr, t)
     }
   }
 

@@ -28,9 +28,16 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
     exec.functions.find(f => f.name == name && params.size == f.params.size)
       .map{f =>
         val sm = symbolMemory ++ f.params.zip(params).map(x => x._1.name -> x._2).toMap
-        execExpr(f.body, sm)
+        execBody(f.body, sm)
       }
       .getOrElse(runtime.executeFunction(name, params))
+  }
+
+  def execBody(body: FunctionBody, sm: Map[String, Value]): Value = {
+    val sm2 = body.assignments.foldLeft(sm){ (t, a) =>
+      t + (a.varName -> execExpr(a.expr, t))
+    }
+    execExpr(body.expr, sm2)
   }
 
   /** Execute node with the function declaration */

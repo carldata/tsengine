@@ -245,4 +245,22 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(StringValue("ok"))
   }
 
+  it should "check let-in" in {
+    val code =
+      """
+        |module Test1
+        |
+        |def main(a: Number): Number =
+        | let
+        |   x = 3
+        |   y = x + x
+        | in
+        |   a*y
+      """.stripMargin
+    val result = Compiler.compile(code, Seq(Core.header)).flatMap { ast =>
+      new Interpreter(ast, new Core()).run("main", Seq(NumberValue(5)))
+    }
+    result shouldBe Right(NumberValue(30))
+  }
+
 }
