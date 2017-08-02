@@ -190,4 +190,18 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
+  it should "multiparam external function" in {
+    val code =
+      """
+        |// Calculate square root
+        |module Test1
+        |
+        |external def series(id: String, from: String, to: String): TimeSeries
+        |
+        |def main(id: String): TimeSeries = series(id, '2015', '2016')
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe true
+  }
+
 }
