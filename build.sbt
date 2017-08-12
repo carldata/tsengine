@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
 
   // Test dependencies
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-  "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
+  "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
+  "com.storm-enroute" %% "scalameter-core" % "0.8.2"
 )
 
 scalacOptions := Seq("-unchecked", "-deprecation")
