@@ -1,11 +1,12 @@
-package carldata.sf
+package carldata.sf.core
 
+import carldata.sf.Runtime
 import carldata.sf.Runtime.NumberValue
 
 /**
   * Core functions and types which can be accessed from the script
   */
-object Core {
+object Math {
   // Header which will be provided to the compiler
   val header: String =
     """
@@ -29,7 +30,7 @@ object Core {
     """.stripMargin
 }
 
-class Core extends Runtime{
+class Math extends Runtime{
 
   // Function definition
   def $ceil(a: NumberValue): NumberValue = NumberValue(math.ceil(a.v.toDouble).toFloat)

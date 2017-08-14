@@ -1,9 +1,9 @@
 package carldata.sf
 
 import carldata.sf.Runtime.NumberValue
+import carldata.sf.core.Math
 import org.scalameter._
 import org.scalatest._
-
 
 /**
   * Measure library performance
@@ -17,8 +17,8 @@ class BenchmarkTest extends FlatSpec with Matchers {
         |
         |def main(a: Number, b: Number): Number = sin(a) + cos(b)
       """.stripMargin
-    val exec = Compiler.compile(code, Seq(Core.header))
-      .map { ast => new Interpreter(ast, new Core()) }
+    val exec = Compiler.compile(code, Seq(Math.header))
+      .map { ast => new Interpreter(ast, new Math()) }
       .right.get
 
     val time: Quantity[Double] = withWarmer(new Warmer.Default).measure {
