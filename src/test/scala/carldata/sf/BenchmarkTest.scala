@@ -25,6 +25,6 @@ class BenchmarkTest extends FlatSpec with Matchers {
       exec.run("main", Seq(NumberValue(1), NumberValue(3)))
     }
 
-    math.max(1.0, time.value) shouldBe 10.0
+    math.max(10.0, time.value) shouldBe 10.0
   }
 }
