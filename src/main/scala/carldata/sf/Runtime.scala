@@ -24,13 +24,10 @@ object Runtime {
 
 trait Runtime {
 
-  def executeFunction(name: String, params: Seq[Value]): Value = {
+  def executeFunction(name: String, params: Seq[Value]): Option[Value] = {
     getClass.getMethods
       .find(_.getName.contains("$" + name))
-      .map(m => m.invoke(this, params: _*).asInstanceOf[Value]) match {
-      case Some(value) => value
-      case None => throw new NoSuchElementException(name)
-    }
+      .map(m => m.invoke(this, params: _*).asInstanceOf[Value])
   }
 
 }

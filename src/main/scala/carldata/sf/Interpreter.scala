@@ -8,7 +8,7 @@ import carldata.sf.compiler.Executable.ExecCode
 /**
   * Run Script with given parameters
   */
-class Interpreter(exec: ExecCode, runtime: Runtime) {
+class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
 
   /**
     * The runtime return either error string or computed value.
@@ -30,7 +30,7 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
         val sm = symbolMemory ++ f.params.zip(params).map(x => x._1.name -> x._2).toMap
         execBody(f.body, sm)
       }
-      .getOrElse(runtime.executeFunction(name, params))
+      .getOrElse(executeExternalFunction(name, params))
   }
 
   def execBody(body: FunctionBody, sm: Map[String, Value]): Value = {
@@ -133,6 +133,16 @@ class Interpreter(exec: ExecCode, runtime: Runtime) {
     a match {
       case BoolValue(b) => b
       case _ => false
+    }
+  }
+
+  def executeExternalFunction(name: String, params: Seq[Value]): Value = {
+    runtimes.foldLeft[Option[Value]](None) { (acc, r) =>
+      if (acc.isEmpty) r.executeFunction(name, params)
+      else acc
+    } match {
+      case Some(value) => value
+      case None => throw new NoSuchElementException(name)
     }
   }
 

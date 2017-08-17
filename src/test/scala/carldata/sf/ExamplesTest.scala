@@ -17,19 +17,21 @@ class ExamplesTest extends FlatSpec with Matchers {
   "TestCase runner" should "run all tests in folder: testcases" in {
     // Load and compile scripts
     val xs = loadTestCases("examples")
-    println(xs.head._2)
     val compiled = xs.map(x => (x._1, Compiler.compile(x._2, Seq(Math.header))))
 
     // First check for compilation errors
-    val compileErrors =  compiled.filter(_._2.isLeft)
-    val passed = if(compileErrors.nonEmpty) {
+    val compileErrors = compiled.filter(_._2.isLeft)
+    val passed = if (compileErrors.nonEmpty) {
       printErrors(compileErrors)
       false
     } else {
       // All files were compiled. Time to run them
-      val executed = compiled.map(x => (x._1, x._2.flatMap(ast => new Interpreter(ast, new Math()).run("assert", Seq()))))
-      val runErrors =  executed.filter(_._2.isLeft)
-      if(runErrors.nonEmpty){
+      val executed = compiled.map { x =>
+        (x._1, x._2.flatMap { ast => new Interpreter(ast, Seq(new Math())).run("assert", Seq())
+        })
+      }
+      val runErrors = executed.filter(_._2.isLeft)
+      if (runErrors.nonEmpty) {
         printErrors(runErrors)
         false
       } else {
@@ -57,7 +59,7 @@ class ExamplesTest extends FlatSpec with Matchers {
       .map(f => (f.getName, Source.fromFile(f).mkString))
   }
 
-  def printErrors(errors: Seq[(String, Either[String,_])]): Unit = {
+  def printErrors(errors: Seq[(String, Either[String, _])]): Unit = {
     errors.foreach { x =>
       println(Console.RED)
       println("Error in file: " + x._1)

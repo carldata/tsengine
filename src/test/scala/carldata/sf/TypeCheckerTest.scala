@@ -33,7 +33,6 @@ class TypeCheckerTest extends FlatSpec with Matchers {
         |def main(): String = 'hello'
       """.stripMargin
     val ast = Compiler.compile(code, Seq(Math.header))
-    println(ast)
     ast.isRight shouldBe true
   }
 

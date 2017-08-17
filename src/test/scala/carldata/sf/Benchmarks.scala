@@ -15,7 +15,7 @@ object Benchmarks{
         |def main(a: Number, b: Number): Number = sin(a) + cos(b)
       """.stripMargin
     val exec = Compiler.compile(code, Seq(Math.header))
-      .map { ast => new Interpreter(ast, new Math()) }
+      .map { ast => new Interpreter(ast, Seq(new Math())) }
       .right.get
 
     val time: Quantity[Double] = withWarmer(new Warmer.Default).measure {
