@@ -3,14 +3,13 @@ package carldata.sf
 import carldata.sf.Runtime.NumberValue
 import carldata.sf.core.Math
 import org.scalameter._
-import org.scalatest._
 
 /**
   * Measure library performance
   */
-class BenchmarkTest extends FlatSpec with Matchers {
+object Benchmarks{
 
-  "Interpreter" should "run simple script in less then 1 ms" in {
+  def runBenchmarks(): Unit = {
     val code =
       """
         |module Test1
@@ -25,6 +24,6 @@ class BenchmarkTest extends FlatSpec with Matchers {
       exec.run("main", Seq(NumberValue(1), NumberValue(3)))
     }
 
-    math.max(10.0, time.value) shouldBe 10.0
+    println(s"Benchmark simple script: $time")
   }
 }
