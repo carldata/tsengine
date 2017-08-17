@@ -29,10 +29,7 @@ This language is intended more as a "glue" then full blown language. Typical use
 Lets say that we have this minimalistic script
 
 ```flowscript
-module Demo1
-
-// Read channel A2 and convert inches to centimeters
-def main(a: Number, b: Number): Number = a 
+def main(a: Number, b: Number): Number = a+b 
 ```
  
 ### Compile script
