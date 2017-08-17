@@ -106,10 +106,9 @@ object ParserCheck extends Properties("Parser") {
   } yield FunctionDef(funName, funParams, funTypeName, FunctionBody(Seq(), bodyExpr))
 
   private val moduleGen = for {
-    moduleName <- idGen
     efs <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, externFunGen) }
-    funDefs <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, funDefGen) }
-  } yield Module(moduleName, efs, funDefs)
+    funDefs <- Gen.choose(1, 10) flatMap { sz => Gen.listOfN(sz, funDefGen) }
+  } yield Module(efs, funDefs)
 
 
   property("parse") = forAll(moduleGen) { module: Module =>

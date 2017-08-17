@@ -1,5 +1,4 @@
 // Calculate square root
-module Pi
 
 def main(a: Number): Number = sin(a)
 

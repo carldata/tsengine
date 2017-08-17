@@ -1,5 +1,4 @@
 // Return the value of the first parameter
-module Param1
 
 def main(a: Number, b: Number): Number = a
 

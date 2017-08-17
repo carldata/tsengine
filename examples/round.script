@@ -1,5 +1,4 @@
 // Calculate square root
-module Sqrt
 
 def main(a: Number, b: Number, c: Number): Number =
   let

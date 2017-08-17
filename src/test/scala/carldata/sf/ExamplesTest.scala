@@ -17,6 +17,7 @@ class ExamplesTest extends FlatSpec with Matchers {
   "TestCase runner" should "run all tests in folder: testcases" in {
     // Load and compile scripts
     val xs = loadTestCases("examples")
+    println(xs.head._2)
     val compiled = xs.map(x => (x._1, Compiler.compile(x._2, Seq(Math.header))))
 
     // First check for compilation errors

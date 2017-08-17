@@ -46,7 +46,7 @@ object TypeChecker {
       .foldLeft[Either[String, Seq[FunctionDef]]](Right(Seq())) {(e, f) =>
         e.flatMap(xs => f.map(x => xs :+ x))
       }
-      .map(fs => Module(module.name, module.externalFun, fs))
+      .map(fs => Module(module.externalFun, fs))
   }
 
   /** Create environment and add top level declarations to it */

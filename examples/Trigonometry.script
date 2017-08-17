@@ -1,5 +1,4 @@
 // Calculate square root
-module Trigonometry
 
 def main(a: Number): Number = cos(a)+sin(a)+tan(a)+tanh(a)
 

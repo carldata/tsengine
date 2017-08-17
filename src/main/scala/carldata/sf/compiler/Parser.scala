@@ -36,10 +36,9 @@ object Parser {
 
   /** Convert ANTLR Context into AST Module node */
   def convertCompilationUnit(ctx: CompilationUnitContext): Module = {
-    val moduleName = ctx.moduleDeclaration().Identifier().getText
     val xs = ctx.externalFunDef().asScala.map(convertExternFun)
     val funDecl = ctx.functionDefinition().asScala.map(x => convertFunDef(x))
-    Module(moduleName, xs, funDecl)
+    Module(xs, funDecl)
   }
 
   /** Convert ANTLR Context into Function Definition node */

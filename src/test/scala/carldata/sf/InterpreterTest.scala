@@ -13,8 +13,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   "Interpreter" should "not run program with wrong number of parameters" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -26,8 +24,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "run valid program" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -39,8 +35,6 @@ class InterpreterTest extends FlatSpec with Matchers {
     it should "return value of the parameter" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -52,7 +46,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "call external function" in {
     val code =
       """
-        |module Test1
         |external def min(a: Number, b: Number): Number
         |
         |def main(a: Number, b: Number): Number = min(a, b)
@@ -66,8 +59,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "return value of the string literal" in {
     val code =
       """
-        |module Test1
-        |
         |def main(): String = 'hello'
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -79,8 +70,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "return value of the number literal" in {
     val code =
       """
-        |module Test1
-        |
         |def main(): Number = 0.23
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -92,8 +81,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "return value of the bool literal" in {
     val code =
       """
-        |module Test1
-        |
         |def main(): Bool = False
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -105,8 +92,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "return true for relation" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Bool = a == b
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -118,8 +103,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "return false for relation" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Bool = a != b
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -131,8 +114,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "execute other function defined in the script" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Bool = a != b
         |def test(): Bool = main(1, 2)
       """.stripMargin
@@ -145,8 +126,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "execute math expression" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Bool = a+b > a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -158,8 +137,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "calculate a+b*2" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Number = a+b*2
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -171,8 +148,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "calculate 2*b+a" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Number = 2*b+a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -184,8 +159,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "calculate 2*(b+a)" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Number = 2*(b+a)
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -197,8 +170,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "calculate -a*2" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number): Number = -a*2
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
@@ -210,8 +181,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "calculate log" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number): Number = log10(a)
       """.stripMargin
     val result = Compiler.compile(code, Seq(Math.header)).flatMap { ast =>
@@ -223,8 +192,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "calculate && and || expression" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Bool): Bool = (a == 10) && (False || !b)
       """.stripMargin
     val result = Compiler.compile(code, Seq(Math.header)).flatMap { ast =>
@@ -236,8 +203,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "calculate if-then-else" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: String): String = if a > 10 then "ok" else b
       """.stripMargin
     val result = Compiler.compile(code, Seq(Math.header)).flatMap { ast =>
@@ -249,8 +214,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "check let-in" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number): Number =
         | let
         |   x = 3
@@ -267,7 +230,6 @@ class InterpreterTest extends FlatSpec with Matchers {
   it should "show runtime error message" in {
     val code =
       """
-        |module Test1
         |external def test(a: Number): Number
         |
         |def main(a: Number): Number = test(a)

@@ -10,8 +10,6 @@ object Math {
   // Header which will be provided to the compiler
   val header: String =
     """
-      |module Core
-      |
       |external def ceil(a: Number): Number
       |external def cos(a: Number): Number
       |external def exp(a: Number): Number

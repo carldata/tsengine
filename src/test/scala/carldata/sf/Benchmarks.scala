@@ -12,8 +12,6 @@ object Benchmarks{
   def runBenchmarks(): Unit = {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Number = sin(a) + cos(b)
       """.stripMargin
     val exec = Compiler.compile(code, Seq(Math.header))

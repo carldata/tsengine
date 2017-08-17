@@ -7,7 +7,7 @@ object AST {
 
   type MathOp = String
 
-  case class Module(name: String, externalFun: Seq[ExternalFun], funDecl: Seq[FunctionDef])
+  case class Module(externalFun: Seq[ExternalFun], funDecl: Seq[FunctionDef])
   case class ExternalFun(name: String, params: Seq[FunParam], typeName: String)
   case class FunctionDef(name: String, params: Seq[FunParam], typeName: String, body: FunctionBody)
   case class FunParam(name: String, typeName: String)
@@ -28,7 +28,7 @@ object AST {
 
 
   def mergeModules(m1: Module, m2: Module): Module = {
-    Module(m1.name, m1.externalFun ++ m2.externalFun, m1.funDecl ++ m2.funDecl)
+    Module(m1.externalFun ++ m2.externalFun, m1.funDecl ++ m2.funDecl)
   }
 
   // Write AST as source code
@@ -36,7 +36,7 @@ object AST {
     val xs = m.externalFun.map(printExternalFun).mkString("")
     val fstr = m.funDecl.map(printFunDef).mkString("\n")
 
-    "module %s\n%s\n%s".format(m.name, xs, fstr)
+    "%s\n%s".format(xs, fstr)
   }
 
   def printExternalFun(f: ExternalFun): String = {

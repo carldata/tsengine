@@ -11,7 +11,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   "SymbolChecker" should "catch: Unresolved variable error" in {
     val code =
       """
-        |module Test1
         |external def min(a: Int, b: Int): Int
         |
         |def my_fun(): Int = a
@@ -23,8 +22,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "catch: 'a' is already defined in the scope" in {
     val code =
       """
-        |module Test1
-        |
         |def my_fun(a: String, a: Int): Int = a
       """.stripMargin
     val ast = Compiler.compile(code, Seq())
@@ -34,7 +31,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "compile external functions" in {
     val code =
       """
-        |module Test1
         |external def min(a: Int, b: Int): Int
         |
         |def main(a: Int, b: Int): Int = min(a, b)
@@ -46,8 +42,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "catch no external function definition" in {
     val code =
       """
-        |module Test1
-        |
         |def my_fun(a: Int, b: Int): Int = min(a, b)
       """.stripMargin
     val ast = Compiler.compile(code, Seq())
@@ -57,7 +51,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "catch function redefinition" in {
     val code =
       """
-        |module Test1
         |external def min(a: Number, b: Number): Number
         |
         |def min(a: Number, b: Number): Number = a
@@ -70,8 +63,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "compile function reference" in {
     val code =
       """
-        |module Test1
-        |
         |def min(a: Number, b: Number): Number = a
         |def main(a: Number, b: Number): Number = min(a, b)
       """.stripMargin
@@ -82,8 +73,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "check function call params" in {
     val code =
       """
-        |module Test1
-        |
         |def min(a: Number, b: Number): Number = a
         |def main(a: Number, b: Number): Number = min(a, x)
       """.stripMargin
@@ -94,8 +83,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "check if-then-else" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Number = if a then b else c
       """.stripMargin
     val ast = Compiler.compile(code, Seq())
@@ -105,8 +92,6 @@ class SymbolCheckerTest extends FlatSpec with Matchers {
   it should "check let-in" in {
     val code =
       """
-        |module Test1
-        |
         |def main(a: Number, b: Number): Number =
         | let
         |   x = y
