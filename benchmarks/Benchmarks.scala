@@ -9,7 +9,7 @@ import org.scalameter._
   */
 object Benchmarks{
 
-  def runBenchmarks(): Unit = {
+  def main(args: Array[String]): Unit = {
     val code =
       """
         |def main(a: Number, b: Number): Number = sin(a) + cos(b)
