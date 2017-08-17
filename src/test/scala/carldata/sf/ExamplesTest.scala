@@ -48,15 +48,19 @@ class ExamplesTest extends FlatSpec with Matchers {
         }
       }
     }
-
+    
     passed shouldBe true
   }
 
   def loadTestCases(folder: String): Seq[(String, String)] = {
     new File(folder)
       .listFiles
-      .filter(x => x.isFile && x.getName.endsWith(".script"))
-      .map(f => (f.getName, Source.fromFile(f).mkString))
+      .filter(x => x.isDirectory)
+      .flatMap { d =>
+        d.listFiles.
+          filter(x => x.isFile && x.getName.endsWith(".script"))
+          .map(f => (f.getName, Source.fromFile(f).mkString))
+      }
   }
 
   def printErrors(errors: Seq[(String, Either[String, _])]): Unit = {
