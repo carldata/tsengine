@@ -3,7 +3,7 @@
 [![Build status](https://travis-ci.org/carldata/flow-script.svg?branch=master)](https://travis-ci.org/carldata/flow-script)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12)
 
-This project consists of a compiler and an interpreter for FlowScript.
+Compiler and an interpreter for FlowScript.
 
 The reason for yet another script language is security. It should be safe to run script written by the user 
 on the server. 
@@ -22,7 +22,7 @@ This language is intended more as a "glue" then full blown language. Typical use
  
  Add the following dependency to the build.sbt
  ```scala
- libraryDependencies += "io.github.carldata" %% "flow-script" % "0.6.0"
+ libraryDependencies += "io.github.carldata" %% "flow-script" % "0.7.0"
  ```
 
 ### Create test script
