@@ -26,6 +26,8 @@ object Math {
       |external def tan(a: Number): Number
       |external def tanh(a: Number): Number
     """.stripMargin
+
+  def apply(): Math = new Math()
 }
 
 class Math extends Runtime{

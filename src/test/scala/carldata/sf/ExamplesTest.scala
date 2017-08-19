@@ -3,7 +3,6 @@ package carldata.sf
 import java.io.File
 
 import carldata.sf.Runtime.BoolValue
-import carldata.sf.core.Math
 import org.scalatest._
 
 import scala.io.Source
@@ -17,7 +16,7 @@ class ExamplesTest extends FlatSpec with Matchers {
   "TestCase runner" should "run all tests in folder: testcases" in {
     // Load and compile scripts
     val xs = loadTestCases("examples")
-    val compiled = xs.map(x => (x._1, BuildSystem.build(x._2)))
+    val compiled = xs.map(x => (x._1, Compiler.make(x._2)))
 
     // First check for compilation errors
     val compileErrors = compiled.filter(_._2.isLeft)
@@ -27,7 +26,7 @@ class ExamplesTest extends FlatSpec with Matchers {
     } else {
       // All files were compiled. Time to run them
       val executed = compiled.map { x =>
-        (x._1, x._2.flatMap { exec => exec.run("assert", Seq())
+        (x._1, x._2.flatMap { exec => Interpreter(exec).run("assert", Seq())
         })
       }
       val runErrors = executed.filter(_._2.isLeft)
@@ -48,7 +47,7 @@ class ExamplesTest extends FlatSpec with Matchers {
         }
       }
     }
-    
+
     passed shouldBe true
   }
 

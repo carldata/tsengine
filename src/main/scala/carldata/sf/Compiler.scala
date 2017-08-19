@@ -14,6 +14,11 @@ import carldata.sf.compiler._
   */
 object Compiler {
 
+  val headers: Seq[String] = Seq(core.Math.header)
+
+  /** Make Exec using default library module */
+  def make(code: String): Either[String, ExecCode] = Compiler.compile(code, headers)
+
   /**
     * Compile given code and zero or more library modules.
     * Library modules are used to add definition of external function and types

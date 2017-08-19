@@ -6,8 +6,17 @@ import carldata.sf.compiler.Executable.ExecCode
 
 
 /**
-  * Run Script with given parameters
+  * Script interpreter
   */
+object Interpreter {
+
+  def apply(exec: ExecCode): Interpreter = {
+    new Interpreter(exec, Seq(core.Math()))
+  }
+
+}
+
+
 class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
 
   /**
