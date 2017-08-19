@@ -9,6 +9,7 @@ scalaVersion := "2.12.3"
 
 libraryDependencies ++= Seq(
   // Scala native libraries
+  "io.github.carldata" %% "timeseries" % "0.2.1",
 
   // Java dependencies
   "org.antlr" % "antlr4-runtime" % "4.7",
