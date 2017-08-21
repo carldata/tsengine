@@ -1,7 +1,6 @@
 package carldata.sf.core
 
 import carldata.sf.Runtime.{NumberValue, StringValue}
-import carldata.sf.{Compiler, Interpreter}
 import org.scalatest._
 
 class DateTimeTest extends FlatSpec with Matchers {
@@ -25,5 +24,22 @@ class DateTimeTest extends FlatSpec with Matchers {
     dt.$adjust_time(dt1,NumberValue(10), NumberValue(30), NumberValue(30)) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(10), NumberValue(30), NumberValue(30), NumberValue(0))
   }
 
+  it should "floor hours" in {
+    val dt = new DateTime()
+    val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(11), NumberValue(31), NumberValue(36), NumberValue(0))
+    dt.$floor_hours(dt1) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(0), NumberValue(31), NumberValue(36), NumberValue(0))
+  }
+
+  it should "floor minutes" in {
+    val dt = new DateTime()
+    val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(11), NumberValue(31), NumberValue(36), NumberValue(0))
+    dt.$floor_minutes(dt1) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(11), NumberValue(0), NumberValue(36), NumberValue(0))
+  }
+
+  it should "floor seconds" in {
+    val dt = new DateTime()
+    val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(11), NumberValue(31), NumberValue(36), NumberValue(0))
+    dt.$floor_seconds(dt1) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(11), NumberValue(31), NumberValue(0), NumberValue(0))
+  }
 
 }
