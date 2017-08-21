@@ -13,6 +13,12 @@ class DateTimeTest extends FlatSpec with Matchers {
     dt.$date(StringValue(str)) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(10), NumberValue(30), NumberValue(30), NumberValue(0))
   }
 
+  it should "adjust date" in {
+    val dt = new DateTime()
+    val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21))
+    dt.$adjust_date(dt1,NumberValue(2016), NumberValue(1), NumberValue(1)) shouldBe dt.$datetime(NumberValue(2016), NumberValue(1), NumberValue(1))
+  }
+
   it should "adjust time" in {
     val dt = new DateTime()
     val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21))
