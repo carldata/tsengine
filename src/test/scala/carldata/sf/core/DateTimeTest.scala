@@ -1,7 +1,7 @@
 package carldata.sf.core
 
+import carldata.sf.Runtime.{NumberValue, StringValue}
 import carldata.sf.{Compiler, Interpreter}
-import carldata.sf.Runtime.{BoolValue, NumberValue, StringValue}
 import org.scalatest._
 
 class DateTimeTest extends FlatSpec with Matchers {
@@ -12,4 +12,12 @@ class DateTimeTest extends FlatSpec with Matchers {
     val dt = new DateTime()
     dt.$date(StringValue(str)) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(10), NumberValue(30), NumberValue(30), NumberValue(0))
   }
+
+  it should "adjust time" in {
+    val dt = new DateTime()
+    val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21))
+    dt.$adjust_time(dt1,NumberValue(10), NumberValue(30), NumberValue(30)) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(10), NumberValue(30), NumberValue(30), NumberValue(0))
+  }
+
+
 }
