@@ -41,9 +41,9 @@ expression
     | minusOp=MINUS expression
     | expression MultiplyOp expression
     | expression addOp=(PLUS | MINUS) expression
+    | expression RelationOp expression
     | negOp=NEG expression
     | expression boolOp=(AND | OR) expression
-    | expression RelationOp expression
     | boolLiteral
     | stringLiteral
     | numberLiteral

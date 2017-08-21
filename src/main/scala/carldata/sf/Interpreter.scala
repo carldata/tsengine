@@ -3,6 +3,7 @@ package carldata.sf
 import carldata.sf.Runtime._
 import carldata.sf.compiler.AST._
 import carldata.sf.compiler.Executable.ExecCode
+import carldata.sf.core.TimeSeriesModule
 
 
 /**
@@ -11,7 +12,7 @@ import carldata.sf.compiler.Executable.ExecCode
 object Interpreter {
 
   def apply(exec: ExecCode): Interpreter = {
-    new Interpreter(exec, Seq(core.Math()))
+    new Interpreter(exec, Seq(core.Math(), TimeSeriesModule()))
   }
 
 }

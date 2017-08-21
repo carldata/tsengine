@@ -552,9 +552,9 @@ public class FlowScriptParser extends Parser {
 		}
 		public TerminalNode MultiplyOp() { return getToken(FlowScriptParser.MultiplyOp, 0); }
 		public TerminalNode PLUS() { return getToken(FlowScriptParser.PLUS, 0); }
+		public TerminalNode RelationOp() { return getToken(FlowScriptParser.RelationOp, 0); }
 		public TerminalNode AND() { return getToken(FlowScriptParser.AND, 0); }
 		public TerminalNode OR() { return getToken(FlowScriptParser.OR, 0); }
-		public TerminalNode RelationOp() { return getToken(FlowScriptParser.RelationOp, 0); }
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -619,7 +619,7 @@ public class FlowScriptParser extends Parser {
 				setState(111);
 				((ExpressionContext)_localctx).negOp = match(NEG);
 				setState(112);
-				expression(8);
+				expression(7);
 				}
 				break;
 			case 5:
@@ -703,8 +703,20 @@ public class FlowScriptParser extends Parser {
 						_localctx = new ExpressionContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(126);
-						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
+						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
 						setState(127);
+						match(RelationOp);
+						setState(128);
+						expression(9);
+						}
+						break;
+					case 4:
+						{
+						_localctx = new ExpressionContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_expression);
+						setState(129);
+						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
+						setState(130);
 						((ExpressionContext)_localctx).boolOp = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==AND || _la==OR) ) {
@@ -715,18 +727,6 @@ public class FlowScriptParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(128);
-						expression(8);
-						}
-						break;
-					case 4:
-						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(129);
-						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(130);
-						match(RelationOp);
 						setState(131);
 						expression(7);
 						}
@@ -1004,7 +1004,7 @@ public class FlowScriptParser extends Parser {
 		case 1:
 			return precpred(_ctx, 9);
 		case 2:
-			return precpred(_ctx, 7);
+			return precpred(_ctx, 8);
 		case 3:
 			return precpred(_ctx, 6);
 		}
@@ -1041,12 +1041,12 @@ public class FlowScriptParser extends Parser {
 		"^\5\22\n\2\\^\5\22\n\2]S\3\2\2\2]\\\3\2\2\2^\17\3\2\2\2_`\7\32\2\2`a\7"+
 		"\6\2\2ab\5\22\n\2b\21\3\2\2\2cd\b\n\1\2de\7\25\2\2ef\5\22\n\2fg\7\26\2"+
 		"\2gh\5\22\n\2hi\7\27\2\2ij\5\22\n\17jy\3\2\2\2kl\7\3\2\2lm\5\22\n\2mn"+
-		"\7\4\2\2ny\3\2\2\2op\7\21\2\2py\5\22\n\rqr\7\24\2\2ry\5\22\n\nsy\5\24"+
+		"\7\4\2\2ny\3\2\2\2op\7\21\2\2py\5\22\n\rqr\7\24\2\2ry\5\22\n\tsy\5\24"+
 		"\13\2ty\5\26\f\2uy\5\30\r\2vy\5\32\16\2wy\5\34\17\2xc\3\2\2\2xk\3\2\2"+
 		"\2xo\3\2\2\2xq\3\2\2\2xs\3\2\2\2xt\3\2\2\2xu\3\2\2\2xv\3\2\2\2xw\3\2\2"+
 		"\2y\u0088\3\2\2\2z{\f\f\2\2{|\7\36\2\2|\u0087\5\22\n\r}~\f\13\2\2~\177"+
-		"\t\2\2\2\177\u0087\5\22\n\f\u0080\u0081\f\t\2\2\u0081\u0082\t\3\2\2\u0082"+
-		"\u0087\5\22\n\n\u0083\u0084\f\b\2\2\u0084\u0085\7\37\2\2\u0085\u0087\5"+
+		"\t\2\2\2\177\u0087\5\22\n\f\u0080\u0081\f\n\2\2\u0081\u0082\7\37\2\2\u0082"+
+		"\u0087\5\22\n\13\u0083\u0084\f\b\2\2\u0084\u0085\t\3\2\2\u0085\u0087\5"+
 		"\22\n\t\u0086z\3\2\2\2\u0086}\3\2\2\2\u0086\u0080\3\2\2\2\u0086\u0083"+
 		"\3\2\2\2\u0087\u008a\3\2\2\2\u0088\u0086\3\2\2\2\u0088\u0089\3\2\2\2\u0089"+
 		"\23\3\2\2\2\u008a\u0088\3\2\2\2\u008b\u008c\t\4\2\2\u008c\25\3\2\2\2\u008d"+

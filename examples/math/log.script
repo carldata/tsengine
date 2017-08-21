@@ -2,5 +2,7 @@
 
 def main(a: Number): Number = log(a)
 
-// Assert
-def assert(): Bool = main(exp(3)) == 3
+// Assert.
+def assert(): Bool =
+    let a = main(exp(3))
+    in a > 2.9 && a < 3.1

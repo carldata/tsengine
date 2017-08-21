@@ -240,4 +240,17 @@ class InterpreterTest extends FlatSpec with Matchers {
     result.left.getOrElse("").substring(0, 7) shouldBe "Runtime"
   }
 
+  it should "calculate relation in let ... in ..." in {
+    val code =
+      """
+        |def main(a: Number, b: Number): Bool =
+        | let x = a + b
+        | in x > 2.9 && x < 3.1
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      Interpreter(ast).run("main", Seq(NumberValue(1), NumberValue(2)))
+    }
+    result shouldBe Right(BoolValue(true))
+  }
+
 }
