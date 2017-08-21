@@ -23,6 +23,15 @@ class DateTimeTest extends FlatSpec with Matchers {
     val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21))
     dt.$adjust_time(dt1,NumberValue(10), NumberValue(30), NumberValue(30)) shouldBe dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(10), NumberValue(30), NumberValue(30), NumberValue(0))
   }
+  it should "get day of week" in {
+    val dt = new DateTime()
+    val dt1 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(21)) // Monday
+    val dt2 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(23)) // Wednesday
+    val dt3 = dt.$datetime(NumberValue(2017), NumberValue(8), NumberValue(26)) // Saturday
+    dt.$day_of_week(dt1) shouldBe NumberValue(1)
+    dt.$day_of_week(dt2) shouldBe NumberValue(3)
+    dt.$day_of_week(dt3) shouldBe NumberValue(6)
+  }
 
   it should "floor hours" in {
     val dt = new DateTime()
