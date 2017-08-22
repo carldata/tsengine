@@ -11,7 +11,7 @@ import carldata.sf.compiler.Executable.ExecCode
 object Interpreter {
 
   def apply(exec: ExecCode): Interpreter = {
-    new Interpreter(exec, Seq(core.Math()))
+    new Interpreter(exec, Seq(core.Math(),new core.DateTime()))
   }
 
 }
