@@ -12,6 +12,7 @@ import carldata.sf.core.TimeSeriesModule
 object Interpreter {
 
   def apply(exec: ExecCode): Interpreter = {
+    new Interpreter(exec, Seq(core.Math(),new core.DateTime()))
     new Interpreter(exec, Seq(core.Math(), TimeSeriesModule()))
   }
 
