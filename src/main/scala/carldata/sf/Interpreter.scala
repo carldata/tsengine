@@ -28,7 +28,16 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     */
   def run(funName: String, params: Seq[Value]): Either[String, Value] = {
     try {
-      Right(execFunction(funName, params, Map()))
+      // Add compatible functions as Function1Value
+      val sm: Map[String, Value] = exec.functions.flatMap{ f =>
+        if(f.params.size == 1 && f.params.head.typeName == ValueType("Number") && f.typeName== ValueType("Number")) {
+          def fv(x: NumberValue) = execFunction(f.name, Seq(NumberValue(x.v)), Map()).asInstanceOf[NumberValue]
+          Seq(f.name -> Function1Value(fv))
+        } else {
+          Seq()
+        }
+      }.toMap
+      Right(execFunction(funName, params, sm))
     } catch {
       case e: Exception => Left("Runtime exception: " + e);
     }

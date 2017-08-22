@@ -175,4 +175,30 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "parse higher order functions" in {
+    val code =
+      """
+        |external def map2(xs: TimeSeries, f: Number => Number): TimeSeries
+        |
+        |def f(a: Number): Number = 2*a
+        |
+        |def main(xs: TimeSeries): TimeSeries = map2(xs, f)
+      """.stripMargin
+    val result = Compiler.make(code)
+    result.isRight shouldBe true
+  }
+
+  it should "catch HoF type mismatch" in {
+    val code =
+      """
+        |external def map2(xs: TimeSeries, f: Number => Number): TimeSeries
+        |
+        |def f(a: Number): String = 2*a
+        |
+        |def main(xs: TimeSeries): TimeSeries = map2(xs, f)
+      """.stripMargin
+    val result = Compiler.make(code)
+    result.isRight shouldBe false
+  }
+
 }

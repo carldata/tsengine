@@ -95,7 +95,8 @@ object SymbolChecker {
       case RelationExpr(e1, _, e2) => checkExpr(e1, st).andThen(checkExpr(e2, st))
 
       case VariableExpr(x) =>
-        if(st.varSymbols.hasSymbol(x)) { Ok } else { Err("Unresolved variable: %s".format(x)) }
+        if(st.varSymbols.hasSymbol(x) || st.funSymbols.hasSymbol(x)) { Ok }
+        else { Err("Unresolved variable: %s".format(x)) }
 
       case IfExpr(e1, e2, e3) => checkExpr(e1, st).andThen(checkExpr(e2, st)).andThen(checkExpr(e3, st))
 

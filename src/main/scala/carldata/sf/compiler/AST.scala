@@ -8,11 +8,16 @@ object AST {
   type MathOp = String
 
   case class Module(externalFun: Seq[ExternalFun], funDecl: Seq[FunctionDef])
-  case class ExternalFun(name: String, params: Seq[FunParam], typeName: String)
-  case class FunctionDef(name: String, params: Seq[FunParam], typeName: String, body: FunctionBody)
-  case class FunParam(name: String, typeName: String)
+  case class ExternalFun(name: String, params: Seq[FunParam], typeName: TypeDecl)
+  case class FunctionDef(name: String, params: Seq[FunParam], typeName: TypeDecl, body: FunctionBody)
+  case class FunParam(name: String, typeName: TypeDecl)
   case class FunctionBody(assignments: Seq[Assignment], expr: Expression)
   case class Assignment(varName: String, expr: Expression)
+
+  sealed trait TypeDecl
+  case class ValueType(name: String) extends TypeDecl
+  case class FunType(srcName: String, destName: String) extends TypeDecl
+
   sealed trait Expression
   case class IfExpr(ifExpr: Expression, thenExpr: Expression, elseExpr: Expression) extends Expression
   case class MinusOpExpr(expr: Expression) extends Expression
@@ -41,17 +46,24 @@ object AST {
 
   def printExternalFun(f: ExternalFun): String = {
     val params = f.params.map(printParam).mkString(",")
-    "external def %s(%s):%s\n".format(f.name, params, f.typeName)
+    val typeName = printTypeDecl(f.typeName)
+    "external def %s(%s):%s\n".format(f.name, params, typeName)
   }
 
   def printFunDef(funDef: FunctionDef): String = {
     val params = funDef.params.map(printParam).mkString(",")
     val body = printFunBody(funDef.body)
-    "def %s(%s):%s = %s\n".format(funDef.name, params, funDef.typeName, body)
+    val typeName = printTypeDecl(funDef.typeName)
+    "def %s(%s):%s = %s\n".format(funDef.name, params, typeName, body)
   }
 
   def printParam(param: FunParam): String = {
-    param.name + ": " + param.typeName
+    param.name + ": " + printTypeDecl(param.typeName)
+  }
+
+  def printTypeDecl(t: TypeDecl): String = t match {
+    case ValueType(name) => name
+    case FunType(srcName, destName) => srcName + " => " + destName
   }
 
   def printFunBody(body: FunctionBody): String = {

@@ -16,10 +16,28 @@ class TimeSeriesTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = xs
       """.stripMargin
-    val ts = TimeSeriesValue(TimeSeries.empty)
+    val tsv = TimeSeriesValue(TimeSeries.empty)
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts))
+      Interpreter(exec).run("main", Seq(tsv))
     }
-    result.right.get.isInstanceOf[TimeSeriesValue] shouldBe true
+    val ts = result.right.get.asInstanceOf[TimeSeriesValue].ts
+    ts.length shouldBe 0
   }
+
+  it should "map over values" in {
+    val code =
+      """
+        |def f(a: Number): Number = a+2
+        |
+        |def main(xs: TimeSeries): TimeSeries = map(xs, f)
+      """.stripMargin
+    val tsv = TimeSeriesValue(TimeSeries.fromTimestamps(Seq((1, 1f), (2, 1f), (3, 1f))))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(tsv))
+    }
+    val ts = result.right.get.asInstanceOf[TimeSeriesValue].ts
+    ts.sum shouldBe 9
+  }
+
+
 }
