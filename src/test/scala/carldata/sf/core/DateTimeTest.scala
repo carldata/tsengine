@@ -1,11 +1,12 @@
-package carldata.sf
+package carldata.sf.core
 
 import java.time.format.DateTimeFormatter
 
 import carldata.sf.Runtime.{NumberValue, StringValue, Value}
-import carldata.sf.core.DateTime
 import carldata.sf.core.DateTime.DateTimeValue
+import carldata.sf.{Compiler, Interpreter}
 import org.scalatest._
+
 
 class DateTimeTest extends FlatSpec with Matchers {
   val libs = Seq(DateTime.header)
@@ -17,11 +18,11 @@ class DateTimeTest extends FlatSpec with Matchers {
         |def main(s: String): DateTime = date(s)
       """.stripMargin
 
-    val params = Seq(new StringValue("2017-08-21T10:30:30"))
+    val params = Seq(StringValue("2017-08-21T10:30:30"))
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result) shouldBe "2017-08-21T10:30:30"
+    toUTC(result.right.get) shouldBe "2017-08-21T10:30:30"
   }
 
   it should "adjust date" in {
@@ -47,7 +48,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result) shouldBe "2017-08-21T10:30:30"
+    toUTC(result.right.get) shouldBe "2017-08-21T10:30:30"
   }
 
   it should "get day of week" in {
@@ -83,7 +84,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result) shouldBe "2017-08-21T00:31:36"
+    toUTC(result.right.get) shouldBe "2017-08-21T00:31:36"
   }
 
   it should "floor minutes" in {
@@ -96,7 +97,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result) shouldBe "2017-08-21T11:00:36"
+    toUTC(result.right.get) shouldBe "2017-08-21T11:00:36"
   }
 
   it should "floor seconds" in {
@@ -109,11 +110,11 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result) shouldBe "2017-08-21T11:31:00"
+    toUTC(result.right.get) shouldBe "2017-08-21T11:31:00"
   }
 
-  def toUTC(r: Either[String, Value]): String = {
-    r.right.get.asInstanceOf[DateTimeValue].dt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+  def toUTC(v: Value): String = {
+    v.asInstanceOf[DateTimeValue].dt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
   }
 
 }
