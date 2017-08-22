@@ -14,7 +14,7 @@ import carldata.sf.compiler._
   */
 object Compiler {
 
-  val headers: Seq[String] = Seq(core.Math.header)
+  val headers: Seq[String] = Seq(core.MathModule.header)
 
   /** Make Exec using default library module */
   def make(code: String): Either[String, ExecCode] = Compiler.compile(code, headers)

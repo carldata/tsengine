@@ -3,14 +3,14 @@ package carldata.sf.core
 import java.time.format.DateTimeFormatter
 
 import carldata.sf.Runtime.{NumberValue, StringValue, Value}
-import carldata.sf.core.DateTime.DateTimeValue
+import carldata.sf.core.DateTimeModule.DateTimeValue
 import carldata.sf.{Compiler, Interpreter}
 import org.scalatest._
 
 
 class DateTimeTest extends FlatSpec with Matchers {
-  val libs = Seq(DateTime.header)
-  val dt = new DateTime()
+  val libs = Seq(DateTimeModule.header)
+  val dt = new DateTimeModule()
 
   "Datetime" should "convert date from string" in {
     val code =
