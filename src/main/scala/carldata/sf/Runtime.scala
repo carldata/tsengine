@@ -26,7 +26,7 @@ trait Runtime {
 
   def executeFunction(name: String, params: Seq[Value]): Option[Value] = {
     getClass.getMethods
-      .find(_.getName.contains("$" + name))
+      .find(_.getName == "$" + name)
       .map(m => m.invoke(this, params: _*).asInstanceOf[Value])
   }
 
