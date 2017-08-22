@@ -23,7 +23,7 @@ param
     ;
 
 typeDefinition
-    : Identifier
+    : Identifier | (Identifier '=>' Identifier)
     ;
 
 functionBody

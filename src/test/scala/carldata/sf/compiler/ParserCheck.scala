@@ -87,23 +87,31 @@ object ParserCheck extends Properties("Parser") {
     expr <- Gen.oneOf(Seq(appExpr, varExpr, literal, binaryOpExpr, boolOpExpr, relExpr, unaryExpr, negExpr, ifExpr))
   } yield expr
 
-  private val paramsGen = for {
+  private val paramsGenV = for {
     name <- idGen
     typeName <- idGen
-  } yield FunParam(name, typeName)
+  } yield FunParam(name, ValueType(typeName))
+
+  private val paramsGenF = for {
+    name <- idGen
+    srcName <- idGen
+    dstName <- idGen
+  } yield FunParam(name, FunType(srcName, dstName))
+
+  private val paramsGen = Gen.oneOf(paramsGenV, paramsGenF)
 
   private val externFunGen = for {
     funName <- idGen
     funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
     funTypeName <- idGen
-  } yield ExternalFun(funName, funParams, funTypeName)
+  } yield ExternalFun(funName, funParams, ValueType(funTypeName))
 
   private val funDefGen = for {
     funName <- idGen
     funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
     funTypeName <- idGen
     bodyExpr <- exprGen
-  } yield FunctionDef(funName, funParams, funTypeName, FunctionBody(Seq(), bodyExpr))
+  } yield FunctionDef(funName, funParams, ValueType(funTypeName), FunctionBody(Seq(), bodyExpr))
 
   private val moduleGen = for {
     efs <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, externFunGen) }

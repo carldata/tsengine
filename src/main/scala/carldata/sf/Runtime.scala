@@ -14,11 +14,12 @@ object Runtime {
 
   trait Value
 
-  // Hardcoded type definition
+  // Core type definition
   case object UnitValue extends Value
   case class NumberValue(v: Float) extends Value
   case class StringValue(str: String) extends Value
   case class BoolValue(v: Boolean) extends Value
+  case class Function1Value(f: NumberValue => NumberValue) extends Value
 
 }
 

@@ -1,7 +1,7 @@
 package carldata.sf
 
 import org.scalatest._
-import carldata.sf.core.Math
+import carldata.sf.core.MathModule
 
 /**
   * Mostly tests for Semantic Analysis module
@@ -32,7 +32,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |def main(): String = 'hello'
       """.stripMargin
-    val ast = Compiler.compile(code, Seq(Math.header))
+    val ast = Compiler.compile(code, Seq(MathModule.header))
     ast.isRight shouldBe true
   }
 
@@ -41,7 +41,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |def main(): Number = 12
       """.stripMargin
-    val ast = Compiler.compile(code, Seq(Math.header))
+    val ast = Compiler.compile(code, Seq(MathModule.header))
     ast.isRight shouldBe true
   }
 
@@ -50,7 +50,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |def main(): Bool = False
       """.stripMargin
-    val ast = Compiler.compile(code, Seq(Math.header))
+    val ast = Compiler.compile(code, Seq(MathModule.header))
     ast.isRight shouldBe true
   }
 
@@ -59,7 +59,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |def main(a: Number, b: Number): String = a == b
       """.stripMargin
-    val ast = Compiler.compile(code, Seq(Math.header))
+    val ast = Compiler.compile(code, Seq(MathModule.header))
     ast.isRight shouldBe false
   }
 
@@ -68,7 +68,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |def main(a: Number, b: Number): Bool = a != b
       """.stripMargin
-    val ast = Compiler.compile(code, Seq(Math.header))
+    val ast = Compiler.compile(code, Seq(MathModule.header))
     ast.isRight shouldBe true
   }
 
@@ -124,7 +124,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |def main(a: Number): Number = -a*-12
       """.stripMargin
-    val ast = Compiler.compile(code, Seq(Math.header))
+    val ast = Compiler.compile(code, Seq(MathModule.header))
     ast.isRight shouldBe true
   }
 
@@ -133,7 +133,7 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """
         |def main(a: Bool): Number = -a
       """.stripMargin
-    val ast = Compiler.compile(code, Seq(Math.header))
+    val ast = Compiler.compile(code, Seq(MathModule.header))
     ast.isRight shouldBe false
   }
 
@@ -173,6 +173,32 @@ class TypeCheckerTest extends FlatSpec with Matchers {
       """.stripMargin
     val ast = Compiler.compile(code, Seq())
     ast.isRight shouldBe true
+  }
+
+  it should "parse higher order functions" in {
+    val code =
+      """
+        |external def map2(xs: TimeSeries, f: Number => Number): TimeSeries
+        |
+        |def f(a: Number): Number = 2*a
+        |
+        |def main(xs: TimeSeries): TimeSeries = map2(xs, f)
+      """.stripMargin
+    val result = Compiler.make(code)
+    result.isRight shouldBe true
+  }
+
+  it should "catch HoF type mismatch" in {
+    val code =
+      """
+        |external def map2(xs: TimeSeries, f: Number => Number): TimeSeries
+        |
+        |def f(a: Number): String = 2*a
+        |
+        |def main(xs: TimeSeries): TimeSeries = map2(xs, f)
+      """.stripMargin
+    val result = Compiler.make(code)
+    result.isRight shouldBe false
   }
 
 }

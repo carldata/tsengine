@@ -50,12 +50,12 @@ object Parser {
       Seq()
     } else {
       ctx.paramList().param().asScala.map{pctx =>
-        FunParam(pctx.Identifier().getText, pctx.typeDefinition().Identifier().getText)
+        FunParam(pctx.Identifier().getText, convertTypeDecl(pctx.typeDefinition()))
       }
     }
     // Function type
     val typeDefCtx = ctx.typeDefinition()
-    val typeName = typeDefCtx.Identifier().getText
+    val typeName = convertTypeDecl(typeDefCtx)
     ExternalFun(funName, params, typeName)
 
   }
@@ -69,16 +69,26 @@ object Parser {
       Seq()
     } else {
       ctx.paramList().param().asScala.map{pctx =>
-        FunParam(pctx.Identifier().getText, pctx.typeDefinition().Identifier().getText)
+        FunParam(pctx.Identifier().getText, convertTypeDecl(pctx.typeDefinition))
       }
     }
     // Function type
     val typeDefCtx = ctx.typeDefinition()
-    val typeName = typeDefCtx.Identifier().getText
+    val typeName = convertTypeDecl(typeDefCtx)
     // function body
     val body = convertBody(ctx.functionBody())
     FunctionDef(funName, params, typeName, body)
 
+  }
+
+  def convertTypeDecl(context: TypeDefinitionContext): TypeDecl = {
+    if(context.Identifier.size() > 1) {
+      val src = context.Identifier(0).getText
+      val dst = context.Identifier(1).getText
+      FunType(src, dst)
+    } else {
+      ValueType(context.Identifier(0).getText)
+    }
   }
 
   def convertBody(ctx: FunctionBodyContext): FunctionBody = {

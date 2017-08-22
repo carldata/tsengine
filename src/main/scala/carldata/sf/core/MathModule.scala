@@ -6,7 +6,7 @@ import carldata.sf.Runtime.NumberValue
 /**
   * Core functions and types which can be accessed from the script
   */
-object Math {
+object MathModule {
   // Header which will be provided to the compiler
   val header: String =
     """
@@ -27,10 +27,10 @@ object Math {
       |external def tanh(a: Number): Number
     """.stripMargin
 
-  def apply(): Math = new Math()
+  def apply(): MathModule = new MathModule()
 }
 
-class Math extends Runtime{
+class MathModule extends Runtime{
 
   // Function definition
   def $ceil(a: NumberValue): NumberValue = NumberValue(math.ceil(a.v.toDouble).toFloat)

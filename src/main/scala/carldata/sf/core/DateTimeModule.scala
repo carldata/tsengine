@@ -4,12 +4,12 @@ import java.time.LocalDateTime
 
 import carldata.sf.Runtime
 import carldata.sf.Runtime.{NumberValue, StringValue, Value}
-import carldata.sf.core.DateTime.DateTimeValue
+import carldata.sf.core.DateTimeModule.DateTimeValue
 
 /**
   * Core functions and types which can be accessed from the script
   */
-object DateTime {
+object DateTimeModule {
 
   case class DateTimeValue(dt: LocalDateTime) extends Value
 
@@ -27,10 +27,10 @@ object DateTime {
       |external def floor_seconds(dt: DateTime): DateTime
     """.stripMargin
 
-  def apply(): DateTime = new DateTime()
+  def apply(): DateTimeModule = new DateTimeModule()
 }
 
-class DateTime extends Runtime {
+class DateTimeModule extends Runtime {
 
   // Function definition
   def $adjust_date(dt: DateTimeValue, y: NumberValue, m: NumberValue, d: NumberValue): DateTimeValue = DateTimeValue(dt.dt.withYear(parse(y)).withMonth(parse(m)).withDayOfMonth(parse(d)))
