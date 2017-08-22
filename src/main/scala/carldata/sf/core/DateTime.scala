@@ -4,11 +4,13 @@ import java.time.LocalDateTime
 
 import carldata.sf.Runtime
 import carldata.sf.Runtime.{NumberValue, StringValue, Value}
+import carldata.sf.core.DateTime.DateTimeValue
 
 /**
   * Core functions and types which can be accessed from the script
   */
 object DateTime {
+  case class DateTimeValue(dt: LocalDateTime) extends Value
   // Header which will be provided to the compiler
   val header: String =
     """
@@ -25,8 +27,6 @@ object DateTime {
 }
 
 class DateTime extends Runtime {
-
-  case class DateTimeValue(dt: LocalDateTime) extends Value
 
   // Function definition
   def $adjust_date(dt: DateTimeValue, y: NumberValue, m: NumberValue, d: NumberValue): DateTimeValue = DateTimeValue(dt.dt.withYear(parse(y)).withMonth(parse(m)).withDayOfMonth(parse(d)))

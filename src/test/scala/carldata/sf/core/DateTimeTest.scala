@@ -1,7 +1,10 @@
 package carldata.sf
 
-import carldata.sf.Runtime.{NumberValue, StringValue}
+import java.time.format.DateTimeFormatter
+
+import carldata.sf.Runtime.{NumberValue, StringValue, Value}
 import carldata.sf.core.DateTime
+import carldata.sf.core.DateTime.DateTimeValue
 import org.scalatest._
 
 class DateTimeTest extends FlatSpec with Matchers {
@@ -18,7 +21,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    result.right.get.toString shouldEqual dt.$from_datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(10), NumberValue(30), NumberValue(30), NumberValue(0)).toString
+    toUTC(result) shouldBe "2017-08-21T10:30:30"
   }
 
   it should "adjust date" in {
@@ -44,7 +47,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    result.right.get.toString shouldBe dt.$from_datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(10), NumberValue(30), NumberValue(30), NumberValue(0)).toString
+    toUTC(result) shouldBe "2017-08-21T10:30:30"
   }
 
   it should "get day of week" in {
@@ -80,7 +83,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    result.right.get.toString shouldBe dt.$from_datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(0), NumberValue(31), NumberValue(36), NumberValue(0)).toString
+    toUTC(result) shouldBe "2017-08-21T00:31:36"
   }
 
   it should "floor minutes" in {
@@ -93,7 +96,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    result.right.get.toString shouldBe dt.$from_datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(11), NumberValue(0), NumberValue(36), NumberValue(0)).toString
+    toUTC(result) shouldBe "2017-08-21T11:00:36"
   }
 
   it should "floor seconds" in {
@@ -106,7 +109,11 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    result.right.get.toString shouldBe dt.$from_datetime(NumberValue(2017), NumberValue(8), NumberValue(21), NumberValue(11), NumberValue(31), NumberValue(0), NumberValue(0)).toString
+    toUTC(result) shouldBe "2017-08-21T11:31:00"
+  }
+
+  def toUTC(r: Either[String, Value]): String = {
+    r.right.get.asInstanceOf[DateTimeValue].dt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
   }
 
 }
