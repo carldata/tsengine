@@ -15,6 +15,7 @@ libraryDependencies ++= Seq(
   "org.antlr" % "antlr4-runtime" % "4.7",
 
   // Test dependencies
+  "com.storm-enroute" %% "scalameter-core" % "0.8.2" % "test",
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
   "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
 )
