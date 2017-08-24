@@ -2,7 +2,6 @@ package carldata.sf
 
 import java.io.File
 
-import carldata.sf.Runtime.BoolValue
 import org.scalatest._
 
 import scala.io.Source
@@ -35,8 +34,8 @@ class ExamplesTest extends FlatSpec with Matchers {
         false
       } else {
         // Check if the result of each module is true
-        val results = executed.map(x => (x._1, x._2.getOrElse(BoolValue(false))))
-        val resultErrors = results.filter(_._2 == BoolValue(false))
+        val results = executed.map(x => (x._1, x._2.getOrElse(false)))
+        val resultErrors = results.filter(_._2 == false)
         if (resultErrors.nonEmpty) {
           println("Returned false instead of true in files:")
           resultErrors.map(_._1).foreach(println)

@@ -8,27 +8,12 @@
   */
 package carldata.sf
 
-import carldata.sf.Runtime.Value
-
-object Runtime {
-
-  trait Value
-
-  // Core type definition
-  case object UnitValue extends Value
-  case class NumberValue(v: Float) extends Value
-  case class StringValue(str: String) extends Value
-  case class BoolValue(v: Boolean) extends Value
-  case class Function1Value(f: NumberValue => NumberValue) extends Value
-
-}
-
 trait Runtime {
 
-  def executeFunction(name: String, params: Seq[Value]): Option[Value] = {
+  def executeFunction(name: String, params: Seq[Any]): Option[Any] = {
     getClass.getMethods
       .find(_.getName == "$" + name)
-      .map(m => m.invoke(this, params: _*).asInstanceOf[Value])
+      .map(m => m.invoke(this, params.map(_.asInstanceOf[AnyRef]): _*))
   }
 
 }
