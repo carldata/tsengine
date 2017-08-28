@@ -1,7 +1,7 @@
 
 name := "flow-script"
 
-version := "0.7.1"
+version := "0.7.2"
 
 organization := "io.github.carldata"
 
@@ -9,13 +9,12 @@ scalaVersion := "2.12.3"
 
 libraryDependencies ++= Seq(
   // Scala native libraries
-  "io.github.carldata" %% "timeseries" % "0.2.1",
+  "io.github.carldata" %% "timeseries" % "0.2.2",
 
   // Java dependencies
   "org.antlr" % "antlr4-runtime" % "4.7",
 
   // Test dependencies
-  "com.storm-enroute" %% "scalameter-core" % "0.8.2" % "test",
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
   "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
 )
