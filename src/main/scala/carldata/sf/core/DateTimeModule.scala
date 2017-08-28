@@ -3,15 +3,11 @@ package carldata.sf.core
 import java.time.LocalDateTime
 
 import carldata.sf.Runtime
-import carldata.sf.Runtime.{NumberValue, StringValue, Value}
-import carldata.sf.core.DateTimeModule.DateTimeValue
 
 /**
   * Core functions and types which can be accessed from the script
   */
 object DateTimeModule {
-
-  case class DateTimeValue(dt: LocalDateTime) extends Value
 
   // Header which will be provided to the compiler
   val header: String =
@@ -33,26 +29,30 @@ object DateTimeModule {
 class DateTimeModule extends Runtime {
 
   // Function definition
-  def $adjust_date(dt: DateTimeValue, y: NumberValue, m: NumberValue, d: NumberValue): DateTimeValue = DateTimeValue(dt.dt.withYear(parse(y)).withMonth(parse(m)).withDayOfMonth(parse(d)))
+  def $adjust_date(dt: LocalDateTime, y: Float, m: Float, d: Float): LocalDateTime =
+    dt.withYear(parse(y)).withMonth(parse(m)).withDayOfMonth(parse(d))
 
-  def $adjust_time(dt: DateTimeValue, h: NumberValue, m: NumberValue, s: NumberValue): DateTimeValue = DateTimeValue(dt.dt.withHour(parse(h)).withMinute(parse(m)).withSecond(parse(m)))
+  def $adjust_time(dt: LocalDateTime, h: Float, m: Float, s: Float): LocalDateTime =
+    dt.withHour(parse(h)).withMinute(parse(m)).withSecond(parse(m))
 
-  def $date(s: StringValue): DateTimeValue = DateTimeValue(LocalDateTime.parse(s.str))
+  def $date(s: String): LocalDateTime = LocalDateTime.parse(s)
 
-  def $from_date(y: NumberValue, m: NumberValue, d: NumberValue): DateTimeValue = DateTimeValue(LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0))
+  def $from_date(y: Float, m: Float, d: Float): LocalDateTime =
+    LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0)
 
-  def $from_datetime(y: NumberValue, m: NumberValue, d: NumberValue, h: NumberValue, mt: NumberValue, s: NumberValue, ns: NumberValue): DateTimeValue = DateTimeValue(LocalDateTime.of(parse(y), parse(m), parse(d), parse(h), parse(mt), parse(s), parse(ns)))
+  def $from_datetime(y: Float, m: Float, d: Float, h: Float, mt: Float,
+                     s: Float, ns: Float): LocalDateTime =
+    LocalDateTime.of(parse(y), parse(m), parse(d), parse(h), parse(mt), parse(s), parse(ns))
 
-  def $day_of_week(dt: DateTimeValue): NumberValue = NumberValue(dt.dt.getDayOfWeek.getValue)
+  def $day_of_week(dt: LocalDateTime): Float = dt.getDayOfWeek.getValue
 
-  def $floor_hours(dt: DateTimeValue): DateTimeValue = DateTimeValue(dt.dt.withHour(0))
+  def $floor_hours(dt: LocalDateTime): LocalDateTime = dt.withHour(0)
 
-  def $floor_minutes(dt: DateTimeValue): DateTimeValue = DateTimeValue(dt.dt.withMinute(0))
+  def $floor_minutes(dt: LocalDateTime): LocalDateTime = dt.withMinute(0)
 
-  def $floor_seconds(dt: DateTimeValue): DateTimeValue = DateTimeValue(dt.dt.withSecond(0))
+  def $floor_seconds(dt: LocalDateTime): LocalDateTime = dt.withSecond(0)
 
-
-  private def parse(n: NumberValue): Int = n.v.toInt
+  private def parse(n: Float): Int = n.toInt
 
 }
 

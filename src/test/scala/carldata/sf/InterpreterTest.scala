@@ -1,7 +1,5 @@
 package carldata.sf
 
-import carldata.sf.Runtime.{BoolValue, NumberValue, StringValue}
-import carldata.sf.core.MathModule
 import org.scalatest._
 
 
@@ -27,7 +25,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(1), NumberValue(2)))
+      Interpreter(ast).run("main", Seq(1, 2))
     }
     result.isRight shouldBe true
   }
@@ -38,9 +36,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, xs: Number): Number = a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(1), NumberValue(2)))
+      Interpreter(ast).run("main", Seq(1, 2))
     }
-    result shouldBe Right(NumberValue(1))
+    result shouldBe Right(1)
   }
 
   it should "call external function" in {
@@ -51,9 +49,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Number = min(a, b)
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(11), NumberValue(2)))
+      Interpreter(ast).run("main", Seq(11, 2))
     }
-    result shouldBe Right(NumberValue(2))
+    result shouldBe Right(2)
   }
 
   it should "return value of the string literal" in {
@@ -64,7 +62,7 @@ class InterpreterTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq())
     }
-    result shouldBe Right(StringValue("hello"))
+    result shouldBe Right("hello")
   }
 
   it should "return value of the number literal" in {
@@ -75,7 +73,7 @@ class InterpreterTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq())
     }
-    result shouldBe Right(NumberValue(0.23f))
+    result shouldBe Right(0.23f)
   }
 
   it should "return value of the bool literal" in {
@@ -86,7 +84,7 @@ class InterpreterTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq())
     }
-    result shouldBe Right(BoolValue(false))
+    result shouldBe Right(false)
   }
 
   it should "return true for relation" in {
@@ -95,9 +93,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Bool = a == b
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(2), NumberValue(2)))
+      Interpreter(ast).run("main", Seq(2, 2))
     }
-    result shouldBe Right(BoolValue(true))
+    result shouldBe Right(true)
   }
 
   it should "return false for relation" in {
@@ -106,9 +104,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Bool = a != b
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(2), NumberValue(2)))
+      Interpreter(ast).run("main", Seq(2, 2))
     }
-    result shouldBe Right(BoolValue(false))
+    result shouldBe Right(false)
   }
 
   it should "execute other function defined in the script" in {
@@ -120,7 +118,7 @@ class InterpreterTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("test", Seq())
     }
-    result shouldBe Right(BoolValue(true))
+    result shouldBe Right(true)
   }
 
   it should "execute math expression" in {
@@ -129,9 +127,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Bool = a+b > a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(2), NumberValue(2)))
+      Interpreter(ast).run("main", Seq(2, 2))
     }
-    result shouldBe Right(BoolValue(true))
+    result shouldBe Right(true)
   }
 
   it should "calculate a+b*2" in {
@@ -140,9 +138,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Number = a+b*2
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(1), NumberValue(3)))
+      Interpreter(ast).run("main", Seq(1, 3))
     }
-    result shouldBe Right(NumberValue(7))
+    result shouldBe Right(7)
   }
 
   it should "calculate 2*b+a" in {
@@ -151,9 +149,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Number = 2*b+a
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(1), NumberValue(3)))
+      Interpreter(ast).run("main", Seq(1, 3))
     }
-    result shouldBe Right(NumberValue(7))
+    result shouldBe Right(7)
   }
 
   it should "calculate 2*(b+a)" in {
@@ -162,9 +160,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Number): Number = 2*(b+a)
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(1), NumberValue(3)))
+      Interpreter(ast).run("main", Seq(1, 3))
     }
-    result shouldBe Right(NumberValue(8))
+    result shouldBe Right(8)
   }
 
   it should "calculate -a*2" in {
@@ -173,9 +171,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number): Number = -a*2
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(3)))
+      Interpreter(ast).run("main", Seq(3))
     }
-    result shouldBe Right(NumberValue(-6))
+    result shouldBe Right(-6)
   }
 
   it should "calculate log" in {
@@ -184,9 +182,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number): Number = log10(a)
       """.stripMargin
     val result = Compiler.make(code).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(1000)))
+      Interpreter(ast).run("main", Seq(1000))
     }
-    result shouldBe Right(NumberValue(3))
+    result shouldBe Right(3)
   }
 
   it should "calculate && and || expression" in {
@@ -195,9 +193,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: Bool): Bool = (a == 10) && (False || !b)
       """.stripMargin
     val result = Compiler.make(code).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(10), BoolValue(false)))
+      Interpreter(ast).run("main", Seq(10, false))
     }
-    result shouldBe Right(BoolValue(true))
+    result shouldBe Right(true)
   }
 
   it should "calculate if-then-else" in {
@@ -206,9 +204,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number, b: String): String = if a > 10 then "ok" else b
       """.stripMargin
     val result = Compiler.make(code).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(12), StringValue("not ok")))
+      Interpreter(ast).run("main", Seq(12, "not ok"))
     }
-    result shouldBe Right(StringValue("ok"))
+    result shouldBe Right("ok")
   }
 
   it should "check let-in" in {
@@ -222,9 +220,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         |   a*y
       """.stripMargin
     val result = Compiler.make(code).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(5)))
+      Interpreter(ast).run("main", Seq(5))
     }
-    result shouldBe Right(NumberValue(30))
+    result shouldBe Right(30)
   }
 
   it should "show runtime error message" in {
@@ -235,7 +233,7 @@ class InterpreterTest extends FlatSpec with Matchers {
         |def main(a: Number): Number = test(a)
       """.stripMargin
     val result = Compiler.make(code).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(12)))
+      Interpreter(ast).run("main", Seq(12))
     }
     result.left.getOrElse("").substring(0, 7) shouldBe "Runtime"
   }
@@ -248,9 +246,9 @@ class InterpreterTest extends FlatSpec with Matchers {
         | in x > 2.9 && x < 3.1
       """.stripMargin
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(NumberValue(1), NumberValue(2)))
+      Interpreter(ast).run("main", Seq(1, 2))
     }
-    result shouldBe Right(BoolValue(true))
+    result shouldBe Right(true)
   }
 
 }

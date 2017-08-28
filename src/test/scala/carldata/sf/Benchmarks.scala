@@ -1,10 +1,8 @@
 package carldata.sf
 
 import carldata.series.TimeSeries
-import carldata.sf.core.TimeSeriesModule.TimeSeriesValue
-import org.scalatest.{FlatSpec, Matchers}
-
 import org.scalameter._
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
   * Measure library performance
@@ -36,7 +34,7 @@ class Benchmarks extends FlatSpec with Matchers {
     }
 
     val timeScript: Quantity[Double] = withWarmer(new Warmer.Default).measure {
-      exec.run("main", Seq(TimeSeriesValue(ts)))
+      exec.run("main", Seq(ts))
     }
 
     println(s"map over 1M points (native: $timeNative, script: $timeScript")

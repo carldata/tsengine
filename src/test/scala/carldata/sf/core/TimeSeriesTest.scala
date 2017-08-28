@@ -1,7 +1,6 @@
 package carldata.sf.core
 
 import carldata.series.TimeSeries
-import carldata.sf.core.TimeSeriesModule.TimeSeriesValue
 import carldata.sf.{Compiler, Interpreter}
 import org.scalatest._
 
@@ -16,11 +15,11 @@ class TimeSeriesTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = xs
       """.stripMargin
-    val tsv = TimeSeriesValue(TimeSeries.empty)
+    val tsv: TimeSeries[Float] = TimeSeries.empty
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(tsv))
     }
-    val ts = result.right.get.asInstanceOf[TimeSeriesValue].ts
+    val ts = result.right.get.asInstanceOf[TimeSeries[Float]]
     ts.length shouldBe 0
   }
 
@@ -31,11 +30,11 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |
         |def main(xs: TimeSeries): TimeSeries = map(xs, f)
       """.stripMargin
-    val tsv = TimeSeriesValue(TimeSeries.fromTimestamps(Seq((1, 1f), (2, 1f), (3, 1f))))
+    val tsv = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 1f), (3L, 1f)))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(tsv))
     }
-    val ts = result.right.get.asInstanceOf[TimeSeriesValue].ts
+    val ts = result.right.get.asInstanceOf[TimeSeries[Float]]
     ts.sum shouldBe 9
   }
 
