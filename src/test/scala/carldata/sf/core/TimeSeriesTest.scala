@@ -55,5 +55,19 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "differentiate time" in {
+    val code =
+      """
+        |def main(xs: TimeSeries): TimeSeries = delta_time(xs)
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(34), now.plusSeconds(56), now.plusSeconds(57))
+    val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
+    val expected = TimeSeries(idx.tail, Vector(15f, 15f, 4f, 22f, 1f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts))
+    }
+    result shouldBe Right(expected)
+  }
 
 }
