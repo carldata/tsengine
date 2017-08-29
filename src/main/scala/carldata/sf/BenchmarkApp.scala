@@ -7,7 +7,7 @@ import org.scalameter._
 /**
   * Sandbox for testing implementation.
   */
-object Main {
+object BenchmarkApp {
 
   def main(args: Array[String]): Unit = {
     measureMap()
@@ -34,9 +34,10 @@ object Main {
       exec.run("main", Seq(ts))
     }
 
-    println(s"map over 1M points (native: $timeNative, script: $timeScript")
+    println(s"map over 1M points (native: $timeNative, script: $timeScript)")
   }
 
+  /** Some sandbox for testing scripts */
   def sandbox(): Unit = {
     val code =
       """

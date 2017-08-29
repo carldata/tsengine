@@ -12,19 +12,17 @@ object TimeSeriesModule {
   val header: String =
     """
       |external def map(xs: TimeSeries, f: Number => Number): TimeSeries
+      |external def differentiate(xs: TimeSeries): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
 }
 
-class TimeSeriesModule extends Runtime{
-
+class TimeSeriesModule extends Runtime {
 
   // Function definition
-  def $map(xs: TimeSeries[Float], f: Float => Float): TimeSeries[Float] = {
-    def lf(x: Float): Float = f(x)
-    val vs: Vector[Float] = xs.values.map(lf)
-    new TimeSeries(xs.index, vs)
-  }
+  def $map(xs: TimeSeries[Float], f: Float => Float): TimeSeries[Float] = xs.mapValues(f)
+
+  def $differentiate(xs: TimeSeries[Float]): TimeSeries[Float] = xs.differentiate
 }
 
