@@ -44,7 +44,7 @@ class DateTimeModule extends Runtime {
 
   def $date(s: String): LocalDateTime = LocalDateTime.parse(s)
 
-  def $days(n: Long): Duration = Duration.ofDays(n)
+  def $days(n: Float): Duration = Duration.ofDays(n.toLong)
 
   def $from_date(y: Float, m: Float, d: Float): LocalDateTime =
     LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0)
@@ -61,15 +61,15 @@ class DateTimeModule extends Runtime {
 
   def $floor_seconds(dt: LocalDateTime): LocalDateTime = dt.withSecond(0)
 
-  def $hours(n: Long): Duration = Duration.ofHours(n)
+  def $hours(n: Float): Duration = Duration.ofHours(n.toLong)
 
-  def $minutes(n: Long): Duration = Duration.ofMinutes(n)
+  def $minutes(n: Float): Duration = Duration.ofMinutes(n.toLong)
 
-  def $months(n: Int): Duration = ChronoUnit.MONTHS.getDuration.multipliedBy(n)
+  def $months(n: Float): Duration = ChronoUnit.MONTHS.getDuration.multipliedBy(n.toLong)
 
-  def $weeks(n: Int): Duration = ChronoUnit.WEEKS.getDuration.multipliedBy(n)
+  def $weeks(n: Float): Duration = ChronoUnit.WEEKS.getDuration.multipliedBy(n.toLong)
 
-  def $years(n: Int): Duration = ChronoUnit.YEARS.getDuration.multipliedBy(n)
+  def $years(n: Float): Duration = ChronoUnit.YEARS.getDuration.multipliedBy(n.toLong)
 
 
   private def parse(n: Float): Int = n.toInt

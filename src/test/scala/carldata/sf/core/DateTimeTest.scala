@@ -118,7 +118,7 @@ class DateTimeTest extends FlatSpec with Matchers {
       """.stripMargin
 
     val result = Compiler.compile(code, libs).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(5))
+      Interpreter(exec).run("main", Seq(5f))
     }
     result.right.get.asInstanceOf[Duration].toString shouldBe "PT5M"
   }
@@ -130,7 +130,7 @@ class DateTimeTest extends FlatSpec with Matchers {
       """.stripMargin
 
     val result = Compiler.compile(code, libs).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(6))
+      Interpreter(exec).run("main", Seq(6f))
     }
     result.right.get.asInstanceOf[Duration].toString shouldBe "PT6H"
   }
@@ -142,7 +142,7 @@ class DateTimeTest extends FlatSpec with Matchers {
       """.stripMargin
 
     val result = Compiler.compile(code, libs).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(2))
+      Interpreter(exec).run("main", Seq(2f))
     }
     result.right.get.asInstanceOf[Duration].toString shouldBe "PT48H"
   }
@@ -154,7 +154,7 @@ class DateTimeTest extends FlatSpec with Matchers {
       """.stripMargin
 
     val result = Compiler.compile(code, libs).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(2))
+      Interpreter(exec).run("main", Seq(2f))
     }
     result.right.get.asInstanceOf[Duration].toString shouldBe "PT336H"
   }
@@ -166,7 +166,7 @@ class DateTimeTest extends FlatSpec with Matchers {
       """.stripMargin
 
     val result = Compiler.compile(code, libs).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(2))
+      Interpreter(exec).run("main", Seq(2f))
     }
     result.right.get.asInstanceOf[Duration].toDays shouldBe 60
   }
@@ -178,7 +178,7 @@ class DateTimeTest extends FlatSpec with Matchers {
       """.stripMargin
 
     val result = Compiler.compile(code, libs).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(1))
+      Interpreter(exec).run("main", Seq(1f))
     }
     result.right.get.asInstanceOf[Duration].toDays shouldBe 365
   }
