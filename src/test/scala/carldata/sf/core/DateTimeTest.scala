@@ -1,11 +1,10 @@
 package carldata.sf.core
 
-import java.time.LocalDateTime
+import java.time.{Duration, LocalDateTime}
 import java.time.format.DateTimeFormatter
 
 import carldata.sf.{Compiler, Interpreter}
 import org.scalatest._
-
 
 class DateTimeTest extends FlatSpec with Matchers {
   val libs = Seq(DateTimeModule.header)
@@ -111,6 +110,79 @@ class DateTimeTest extends FlatSpec with Matchers {
     }
     toUTC(result.right.get) shouldBe "2017-08-21T11:31:00"
   }
+
+  it should "get minutes" in {
+    val code =
+      """
+        |def main(n: Number): Duration = minutes(n)
+      """.stripMargin
+
+    val result = Compiler.compile(code, libs).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(5f))
+    }
+    result.right.get.asInstanceOf[Duration].toString shouldBe "PT5M"
+  }
+
+  it should "get hours" in {
+    val code =
+      """
+        |def main(n: Number): Duration = hours(n)
+      """.stripMargin
+
+    val result = Compiler.compile(code, libs).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(6f))
+    }
+    result.right.get.asInstanceOf[Duration].toString shouldBe "PT6H"
+  }
+
+  it should "get days" in {
+    val code =
+      """
+        |def main(n: Number): Duration = days(n)
+      """.stripMargin
+
+    val result = Compiler.compile(code, libs).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(2f))
+    }
+    result.right.get.asInstanceOf[Duration].toString shouldBe "PT48H"
+  }
+
+  it should "get weeks" in {
+    val code =
+      """
+        |def main(n: Number): Duration = weeks(n)
+      """.stripMargin
+
+    val result = Compiler.compile(code, libs).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(2f))
+    }
+    result.right.get.asInstanceOf[Duration].toString shouldBe "PT336H"
+  }
+
+  it should "get months" in {
+    val code =
+      """
+        |def main(n: Number): Duration = months(n)
+      """.stripMargin
+
+    val result = Compiler.compile(code, libs).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(2f))
+    }
+    result.right.get.asInstanceOf[Duration].toDays shouldBe 60
+  }
+
+  it should "get years" in {
+    val code =
+      """
+        |def main(n: Number): Duration = years(n)
+      """.stripMargin
+
+    val result = Compiler.compile(code, libs).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(1f))
+    }
+    result.right.get.asInstanceOf[Duration].toDays shouldBe 365
+  }
+
 
   def toUTC(v: Any): String = {
     v.asInstanceOf[LocalDateTime].format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
