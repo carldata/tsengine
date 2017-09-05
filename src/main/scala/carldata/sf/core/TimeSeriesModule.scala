@@ -25,7 +25,7 @@ class TimeSeriesModule extends Runtime {
 
   // Function definition
   def $map(xs: TimeSeries[Float], f: Float => Float): TimeSeries[Float] = xs.mapValues(f)
-  def $differentiate(xs: TimeSeries[Float]): TimeSeries[Float] = xs.differentiate
+  def $differentiate(xs: TimeSeries[Float]): TimeSeries[Float] = TimeSeries.differentiate(xs)
   def $delta_time(xs: TimeSeries[Float]): TimeSeries[Float] = {
     if(xs.isEmpty) xs
     else{

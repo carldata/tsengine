@@ -37,7 +37,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
       Interpreter(exec).run("main", Seq(tsv))
     }
     val ts = result.right.get.asInstanceOf[TimeSeries[Float]]
-    ts.sum shouldBe 9
+    ts.values.sum shouldBe 9
   }
 
   it should "differentiate values" in {
