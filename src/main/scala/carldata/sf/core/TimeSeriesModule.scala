@@ -19,6 +19,7 @@ object TimeSeriesModule {
       |external def differentiate(xs: TimeSeries): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def maximum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def median(xs: TimeSeries, d: Duration): TimeSeries
       |external def minimum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
@@ -53,6 +54,27 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
+  def $median(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    def f(seq: Seq[Float]): Float = {
+      val sorted = seq.sorted
+      val center = Math.abs(sorted.length / 2)
+      if (seq.length % 2 == 0) {
+        (sorted(center) + sorted(center - 1)) / 2
+      }
+      else {
+        sorted(center)
+      }
+    }
+
+    if (xs.isEmpty) xs
+    else {
+      val st = xs.index.head
+      xs.groupByTime(floor_time(st, _, d), f)
+    }
+
+
+  }
+
   def $minimum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
     else {
@@ -62,7 +84,7 @@ class TimeSeriesModule extends Runtime {
   }
 
   def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
-  
+
   def $sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
     else {
