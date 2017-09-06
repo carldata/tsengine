@@ -64,7 +64,7 @@ class TimeSeriesModule extends Runtime {
   def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
     else {
-      TimeSeries.integrateByTime(TimeSeries.resample(xs, d), d)
+      TimeSeries.integrateByTime(xs, d)
     }
   }
 
