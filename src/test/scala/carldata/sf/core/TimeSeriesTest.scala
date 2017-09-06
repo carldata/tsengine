@@ -107,8 +107,8 @@ class TimeSeriesTest extends FlatSpec with Matchers {
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:02")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80), now.plusSeconds(85))
-    val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f, 7f))
-    val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(3f, 6f))
+    val ts = TimeSeries(idx, Vector(3f, 2f, 1f, 3f, 2f, 6f, 7f))
+    val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(2.5f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f))
     }
