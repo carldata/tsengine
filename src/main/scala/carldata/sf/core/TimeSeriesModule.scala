@@ -56,11 +56,13 @@ class TimeSeriesModule extends Runtime {
 
   def $median(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(seq: Seq[Float]): Float = {
+      val sorted = seq.sorted
+      val center = Math.abs(sorted.length / 2)
       if (seq.length % 2 == 0) {
-        (seq.sorted.drop(seq.length / 2).head + seq.sorted.take(seq.length / 2).last) / 2
+        (sorted(center) + sorted(center - 1)) / 2
       }
       else {
-        seq.sorted.drop(seq.length / 2).head
+        sorted(center)
       }
     }
 
