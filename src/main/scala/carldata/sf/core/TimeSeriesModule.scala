@@ -23,6 +23,7 @@ object TimeSeriesModule {
       |external def minimum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def step(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -90,6 +91,14 @@ class TimeSeriesModule extends Runtime {
     else {
       val st = xs.index.head
       xs.groupByTime(floor_time(st, _, d), _.sum)
+    }
+  }
+
+  def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    if (xs.isEmpty) xs
+    else {
+      val st = xs.index.head
+      xs.groupByTime(floor_time(st, _, d), _.last)
     }
   }
 
