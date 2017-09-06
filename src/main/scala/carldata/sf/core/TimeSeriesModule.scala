@@ -1,5 +1,6 @@
 package carldata.sf.core
 
+import java.lang.reflect.InvocationTargetException
 import java.time.temporal.ChronoUnit
 import java.time.{Duration, LocalDateTime, ZoneOffset}
 
@@ -19,6 +20,7 @@ object TimeSeriesModule {
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def maximum(xs: TimeSeries, d: Duration): TimeSeries
       |external def minimum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
 
@@ -56,6 +58,13 @@ class TimeSeriesModule extends Runtime {
     else {
       val st = xs.index.head
       xs.groupByTime(floor_time(st, _, d), _.min)
+    }
+  }
+
+  def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    if (xs.isEmpty) xs
+    else {
+      TimeSeries.integrateByTime(TimeSeries.resample(xs, d), d)
     }
   }
 
