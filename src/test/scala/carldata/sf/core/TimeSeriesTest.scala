@@ -76,9 +76,9 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, d: Number): TimeSeries = maximum(xs, minutes(d))
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:00")
-    val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
+    val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
-    val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(3f,6f))
+    val expected = TimeSeries(Vector(now, now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3)), Vector(3f, 2f, 0f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f))
     }
@@ -93,7 +93,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:00:02")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
-    val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(1f,2f))
+    val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(1f, 2f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f))
     }
@@ -108,7 +108,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:00:02")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
-    val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(9f,8f))
+    val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(9f, 8f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f))
     }

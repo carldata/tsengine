@@ -47,7 +47,8 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.head.get._1
-      xs.groupByTime(floor_time(st, _, d), _.max)
+      val ys = xs.groupByTime(floor_time(st, _, d), _.max)
+      find_missing(ys, d)
     }
   }
 
@@ -55,7 +56,8 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.head.get._1
-      xs.groupByTime(floor_time(st, _, d), _.min)
+      val ys = xs.groupByTime(floor_time(st, _, d), _.min)
+      find_missing(ys, d)
     }
   }
 
@@ -63,13 +65,30 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.head.get._1
-      xs.groupByTime(floor_time(st, _, d), _.sum)
+      val ys = xs.groupByTime(floor_time(st, _, d), _.sum)
+      find_missing(ys, d)
     }
   }
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
     val diff = ChronoUnit.SECONDS.between(st, ct)
     st.plusSeconds((diff / d.getSeconds) * d.getSeconds)
+  }
+
+  private def find_missing(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    val diff = ChronoUnit.SECONDS.between(xs.head.get._1, xs.last.get._1)
+    if ((diff / d.getSeconds) + 1 == xs.length) xs
+    else {
+      val ts = Iterator.iterate(xs.index.head)(_.plusNanos(d.toNanos))
+        .takeWhile(_.isBefore(xs.index.last.plusNanos(1))).toVector
+        .map(x => (x, 0f))
+        .map(x => (x._1, xs.filter(z => z._1 == x._1).head match {
+          case Some(t) => t._2 + x._2
+          case _ => x._2
+        }))
+        .map(x => (x._1.toEpochSecond(ZoneOffset.UTC), x._2))
+      TimeSeries.fromTimestamps(ts)
+    }
   }
 
 }
