@@ -23,6 +23,7 @@ object TimeSeriesModule {
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
+      |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
 
@@ -94,6 +95,8 @@ class TimeSeriesModule extends Runtime {
 
 
   def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
+
+  def $shift(xs: TimeSeries[Float], d: Duration, f: Boolean): TimeSeries[Float] = xs.shiftTime(d, f)
 
   def $sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
