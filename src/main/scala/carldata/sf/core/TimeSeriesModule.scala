@@ -90,9 +90,8 @@ class TimeSeriesModule extends Runtime {
     xs.rollingWindow(d, f)
   }
 
-  def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    xs.rollingWindow(d, _.sum)
-  }
+  def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.rollingWindow(d, _.sum)
+
 
   def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
 
