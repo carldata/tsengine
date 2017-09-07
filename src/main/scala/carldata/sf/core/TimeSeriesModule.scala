@@ -20,6 +20,8 @@ object TimeSeriesModule {
       |external def maximum(xs: TimeSeries, d: Duration): TimeSeries
       |external def median(xs: TimeSeries, d: Duration): TimeSeries
       |external def minimum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
+      |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
@@ -80,6 +82,16 @@ class TimeSeriesModule extends Runtime {
       val st = xs.index.head
       xs.groupByTime(floor_time(st, _, d), _.min)
     }
+  }
+
+  def $rolling_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    def f(v: Seq[Float]): Float = v.sum / v.length
+
+    xs.rollingWindow(d, f)
+  }
+
+  def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    xs.rollingWindow(d, _.sum)
   }
 
   def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
