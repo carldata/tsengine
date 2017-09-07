@@ -1,6 +1,5 @@
 package carldata.sf.core
 
-import java.lang.reflect.InvocationTargetException
 import java.time.temporal.ChronoUnit
 import java.time.{Duration, LocalDateTime, ZoneOffset}
 

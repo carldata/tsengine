@@ -1,6 +1,6 @@
 package carldata.sf.core
 
-import java.time.{Duration, LocalDateTime}
+import java.time.LocalDateTime
 
 import carldata.series.TimeSeries
 import carldata.sf.{Compiler, Interpreter}
