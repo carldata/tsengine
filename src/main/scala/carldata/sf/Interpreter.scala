@@ -11,7 +11,7 @@ import carldata.sf.core.TimeSeriesModule
 object Interpreter {
 
   def apply(exec: ExecCode): Interpreter = {
-    new Interpreter(exec, Seq(core.MathModule(), TimeSeriesModule(), core.DateTimeModule()))
+    new Interpreter(exec, Seq(core.MathModule(), TimeSeriesModule(), core.DateTimeModule(), core.HydrologyModule()))
   }
 
 }
