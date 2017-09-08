@@ -247,4 +247,19 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "fill missing values with default value" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, d: Number, v: Number): TimeSeries = fill_missing(xs, minutes(d), v)
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:02")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(3), now.plusMinutes(4))
+    val ts = TimeSeries(idx, Vector(1f, 4f, 6f))
+    val expected = TimeSeries(Vector(now.plusMinutes(1), now.plusMinutes(2) ,now.plusMinutes(3), now.plusMinutes(4)), Vector(1f, 0f, 4f, 6f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 1f, 0f))
+    }
+    result shouldBe Right(expected)
+  }
+
 }

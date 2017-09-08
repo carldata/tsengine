@@ -17,6 +17,7 @@ object TimeSeriesModule {
       |external def map(xs: TimeSeries, f: Number => Number): TimeSeries
       |external def differentiate(xs: TimeSeries): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
+      |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
       |external def interpolate(xs: TimeSeries, d: Duration): TimeSeries
       |external def maximum(xs: TimeSeries, d: Duration): TimeSeries
       |external def median(xs: TimeSeries, d: Duration): TimeSeries
@@ -49,6 +50,8 @@ class TimeSeriesModule extends Runtime {
       TimeSeries(idx, vs)
     }
   }
+
+  def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = TimeSeries.fillMissing(xs, d, v)
 
   def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
 
