@@ -9,8 +9,8 @@ object HydrologyModule {
   // Header which will be provided to the compiler
   val header: String =
     """
-      |external def manning_flow(n: Number, d: Float, s: Float, u: String): Number
-      |external def manning_velocity(n: Number, d: Float, s: Float, u: String): Number
+      |external def manning_flow(n: Number, d: Number, s: Number, u: String): Number
+      |external def manning_velocity(n: Number, d: Number, s: Number, u: String): Number
     """.stripMargin
 
   def apply(): HydrologyModule = new HydrologyModule()
