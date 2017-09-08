@@ -214,4 +214,69 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "step index" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, d: Number): TimeSeries = step(xs, minutes(d))
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val idx = Vector(now, now.plusHours(1), now.plusHours(2))
+    val idx2 = Vector(
+      now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45),
+      now.plusMinutes(60), now.plusMinutes(75), now.plusMinutes(90), now.plusMinutes(105))
+    val ts = TimeSeries(idx, Vector(10f, 8f, 12f))
+    val expected = TimeSeries(idx2, Vector(2, 2, 2, 2, 3, 3, 3, 3))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 15f))
+    }
+    result shouldBe Right(expected)
+  }
+
+  it should "interpolate missing values" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, d: Number): TimeSeries = interpolate(xs, minutes(d))
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:02")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(4), now.plusMinutes(6))
+    val ts = TimeSeries(idx, Vector(1f, 4f, 6f))
+    val expected = TimeSeries(Vector(now.plusMinutes(1), now.plusMinutes(3), now.plusMinutes(5)), Vector(1f, 3f, 5f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 2f))
+    }
+    result shouldBe Right(expected)
+  }
+
+  it should "fill missing values with default value" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, d: Number, v: Number): TimeSeries = fill_missing(xs, minutes(d), v)
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:02")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(3), now.plusMinutes(4))
+    val ts = TimeSeries(idx, Vector(1f, 4f, 6f))
+    val expected = TimeSeries(Vector(now.plusMinutes(1), now.plusMinutes(2) ,now.plusMinutes(3), now.plusMinutes(4)), Vector(1f, 0f, 4f, 6f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 1f, 0f))
+    }
+    result shouldBe Right(expected)
+  }
+
+  it should "repeat values" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Number): TimeSeries = repeat(xs, sd, ed, hours(d))
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val idx = Vector(now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45))
+    val ts = TimeSeries(idx, Vector(1, 4, 6, 8))
+    val idx2 = Vector(now.plusMinutes(60), now.plusMinutes(75), now.plusMinutes(90), now.plusMinutes(105))
+    val expected = TimeSeries(idx ++ idx2, Vector(1, 4, 6, 8, 1, 4, 6, 8))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, now, now.plusHours(2), 1f))
+    }
+    result shouldBe Right(expected)
+  }
+
+
 }

@@ -17,14 +17,18 @@ object TimeSeriesModule {
       |external def map(xs: TimeSeries, f: Number => Number): TimeSeries
       |external def differentiate(xs: TimeSeries): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
+      |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
+      |external def interpolate(xs: TimeSeries, d: Duration): TimeSeries
       |external def maximum(xs: TimeSeries, d: Duration): TimeSeries
       |external def median(xs: TimeSeries, d: Duration): TimeSeries
       |external def minimum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def repeat(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Duration): TimeSeries
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def step(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -47,6 +51,10 @@ class TimeSeriesModule extends Runtime {
       TimeSeries(idx, vs)
     }
   }
+
+  def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = TimeSeries.fillMissing(xs, d, v)
+
+  def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
 
   def $maximum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
@@ -85,6 +93,8 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
+  def $repeat(xs: TimeSeries[Float], sd: LocalDateTime, ed: LocalDateTime, d: Duration): TimeSeries[Float] = xs.repeat(sd, ed, d)
+
   def $rolling_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(v: Seq[Float]): Float = v.sum / v.length
 
@@ -92,7 +102,6 @@ class TimeSeriesModule extends Runtime {
   }
 
   def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.rollingWindow(d, _.sum)
-
 
   def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
 
@@ -105,6 +114,8 @@ class TimeSeriesModule extends Runtime {
       xs.groupByTime(floor_time(st, _, d), _.sum)
     }
   }
+
+  def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
     val diff = ChronoUnit.SECONDS.between(st, ct)
