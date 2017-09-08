@@ -232,4 +232,19 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "interpolate missing values" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, d: Number): TimeSeries = interpolate(xs, minutes(d))
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:02")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(4), now.plusMinutes(6))
+    val ts = TimeSeries(idx, Vector(1f, 4f, 6f))
+    val expected = TimeSeries(Vector(now.plusMinutes(1), now.plusMinutes(3), now.plusMinutes(5)), Vector(1f, 3f, 5f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 2f))
+    }
+    result shouldBe Right(expected)
+  }
+
 }
