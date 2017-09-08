@@ -25,6 +25,7 @@ object TimeSeriesModule {
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def step(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -105,6 +106,8 @@ class TimeSeriesModule extends Runtime {
       xs.groupByTime(floor_time(st, _, d), _.sum)
     }
   }
+
+  def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
     val diff = ChronoUnit.SECONDS.between(st, ct)
