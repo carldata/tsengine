@@ -22,7 +22,7 @@ This language is intended more as a "glue" then full blown language. Typical use
  
  Add the following dependency to the build.sbt
  ```scala
- libraryDependencies += "io.github.carldata" %% "flow-script" % "0.7.1"
+ libraryDependencies += "io.github.carldata" %% "flow-script" % "0.7.3"
  ```
 
 ### Create test script
