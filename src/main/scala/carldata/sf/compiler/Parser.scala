@@ -82,12 +82,12 @@ object Parser {
   }
 
   def convertTypeDecl(context: TypeDefinitionContext): TypeDecl = {
-    if(context.Identifier.size() > 1) {
-      val src = context.Identifier(0).getText
-      val dst = context.Identifier(1).getText
-      FunType(src, dst)
+    if(context.typeList() != null) {
+      val inputTypes = context.typeList().Identifier().asScala.map(_.getText)
+      val outputType = context.Identifier.getText
+      FunType(inputTypes, outputType)
     } else {
-      ValueType(context.Identifier(0).getText)
+      ValueType(context.Identifier.getText)
     }
   }
 
