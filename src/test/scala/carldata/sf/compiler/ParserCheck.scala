@@ -96,7 +96,7 @@ object ParserCheck extends Properties("Parser") {
     name <- idGen
     srcName <- idGen
     dstName <- idGen
-  } yield FunParam(name, FunType(srcName, dstName))
+  } yield FunParam(name, FunType(Seq(srcName), dstName))
 
   private val paramsGen = Gen.oneOf(paramsGenV, paramsGenF)
 

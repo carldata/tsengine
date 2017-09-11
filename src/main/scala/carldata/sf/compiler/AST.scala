@@ -16,7 +16,7 @@ object AST {
 
   sealed trait TypeDecl
   case class ValueType(name: String) extends TypeDecl
-  case class FunType(srcName: String, destName: String) extends TypeDecl
+  case class FunType(paramTypes: Seq[String], outputType: String) extends TypeDecl
 
   sealed trait Expression
   case class IfExpr(ifExpr: Expression, thenExpr: Expression, elseExpr: Expression) extends Expression
@@ -63,7 +63,7 @@ object AST {
 
   def printTypeDecl(t: TypeDecl): String = t match {
     case ValueType(name) => name
-    case FunType(srcName, destName) => srcName + " => " + destName
+    case FunType(inputTypes, outputType) => inputTypes.mkString(",") + " => " + outputType
   }
 
   def printFunBody(body: FunctionBody): String = {

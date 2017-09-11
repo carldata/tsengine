@@ -251,4 +251,19 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(true)
   }
 
+  it should "parse higher order functions with multiple params" in {
+    val code =
+      """
+        |def test(a: Number, b: Number, f: Number, Number => Number): Number = f(a, b)
+        |
+        |def f(a: Number, b: Number): Number = a+b
+        |
+        |def main(a: Number, b: Number): Number = test(a, b, f)
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      Interpreter(ast).run("main", Seq(13, 25))
+    }
+    result shouldBe Right(38)
+  }
+
 }

@@ -14,18 +14,20 @@ object TypeChecker {
   case class Function(name: String, returnType: TypeDecl, params: Seq[FunParam]) {
     /** Get type of the function */
     def funType: TypeDecl = {
-      if(params.size == 1){
-        (params.head.typeName, returnType) match {
-          case (ValueType(n1), ValueType(n2)) => FunType(n1, n2)
-          case _ => ValueType("? FuncType")
+      if (params.nonEmpty && returnType.isInstanceOf[ValueType]) {
+        val paramTypes = params.map(_.typeName).map {
+          case ValueType(typeName) => typeName
+          case _ => "???"
         }
+        FunType(paramTypes, returnType.asInstanceOf[ValueType].name)
       } else ValueType("? FuncType")
     }
   }
+
   case class FunParam(name: String, typeName: TypeDecl)
 
   /** Symbol table helper for Type Checker */
-  private class Environment (symbols: Map[String, TypeDecl], functions: Map[String, Function]){
+  private class Environment(symbols: Map[String, TypeDecl], functions: Map[String, Function]) {
 
     def this() = this(Map(), Map())
 
@@ -53,18 +55,18 @@ object TypeChecker {
     val env = initEnvironment(module)
     // Type check all function declarations
     module.funDecl.map(f => checkFunctionDef(f, env))
-      .foldLeft[Either[String, Seq[FunctionDef]]](Right(Seq())) {(e, f) =>
-        e.flatMap(xs => f.map(x => xs :+ x))
-      }
+      .foldLeft[Either[String, Seq[FunctionDef]]](Right(Seq())) { (e, f) =>
+      e.flatMap(xs => f.map(x => xs :+ x))
+    }
       .map(fs => Module(module.externalFun, fs))
   }
 
   /** Create environment and add top level declarations to it */
   private def initEnvironment(module: Module): Environment = {
-    val efs = module.externalFun.map{f =>
+    val efs = module.externalFun.map { f =>
       Function(f.name, f.typeName, f.params.map(p => FunParam(p.name, p.typeName)))
     }
-    val fds = module.funDecl.map{f =>
+    val fds = module.funDecl.map { f =>
       Function(f.name, f.typeName, f.params.map(p => FunParam(p.name, p.typeName)))
     }
     new Environment()
@@ -78,7 +80,7 @@ object TypeChecker {
     val table2 = f.params.foldLeft(table)((t, x) => t.addSymbol(x.name, x.typeName))
     // Compare expression type with function return type. Also update AST with type information if necessary
     val t1 = checkFunctionBody(f.body, table2)
-    if(t1 == Right(f.typeName)) {
+    if (t1 == Right(f.typeName)) {
       Right(f)
     } else {
       Left("Wrong return type for function %s\n Expected: %s\nGot: %s\n".format(
@@ -96,7 +98,7 @@ object TypeChecker {
     }
   }
 
-  /** Check expression. Return error message or expression type*/
+  /** Check expression. Return error message or expression type */
   private def checkExpr(expr: Expression, env: Environment): Either[String, TypeDecl] = {
     expr match {
       case StringLiteral(_) => Right(ValueType("String"))
@@ -104,35 +106,35 @@ object TypeChecker {
       case BoolLiteral(_) => Right(ValueType("Bool"))
 
       case MinusOpExpr(e) =>
-        if(checkExpr(e, env) == Right(ValueType("Number"))){
+        if (checkExpr(e, env) == Right(ValueType("Number"))) {
           Right(ValueType("Number"))
         } else {
           Left("Type error for operation: -")
         }
 
       case BinaryOpExpr(e1, op, e2) =>
-        if(checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
+        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
           Right(ValueType("Number"))
         } else {
           Left("Type error for operation: " + op)
         }
 
       case NegOpExpr(e) =>
-        if(checkExpr(e, env) == Right(ValueType("Bool"))){
+        if (checkExpr(e, env) == Right(ValueType("Bool"))) {
           Right(ValueType("Bool"))
         } else {
           Left("Type error for operation: !")
         }
 
       case BoolOpExpr(e1, op, e2) =>
-        if(checkExpr(e1, env) == Right(ValueType("Bool")) && checkExpr(e2, env) == Right(ValueType("Bool"))) {
+        if (checkExpr(e1, env) == Right(ValueType("Bool")) && checkExpr(e2, env) == Right(ValueType("Bool"))) {
           Right(ValueType("Bool"))
         } else {
           Left("Type error for operation: " + op)
         }
 
       case RelationExpr(e1, op, e2) =>
-        if(checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
+        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
           Right(ValueType("Bool"))
         } else {
           Left("Type error for relation: " + op)
@@ -145,7 +147,7 @@ object TypeChecker {
         val c1 = checkExpr(e1, env)
         val c2 = checkExpr(e2, env)
         val c3 = checkExpr(e3, env)
-        if(c1 == Right(ValueType("Bool")) && c2.isRight && c2 == c3) {
+        if (c1 == Right(ValueType("Bool")) && c2.isRight && c2 == c3) {
           c2
         } else {
           Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))
@@ -154,7 +156,7 @@ object TypeChecker {
       case AppExpr(name, params) =>
         val xs = params.map(x => checkExpr(x, env).getOrElse(ValueType("?")))
         env.getFunction(name)
-          .flatMap(f => if(checkFunctionParams(xs, f.params)) Some(f) else None)
+          .flatMap(f => if (checkFunctionParams(xs, f.params)) Some(f) else None)
           .map(_.returnType)
           .toRight("function type error: " + name)
     }

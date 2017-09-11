@@ -170,4 +170,17 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "parse higher order functions with multiple params" in {
+    val code =
+      """
+        |external def map(xs: TimeSeries, f: Number, Number => Number): TimeSeries
+        |
+        |def f(a: Number, b: Number): Number = a+b
+        |
+        |def main(xs: TimeSeries): TimeSeries = map(xs, f)
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
 }

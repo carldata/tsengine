@@ -13,7 +13,6 @@ functionDefinition
     : DEF Identifier '(' paramList? ')' ':' typeDefinition '=' functionBody
     ;
 
-
 paramList
 	: param (',' param)*
     ;
@@ -23,7 +22,11 @@ param
     ;
 
 typeDefinition
-    : Identifier | (Identifier '=>' Identifier)
+    : Identifier | (typeList '=>' Identifier)
+    ;
+
+typeList
+	: Identifier (',' Identifier)*
     ;
 
 functionBody
