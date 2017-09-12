@@ -60,7 +60,7 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), _.max)
+      xs.groupByTime(floor_time(st, _, d), _.unzip._2.max)
     }
   }
 
@@ -79,7 +79,7 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), f)
+      xs.groupByTime(floor_time(st, _, d), x=> f(x.unzip._2))
     }
 
 
@@ -89,7 +89,7 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), _.min)
+      xs.groupByTime(floor_time(st, _, d), _.unzip._2.min)
     }
   }
 
@@ -111,7 +111,7 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), _.sum)
+      xs.groupByTime(floor_time(st, _, d), _.unzip._2.sum)
     }
   }
 
