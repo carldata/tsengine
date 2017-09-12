@@ -73,7 +73,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find maximum in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = maximum(xs, minutes(d))
+        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_max(xs, minutes(d))
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:00")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
@@ -88,7 +88,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find minimum in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = minimum(xs, minutes(d))
+        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_min(xs, minutes(d))
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:02")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
@@ -103,7 +103,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find median in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = median(xs, minutes(d))
+        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_median(xs, minutes(d))
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:02")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80), now.plusSeconds(85))
@@ -118,7 +118,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find sum in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = sum(xs, minutes(d))
+        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_sum(xs, minutes(d))
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:02")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
