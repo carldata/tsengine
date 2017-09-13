@@ -18,16 +18,16 @@ object TimeSeriesModule {
       |external def differentiate(xs: TimeSeries): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
+      |external def groupby_max(xs: TimeSeries, d: Duration): TimeSeries
+      |external def groupby_median(xs: TimeSeries, d: Duration): TimeSeries
+      |external def groupby_min(xs: TimeSeries, d: Duration): TimeSeries
+      |external def groupby_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def interpolate(xs: TimeSeries, d: Duration): TimeSeries
-      |external def maximum(xs: TimeSeries, d: Duration): TimeSeries
-      |external def median(xs: TimeSeries, d: Duration): TimeSeries
-      |external def minimum(xs: TimeSeries, d: Duration): TimeSeries
       |external def repeat(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Duration): TimeSeries
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
-      |external def sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
       |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
@@ -57,7 +57,7 @@ class TimeSeriesModule extends Runtime {
 
   def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
 
-  def $maximum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+  def $groupby_max(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
     else {
       val st = xs.index.head
@@ -65,7 +65,7 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
-  def $median(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+  def $groupby_median(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(seq: Seq[Float]): Float = {
       val sorted = seq.sorted
       val center = Math.abs(sorted.length / 2)
@@ -86,11 +86,19 @@ class TimeSeriesModule extends Runtime {
 
   }
 
-  def $minimum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+  def $groupby_min(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
     else {
       val st = xs.index.head
       xs.groupByTime(floor_time(st, _, d), _.unzip._2.min)
+    }
+  }
+
+  def $groupby_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    if (xs.isEmpty) xs
+    else {
+      val st = xs.index.head
+      xs.groupByTime(floor_time(st, _, d), _.unzip._2.sum)
     }
   }
 
@@ -107,14 +115,6 @@ class TimeSeriesModule extends Runtime {
   def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
 
   def $shift(xs: TimeSeries[Float], d: Duration, f: Boolean): TimeSeries[Float] = xs.shiftTime(d, f)
-
-  def $sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    if (xs.isEmpty) xs
-    else {
-      val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), _.unzip._2.sum)
-    }
-  }
 
   def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
 

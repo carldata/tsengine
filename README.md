@@ -3,19 +3,14 @@
 [![Build status](https://travis-ci.org/carldata/flow-script.svg?branch=master)](https://travis-ci.org/carldata/flow-script)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12)
 
-Compiler and an interpreter for FlowScript.
+FlowScript is a script engine targeted at processing Time Series data.
 
+The goal for FlowScript is to add the possibility for writing user scripts working on Time Series data.
+Since scripts will be written be users and run on the server, then it is important that the scripts
+run in a safe sandbox and don't introduce any security loopholes. 
 The reason for yet another script language is security. It should be safe to run script written by the user 
 on the server. 
-The program written in FlowScript is executed by interpreter with the help of basic runtime, which provides some basic functions.
-
-Projects which want to use FlowScript and give scripts written in this language more power will need to extend runtime
-with custom functions.
-
-This language is intended more as a "glue" then full blown language. Typical use cases:
-
- * Add script to convert units in Time Series during data exports
- * Build script for custom report which will be run every 24h
+The program written in FlowScript is executed by interpreter with the help of runtime functions.
 
 
 ## Quick start
@@ -42,8 +37,8 @@ import com.carl.sf.compiler.AST.Module
 val script: String = "..."
 val result: Either[String, Module] = Compiler.compile(script, Seq(Core.header))
 ```
-[Core.header](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core/Core.scala) 
-contains basic function definitions.
+[Core](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core) 
+contains modules with core function definitions.
  
 The compiler returns either error string or compiled module AST. 
 
@@ -62,17 +57,6 @@ val result: Either[String, Value] = new Interpreter(exec, Core).run("main", Seq(
 Interpreter returns either error string or computed value.
 
 You can also check the folder **examples** for script examples.
-
-
-### Extend the Runtime
-The Runtime extends script with custom types and functions. Some basic types are implemented in 
-the [Core.header](https://github.com/carldata/flow-script/blob/master/src/main/scala/com/carl/sf/core/Core.scala).
-
-Also the following types are build in the compiler (because of the literals):
-
-  * String
-  * Numeric
-  * Bool
 
 
 # Join in!
