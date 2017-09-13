@@ -29,6 +29,7 @@ object TimeSeriesModule {
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
+      |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -79,7 +80,7 @@ class TimeSeriesModule extends Runtime {
     if (xs.isEmpty) xs
     else {
       val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), x=> f(x.unzip._2))
+      xs.groupByTime(floor_time(st, _, d), x => f(x.unzip._2))
     }
 
 
@@ -117,10 +118,28 @@ class TimeSeriesModule extends Runtime {
 
   def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
 
+  def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    def f(ys: Seq[(LocalDateTime, Float)]): Float = {
+      val unzipped = ys.unzip
+      val lastIndex = floor_time(xs.index.head, unzipped._1.head, d).plus(d)
+      val deltas = (unzipped._1.tail :+ lastIndex).zip(unzipped._1)
+        .map(x => x._1.toEpochSecond(ZoneOffset.UTC) - x._2.toEpochSecond(ZoneOffset.UTC))
+        .map(_.toFloat)
+
+      unzipped._2
+        .zip(deltas)
+        .map(x => x._2 * (x._1 / d.getSeconds))
+        .sum
+    }
+
+    xs.groupByTime(floor_time(xs.index.head, _, d), f)
+  }
+
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
     val diff = ChronoUnit.SECONDS.between(st, ct)
     st.plusSeconds((diff / d.getSeconds) * d.getSeconds)
   }
+
 
 }
 
