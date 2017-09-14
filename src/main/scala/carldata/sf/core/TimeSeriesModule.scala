@@ -53,7 +53,7 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
-  def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = TimeSeries.fillMissing(xs, d, v)
+  def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = xs.resampleWithDefault(d, v)
 
   def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
 

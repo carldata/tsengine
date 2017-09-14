@@ -7,9 +7,11 @@ organization := "io.github.carldata"
 
 scalaVersion := "2.12.3"
 
+resolvers += Resolver.sonatypeRepo("releases")
+
 libraryDependencies ++= Seq(
   // Scala native libraries
-  "io.github.carldata" %% "timeseries" % "0.3.4",
+  "io.github.carldata" %% "timeseries" % "0.4.0",
 
   // Java dependencies
   "org.antlr" % "antlr4-runtime" % "4.7",
