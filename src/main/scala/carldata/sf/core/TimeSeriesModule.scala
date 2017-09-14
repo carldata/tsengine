@@ -16,6 +16,7 @@ object TimeSeriesModule {
     """
       |external def map(xs: TimeSeries, f: Number => Number): TimeSeries
       |external def differentiate(xs: TimeSeries): TimeSeries
+      |external def discrete(xs: TimeSeries, v: Number): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
       |external def groupby_avg(xs: TimeSeries, d: Duration): TimeSeries
@@ -30,6 +31,7 @@ object TimeSeriesModule {
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
+      |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -54,6 +56,8 @@ class TimeSeriesModule extends Runtime {
   }
 
   def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = xs.resampleWithDefault(d, v)
+
+  def $discrete(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = TimeSeries.diffOverflow(xs, v)
 
   def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
 
@@ -127,6 +131,27 @@ class TimeSeriesModule extends Runtime {
   def $shift(xs: TimeSeries[Float], d: Duration, f: Boolean): TimeSeries[Float] = xs.shiftTime(d, f)
 
   def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
+
+  def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    def f(x1: (LocalDateTime, Float), x2: (LocalDateTime, Float), tsh: LocalDateTime) = x1._2
+
+    val xs2 = xs.addMissing(d, f)
+
+    def g(ys: Seq[(LocalDateTime, Float)]): Float = {
+      val unzipped = ys.unzip
+      val lastIndex = floor_time(xs2.index.head, unzipped._1.head, d).plus(d)
+      val deltas = (unzipped._1.tail :+ lastIndex).zip(unzipped._1)
+        .map(x => x._1.toEpochSecond(ZoneOffset.UTC) - x._2.toEpochSecond(ZoneOffset.UTC))
+        .map(_.toFloat)
+
+      unzipped._2
+        .zip(deltas)
+        .map(x => x._2 * (x._1 / d.getSeconds))
+        .sum
+    }
+
+    xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
+  }
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
     val diff = ChronoUnit.SECONDS.between(st, ct)
