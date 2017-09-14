@@ -56,9 +56,8 @@ class TimeSeriesModule extends Runtime {
   }
 
   def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = xs.resampleWithDefault(d, v)
-  def $discrete(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = TimeSeries.diffOverflow(xs, v)
 
-  def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = TimeSeries.fillMissing(xs, d, v)
+  def $discrete(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = TimeSeries.diffOverflow(xs, v)
 
   def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
 
@@ -134,9 +133,13 @@ class TimeSeriesModule extends Runtime {
   def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
 
   def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    def f(ys: Seq[(LocalDateTime, Float)]): Float = {
+    def f(x1: (LocalDateTime, Float), x2: (LocalDateTime, Float), tsh: LocalDateTime) = x1._2
+
+    val xs2 = xs.addMissing(d, f)
+
+    def g(ys: Seq[(LocalDateTime, Float)]): Float = {
       val unzipped = ys.unzip
-      val lastIndex = floor_time(xs.index.head, unzipped._1.head, d).plus(d)
+      val lastIndex = floor_time(xs2.index.head, unzipped._1.head, d).plus(d)
       val deltas = (unzipped._1.tail :+ lastIndex).zip(unzipped._1)
         .map(x => x._1.toEpochSecond(ZoneOffset.UTC) - x._2.toEpochSecond(ZoneOffset.UTC))
         .map(_.toFloat)
@@ -147,7 +150,7 @@ class TimeSeriesModule extends Runtime {
         .sum
     }
 
-    xs.groupByTime(floor_time(xs.index.head, _, d), f)
+    xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
   }
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {

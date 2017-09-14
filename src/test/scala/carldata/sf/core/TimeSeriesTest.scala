@@ -302,7 +302,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
     val idx2 = Vector(now, now.plusMinutes(1))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
-    val expected = TimeSeries(idx2, Vector(2.25f, 4.5f))
+    val expected = TimeSeries(idx2, Vector(2.25f, 4.75f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f))
     }
