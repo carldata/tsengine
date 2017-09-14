@@ -255,7 +255,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:00:02")
     val idx = Vector(now.plusMinutes(1), now.plusMinutes(3), now.plusMinutes(4))
     val ts = TimeSeries(idx, Vector(1f, 4f, 6f))
-    val expected = TimeSeries(Vector(now.plusMinutes(1), now.plusMinutes(2) ,now.plusMinutes(3), now.plusMinutes(4)), Vector(1f, 0f, 4f, 6f))
+    val expected = TimeSeries(Vector(now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4)), Vector(1f, 0f, 4f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f, 0f))
     }
@@ -294,6 +294,21 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "find discrete values" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, v: Number): TimeSeries = discrete(xs, v)
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val idx = Vector(now, now.plusMinutes(5), now.plusMinutes(10), now.plusMinutes(15),
+      now.plusMinutes(20), now.plusMinutes(25), now.plusMinutes(30))
+    val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 5f, 8f, 3f, 2f))
+    val expected = TimeSeries(idx.tail, Vector(1f, 1f, 2f, 3f, 5f, 9f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 10f))
+    }
+    result shouldBe Right(expected)
+  }
 
 
 }

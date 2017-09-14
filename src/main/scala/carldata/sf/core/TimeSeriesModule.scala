@@ -16,6 +16,7 @@ object TimeSeriesModule {
     """
       |external def map(xs: TimeSeries, f: Number => Number): TimeSeries
       |external def differentiate(xs: TimeSeries): TimeSeries
+      |external def discrete(xs: TimeSeries, v: Number): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
       |external def groupby_max(xs: TimeSeries, d: Duration): TimeSeries
@@ -52,6 +53,8 @@ class TimeSeriesModule extends Runtime {
       TimeSeries(idx, vs)
     }
   }
+
+  def $discrete(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = TimeSeries.diffOverflow(xs, v)
 
   def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = TimeSeries.fillMissing(xs, d, v)
 
