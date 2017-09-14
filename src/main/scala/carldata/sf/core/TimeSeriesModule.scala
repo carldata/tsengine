@@ -19,6 +19,7 @@ object TimeSeriesModule {
       |external def discrete(xs: TimeSeries, v: Number): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
+      |external def groupby_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def groupby_max(xs: TimeSeries, d: Duration): TimeSeries
       |external def groupby_median(xs: TimeSeries, d: Duration): TimeSeries
       |external def groupby_min(xs: TimeSeries, d: Duration): TimeSeries
@@ -54,11 +55,22 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
+  def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = xs.resampleWithDefault(d, v)
   def $discrete(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = TimeSeries.diffOverflow(xs, v)
 
   def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = TimeSeries.fillMissing(xs, d, v)
 
   def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
+
+  def $groupby_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
+    def f(seq: Seq[Float]): Float = seq.sum / seq.length
+
+    if (xs.isEmpty) xs
+    else {
+      val st = xs.index.head
+      xs.groupByTime(floor_time(st, _, d), x => f(x.unzip._2))
+    }
+  }
 
   def $groupby_max(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     if (xs.isEmpty) xs
@@ -142,7 +154,6 @@ class TimeSeriesModule extends Runtime {
     val diff = ChronoUnit.SECONDS.between(st, ct)
     st.plusSeconds((diff / d.getSeconds) * d.getSeconds)
   }
-
 
 }
 
