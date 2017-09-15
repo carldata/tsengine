@@ -17,7 +17,7 @@ The program written in FlowScript is executed by interpreter with the help of ru
  
  Add the following dependency to the build.sbt
  ```scala
- libraryDependencies += "io.github.carldata" %% "flow-script" % "0.7.3"
+ libraryDependencies += "io.github.carldata" %% "flow-script" % "0.7.4"
  ```
 
 ### Create test script
