@@ -25,6 +25,7 @@ object TimeSeriesModule {
       |external def groupby_min(xs: TimeSeries, d: Duration): TimeSeries
       |external def groupby_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def interpolate(xs: TimeSeries, d: Duration): TimeSeries
+      |external def interpolate_outliers(xs: TimeSeries, bottom: Number, top: Number): TimeSeries
       |external def repeat(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Duration): TimeSeries
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
@@ -60,6 +61,14 @@ class TimeSeriesModule extends Runtime {
   def $discrete(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = TimeSeries.diffOverflow(xs, v)
 
   def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
+
+  def $interpolate_outliers(xs: TimeSeries[Float], bottom: Float, top: Float): TimeSeries[Float] = {
+    def f(x: Float, y: Float): Float = {
+      (x + y) / 2
+    }
+
+    xs.interpolateOutliers(bottom, top, f)
+  }
 
   def $groupby_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(seq: Seq[Float]): Float = seq.sum / seq.length
