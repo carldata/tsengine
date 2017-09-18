@@ -11,7 +11,7 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 libraryDependencies ++= Seq(
   // Scala native libraries
-  "io.github.carldata" %% "timeseries" % "0.4.0",
+  "io.github.carldata" %% "timeseries" % "0.4.1",
 
   // Java dependencies
   "org.antlr" % "antlr4-runtime" % "4.7",
