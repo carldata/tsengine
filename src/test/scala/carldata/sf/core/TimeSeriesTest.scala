@@ -359,4 +359,20 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   }
 
 
+  it should "remove outliers" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, b: Number, t: Number): TimeSeries = remove_outliers(xs, b ,t)
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4), now.plusMinutes(5), now.plusMinutes(6))
+    val idx2 = Vector(now.plusMinutes(1), now.plusMinutes(3), now.plusMinutes(4), now.plusMinutes(6))
+    val ts = TimeSeries(idx, Vector(3f, 20f, 5f, 6f, 0f, 8f))
+    val expected = TimeSeries(idx2, Vector(3f, 5f, 6f, 8f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 1f, 10f))
+    }
+    result shouldBe Right(expected)
+  }
+
 }
