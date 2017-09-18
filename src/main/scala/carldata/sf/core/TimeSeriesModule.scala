@@ -26,6 +26,7 @@ object TimeSeriesModule {
       |external def groupby_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def interpolate(xs: TimeSeries, d: Duration): TimeSeries
       |external def interpolate_outliers(xs: TimeSeries, bottom: Number, top: Number): TimeSeries
+      |external def remove_outliers(xs: TimeSeries, bottom: Number, top: Number): TimeSeries
       |external def repeat(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Duration): TimeSeries
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
@@ -69,6 +70,8 @@ class TimeSeriesModule extends Runtime {
 
     xs.interpolateOutliers(bottom, top, f)
   }
+
+  def $remove_outliers(xs: TimeSeries[Float], bottom: Float, top: Float): TimeSeries[Float] = xs.removeOutliers(bottom, top)
 
   def $groupby_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(seq: Seq[Float]): Float = seq.sum / seq.length
