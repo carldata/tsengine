@@ -34,6 +34,7 @@ object TimeSeriesModule {
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
       |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
+      |external def join_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -164,6 +165,11 @@ class TimeSeriesModule extends Runtime {
 
     xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
   }
+
+  def $join_with(xs: TimeSeries[Float], ys: TimeSeries[Float], f: (Float, Float) => Float): TimeSeries[Float] = {
+    xs.join(ys).mapValues(x => f(x._1, x._2))
+  }
+
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
     val diff = ChronoUnit.SECONDS.between(st, ct)

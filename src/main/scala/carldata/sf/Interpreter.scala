@@ -29,10 +29,28 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     try {
       // Add compatible functions as Function1Value
       val sm: Map[String, Any] = exec.functions.flatMap{ f =>
-        if(f.params.size == 1 && f.params.head.typeName == ValueType("Number") && f.typeName== ValueType("Number")) {
-          Seq(f.name -> new ((Float) => Float){
-            def apply(x: Float): Float = execFunction(f.name, Seq(x), Map()).asInstanceOf[Float]
-          })
+        if(f.params.nonEmpty && f.params.forall(_.typeName == ValueType("Number")) && f.typeName== ValueType("Number")) {
+          f.params.size match {
+            case 1 =>
+              Seq(f.name -> new ((Float) => Float){
+                def apply(x: Float): Float = execFunction(f.name, Seq(x), Map()).asInstanceOf[Float]
+              })
+            case 2 =>
+              Seq(f.name -> new ((Float, Float) => Float){
+                def apply(x1: Float, x2: Float): Float = execFunction(f.name, Seq(x1, x2), Map()).asInstanceOf[Float]
+              })
+            case 3 =>
+              Seq(f.name -> new ((Float, Float, Float) => Float){
+                def apply(x1: Float, x2: Float, x3: Float): Float =
+                  execFunction(f.name, Seq(x1, x2, x3), Map()).asInstanceOf[Float]
+              })
+            case 4 =>
+              Seq(f.name -> new ((Float, Float, Float, Float) => Float){
+                def apply(x1: Float, x2: Float, x3: Float, x4: Float): Float =
+                  execFunction(f.name, Seq(x1, x2, x3, x4), Map()).asInstanceOf[Float]
+              })
+            case _ => Seq()
+          }
         } else {
           Seq()
         }
