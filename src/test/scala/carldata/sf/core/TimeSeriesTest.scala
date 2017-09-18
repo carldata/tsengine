@@ -340,5 +340,23 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "join 2 series" in {
+    val code =
+      """
+        |def f(a: Number, b: Number): Number = a+b
+        |
+        |def main(xs: TimeSeries, ys: TimeSeries): TimeSeries = join_with(xs, ys, f)
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4))
+    val xs = TimeSeries(idx, Vector(3f, 20f, 5f, 6f))
+    val ys = TimeSeries(idx, Vector(1f, 2f, 3f, 4f))
+    val expected = TimeSeries(idx, Vector(4f, 22f, 8f, 10f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(xs, ys))
+    }
+    result shouldBe Right(expected)
+  }
+
 
 }
