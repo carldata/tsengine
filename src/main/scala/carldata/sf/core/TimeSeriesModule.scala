@@ -34,6 +34,7 @@ object TimeSeriesModule {
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
       |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
+      |external def join_left_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number, d: Number): TimeSeries
       |external def join_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number): TimeSeries
     """.stripMargin
 
@@ -164,6 +165,10 @@ class TimeSeriesModule extends Runtime {
     }
 
     xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
+  }
+
+  def $join_left_with(xs: TimeSeries[Float], ys: TimeSeries[Float], f: (Float, Float) => Float, d: Float): TimeSeries[Float] = {
+    xs.joinLeft(ys, d).mapValues(x => f(x._1, x._2))
   }
 
   def $join_with(xs: TimeSeries[Float], ys: TimeSeries[Float], f: (Float, Float) => Float): TimeSeries[Float] = {
