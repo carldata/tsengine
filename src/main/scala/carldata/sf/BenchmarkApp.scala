@@ -1,6 +1,7 @@
 package carldata.sf
 
 import carldata.series.TimeSeries
+import carldata.sf.core.DBImplementation
 import org.scalameter._
 
 
@@ -17,6 +18,8 @@ object BenchmarkApp {
     """.stripMargin
   val deltaTimeScript = "def main(xs: TimeSeries): TimeSeries = delta_time(xs)"
 
+  val lookupScript = "def main(id: String, x: Number): Number = lookup(id, x)"
+
   private val intFormatter = java.text.NumberFormat.getIntegerInstance
 
   def main(args: Array[String]): Unit = {
@@ -24,15 +27,18 @@ object BenchmarkApp {
 
     println("\n1. Measure map")
     measureScript(size1M, mapScript)
-    println("\n1. Measure delta_time")
+    println("\n2. Measure delta_time")
+    measureScript(size1M, deltaTimeScript)
+    println("\n3. Measure lookup")
     measureScript(size1M, deltaTimeScript)
     println()
   }
 
   def measureScript(size: Int, code: String): Unit = {
     val xs = 1.to(size).toVector
-    val ts = TimeSeries.fromTimestamps(xs.map(x => (x.toLong*3000, x.toFloat)))
-    val exec = Compiler.make(code).map { ast => Interpreter(ast) }.right.get
+    val test_db: TestDB = new TestDB
+    val ts = TimeSeries.fromTimestamps(xs.map(x => (x.toLong * 3000, x.toFloat)))
+    val exec = Compiler.make(code).map { ast => Interpreter(ast, test_db) }.right.get
 
     val time: Quantity[Double] = withWarmer(new Warmer.Default).measure {
       exec.run("main", Seq(ts))
@@ -42,4 +48,12 @@ object BenchmarkApp {
     println(s"$sizeFormatted points: $time.")
   }
 
+}
+
+class TestDB extends DBImplementation {
+  val lookup_table = Seq(("test", 1f, 1f))
+
+  def getTable(id: String): IndexedSeq[(Float, Float)] = {
+    lookup_table.filter(p => p._1.equals(id)).map(x => (x._2, x._3)).toIndexedSeq
+  }
 }
