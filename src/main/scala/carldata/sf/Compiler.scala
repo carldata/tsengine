@@ -3,7 +3,7 @@ package carldata.sf
 import carldata.sf.compiler.AST.Module
 import carldata.sf.compiler.Executable.ExecCode
 import carldata.sf.compiler._
-import carldata.sf.core.{DateTimeModule, HydrologyModule, MathModule, TimeSeriesModule}
+import carldata.sf.core._
 
 /**
   * Compiler for FlowScript. It consists of the following phases:
@@ -15,7 +15,8 @@ import carldata.sf.core.{DateTimeModule, HydrologyModule, MathModule, TimeSeries
   */
 object Compiler {
 
-  val headers: Seq[String] = Seq(MathModule.header, DateTimeModule.header, TimeSeriesModule.header, HydrologyModule.header)
+  val headers: Seq[String] = Seq(MathModule.header, DateTimeModule.header, TimeSeriesModule.header,
+    HydrologyModule.header, DBModule.header)
 
   /** Make Exec using default library module */
   def make(code: String): Either[String, ExecCode] = Compiler.compile(code, headers)
