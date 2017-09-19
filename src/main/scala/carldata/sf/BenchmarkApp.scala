@@ -28,13 +28,14 @@ object BenchmarkApp {
 
   def main(args: Array[String]): Unit = {
     val size1M = 1000000
+    val size100K = 100000
 
     println("\n1. Measure map")
     measureScript(size1M, mapScript)
     println("\n2. Measure delta_time")
     measureScript(size1M, deltaTimeScript)
-    println("\n3. Measure lookup")
-    measureScript(size1M, lookupScript)
+    println("\n3. Measure 100 items in lookup table")
+    measureScript(size100K, lookupScript)
     println()
   }
 
@@ -57,7 +58,7 @@ object BenchmarkApp {
 class TestDB extends DBImplementation {
   def f(x: Float): (String, Float, Float) = ("test", x, 2 * x)
 
-  val lookup_table: Seq[(String, Float, Float)] = for (x <- 1 to 10000) yield f(x)
+  val lookup_table: Seq[(String, Float, Float)] = for (x <- 1 to 100) yield f(x)
 
   def getTable(id: String): IndexedSeq[(Float, Float)] = {
     lookup_table.filter(p => p._1.equals(id)).map(x => (x._2, x._3)).toIndexedSeq
