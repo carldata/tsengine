@@ -2,7 +2,7 @@ package carldata.sf
 
 import carldata.sf.compiler.AST._
 import carldata.sf.compiler.Executable.ExecCode
-import carldata.sf.core.TimeSeriesModule
+import carldata.sf.core.{DBImplementation, TimeSeriesModule}
 
 
 /**
@@ -13,7 +13,9 @@ object Interpreter {
   def apply(exec: ExecCode): Interpreter = {
     new Interpreter(exec, Seq(core.MathModule(), TimeSeriesModule(), core.DateTimeModule(), core.HydrologyModule()))
   }
-
+  def apply(exec: ExecCode, db: DBImplementation ): Interpreter = {
+    new Interpreter(exec, Seq(core.MathModule(), TimeSeriesModule(), core.DateTimeModule(), core.HydrologyModule(), core.DBModule(db)))
+  }
 }
 
 
