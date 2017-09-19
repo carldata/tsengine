@@ -1,6 +1,6 @@
 package carldata.sf.face
 
-import carldata.sf.compiler.AST.{BinaryOpExpr, NumberLiteral}
+import carldata.sf.compiler.AST.{BinaryOpExpr, NumberLiteral, VariableExpr}
 import org.scalatest._
 
 
@@ -14,6 +14,14 @@ class FaceParserTest extends FlatSpec with Matchers {
       "2+3"
     val result = FaceParser.parse(code)
     val expected = BinaryOpExpr(NumberLiteral(2), "+", NumberLiteral(3))
+    result shouldBe Right(expected)
+  }
+
+  it should "parse variables" in {
+    val code =
+      "2*a"
+    val result = FaceParser.parse(code)
+    val expected = BinaryOpExpr(NumberLiteral(2), "*", VariableExpr("a"))
     result shouldBe Right(expected)
   }
 

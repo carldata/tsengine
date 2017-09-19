@@ -1,6 +1,6 @@
 package carldata.sf.face
 
-import carldata.sf.compiler.AST.{BinaryOpExpr, Expression, NumberLiteral}
+import carldata.sf.compiler.AST.{BinaryOpExpr, Expression, NumberLiteral, VariableExpr}
 
 import scala.util.parsing.combinator.RegexParsers
 
@@ -9,7 +9,8 @@ import scala.util.parsing.combinator.RegexParsers
   */
 object FaceParser extends RegexParsers {
   def number: Parser[NumberLiteral] = """\d+(\.\d*)?""".r ^^ { ds => NumberLiteral(ds.toFloat) }
-  def factor: Parser[Expression] = number | "(" ~> expr <~ ")"
+  def variable: Parser[VariableExpr] = """\w[a-zA-Z0-9_]?""".r ^^ { id => VariableExpr(id) }
+  def factor: Parser[Expression] = number | variable | "(" ~> expr <~ ")"
   def term  : Parser[Expression] = factor ~ rep( "*" ~ factor | "/" ~ factor) ^^ {
     case number ~ list => (number /: list) {
       case (x, "*" ~ y) => BinaryOpExpr(x, "*", y)
