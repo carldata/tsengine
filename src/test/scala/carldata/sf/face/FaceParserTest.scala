@@ -24,7 +24,7 @@ class FaceParserTest extends FlatSpec with Matchers {
   }
 
   it should "parse variables 2" in {
-    val code ="0.2*A - 3.24*A + 0.5"
+    val code = "0.2*A - 3.24*A + 0.5"
     val result = FaceParser.parse(code)
     result.isRight shouldBe true
   }
@@ -46,6 +46,27 @@ class FaceParserTest extends FlatSpec with Matchers {
         "+",
         NumberLiteral(4)
       )
+    result shouldBe Right(expected)
+  }
+
+  it should "parse function" in {
+    val code = "2+f()"
+    val result = FaceParser.parse(code)
+    val expected = BinaryOpExpr(NumberLiteral(2), "+", AppExpr("f", Seq()))
+    result shouldBe Right(expected)
+  }
+
+  it should "parse function with two params" in {
+    val code = "f(2,4)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("f", Seq(NumberLiteral(2),NumberLiteral(4)))
+    result shouldBe Right(expected)
+  }
+
+  it should "parse nested function" in {
+    val code = "f(g(2),2+A)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("f", Seq(AppExpr("g",Seq(NumberLiteral(2))),BinaryOpExpr(NumberLiteral(2),"+",VariableExpr("A"))))
     result shouldBe Right(expected)
   }
 

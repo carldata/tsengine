@@ -8,9 +8,16 @@ import scala.util.parsing.combinator.RegexParsers
   * Parser for FlowWorks FACE formulas
   */
 object FaceParser extends RegexParsers {
+
+  def identifier: Parser[String] = """\w[a-zA-Z0-9_]?""".r
+  def function: Parser[AppExpr] = identifier ~ "(" ~ funParams ~")" ^^ {
+    x => AppExpr(x._1._1._1,x._1._2)
+  }
+
+  def funParams: Parser[Seq[Expression]] = repsep(expr, ",")
   def number: Parser[NumberLiteral] = """\d+(\.\d*)?""".r ^^ { ds => NumberLiteral(ds.toFloat) }
-  def variable: Parser[VariableExpr] = """\w[a-zA-Z0-9_]?""".r ^^ { id => VariableExpr(id) }
-  def factor: Parser[Expression] = number | variable | "(" ~> expr <~ ")"
+  def variable: Parser[VariableExpr] = identifier ^^ { id => VariableExpr(id) }
+  def factor: Parser[Expression] = function | number | variable | "(" ~> expr <~ ")"
   def pow  : Parser[Expression] = factor ~ "^" ~ factor ^^ {
     case x ~ "^" ~ y => AppExpr("pow", Seq(x,y))
   }
