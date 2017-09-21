@@ -1,6 +1,6 @@
 package carldata.sf.face
 
-import carldata.sf.compiler.AST.{AppExpr, BinaryOpExpr, NumberLiteral, VariableExpr}
+import carldata.sf.compiler.AST._
 import org.scalatest._
 
 
@@ -59,14 +59,28 @@ class FaceParserTest extends FlatSpec with Matchers {
   it should "parse function with two params" in {
     val code = "f(2,4)"
     val result = FaceParser.parse(code)
-    val expected = AppExpr("f", Seq(NumberLiteral(2),NumberLiteral(4)))
+    val expected = AppExpr("f", Seq(NumberLiteral(2), NumberLiteral(4)))
     result shouldBe Right(expected)
   }
 
   it should "parse nested function" in {
     val code = "f(g(2),2+A)"
     val result = FaceParser.parse(code)
-    val expected = AppExpr("f", Seq(AppExpr("g",Seq(NumberLiteral(2))),BinaryOpExpr(NumberLiteral(2),"+",VariableExpr("A"))))
+    val expected = AppExpr("f", Seq(AppExpr("g", Seq(NumberLiteral(2))), BinaryOpExpr(NumberLiteral(2), "+", VariableExpr("A"))))
+    result shouldBe Right(expected)
+  }
+
+  it should "parse simple relation: equals" in {
+    val code = "if(5==5,0,1)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("if", Seq(RelationExpr(NumberLiteral(5), "==", NumberLiteral(5)), NumberLiteral(0), NumberLiteral(1)))
+    result shouldBe Right(expected)
+  }
+
+  it should "parse simple relation: less than" in {
+    val code = "if(5<5,0,1)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("if", Seq(RelationExpr(NumberLiteral(5), "<", NumberLiteral(5)), NumberLiteral(0), NumberLiteral(1)))
     result shouldBe Right(expected)
   }
 
