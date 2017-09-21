@@ -36,6 +36,8 @@ object TimeSeriesModule {
       |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
       |external def join_left_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number, d: Number): TimeSeries
       |external def join_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number): TimeSeries
+      |external def join_with3(xs: TimeSeries, ys: TimeSeries, zs: TimeSeries, f: Number, Number, Number => Number): TimeSeries
+      |external def join_with4(xs: TimeSeries, ws: TimeSeries, ys: TimeSeries, zs: TimeSeries, f: Number, Number, Number, Number => Number): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -175,6 +177,12 @@ class TimeSeriesModule extends Runtime {
     xs.join(ys).mapValues(x => f(x._1, x._2))
   }
 
+  def $join_with3(xs: TimeSeries[Float], ys: TimeSeries[Float], zs: TimeSeries[Float], f: (Float, Float, Float) => Float): TimeSeries[Float] = {
+    xs.join(ys).join(zs).mapValues(x => f(x._1._1, x._1._2, x._2))
+  }
+  def $join_with4(xs: TimeSeries[Float], ws: TimeSeries[Float], ys: TimeSeries[Float], zs: TimeSeries[Float], f: (Float, Float, Float, Float) => Float): TimeSeries[Float] = {
+    xs.join(ws).join((ys).join(zs)).mapValues(x => f(x._1._1,x._1._2, x._2._1, x._2._2))
+  }
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
     val diff = ChronoUnit.SECONDS.between(st, ct)
