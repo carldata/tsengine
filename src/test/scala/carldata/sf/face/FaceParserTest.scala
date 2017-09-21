@@ -10,16 +10,16 @@ import org.scalatest._
 class FaceParserTest extends FlatSpec with Matchers {
 
   "FACE Parser" should "parse simple expression" in {
-    val code = "2+3"
+    val code = "-2+3"
     val result = FaceParser.parse(code)
-    val expected = BinaryOpExpr(NumberLiteral(2), "+", NumberLiteral(3))
+    val expected = BinaryOpExpr(NumberLiteral(-2), "+", NumberLiteral(3))
     result shouldBe Right(expected)
   }
 
   it should "parse variables" in {
-    val code = "2*a*3"
+    val code = "2*a*-3"
     val result = FaceParser.parse(code)
-    val expected = BinaryOpExpr(BinaryOpExpr(NumberLiteral(2), "*", VariableExpr("a")), "*", NumberLiteral(3))
+    val expected = BinaryOpExpr(BinaryOpExpr(NumberLiteral(2), "*", VariableExpr("a")), "*", NumberLiteral(-3))
     result shouldBe Right(expected)
   }
 

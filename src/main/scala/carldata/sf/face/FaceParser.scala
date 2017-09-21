@@ -15,7 +15,7 @@ object FaceParser extends RegexParsers {
   }
 
   def funParams: Parser[Seq[Expression]] = repsep(addOrRelationExpr, ",")
-  def number: Parser[NumberLiteral] = """\d+(\.\d*)?""".r ^^ { ds => NumberLiteral(ds.toFloat) }
+  def number: Parser[NumberLiteral] = """-?\d+(\.\d*)?""".r ^^ { ds => NumberLiteral(ds.toFloat) }
   def variable: Parser[VariableExpr] = identifier ^^ { id => VariableExpr(id) }
   def factor: Parser[Expression] = function | number | variable | "(" ~> addOrRelationExpr <~ ")"
   def powExpr  : Parser[Expression] = factor ~ "^" ~ factor ^^ {
