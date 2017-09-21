@@ -14,10 +14,10 @@ object FaceParser extends RegexParsers {
     x => AppExpr(x._1._1._1,x._1._2)
   }
 
-  def funParams: Parser[Seq[Expression]] = repsep(addOrRelationExpr, ",")
+  def funParams: Parser[Seq[Expression]] = repsep(addOrBoolExpr, ",")
   def number: Parser[NumberLiteral] = """-?\d+(\.\d*)?""".r ^^ { ds => NumberLiteral(ds.toFloat) }
   def variable: Parser[VariableExpr] = identifier ^^ { id => VariableExpr(id) }
-  def factor: Parser[Expression] = function | number | variable | "(" ~> addOrRelationExpr <~ ")"
+  def factor: Parser[Expression] = function | number | variable | "(" ~> addOrBoolExpr <~ ")"
   def powExpr  : Parser[Expression] = factor ~ "^" ~ factor ^^ {
     case x ~ "^" ~ y => AppExpr("pow", Seq(x,y))
   }
@@ -42,7 +42,13 @@ object FaceParser extends RegexParsers {
 
   def addOrRelationExpr: Parser[Expression] = relationExpr | addExpr
 
-  def parse(input: String): Either[String, Expression] = parseAll(addOrRelationExpr, input) match {
+  def boolExpr  : Parser[Expression] = addOrRelationExpr ~ ("&&" | "||" ) ~ addOrRelationExpr ^^ {
+    x => BoolOpExpr(x._1._1, x._1._2,x._2)
+  }
+
+  def addOrBoolExpr: Parser[Expression] = boolExpr | addOrRelationExpr
+
+  def parse(input: String): Either[String, Expression] = parseAll(addOrBoolExpr, input) match {
     case Success(result, _) => Right(result)
     case failure : NoSuccess => Left(failure.msg)
   }
