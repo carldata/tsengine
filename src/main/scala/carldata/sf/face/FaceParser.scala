@@ -40,7 +40,7 @@ object FaceParser extends RegexParsers {
       x => RelationExpr(x._1._1, x._1._2,x._2)
   }
 
-  def addOrRelationExpr: Parser[Expression] = relationExpr | addExpr
+  def addOrRelationExpr: Parser[Expression] = negationExpr | relationExpr | addExpr
 
   def boolExpr : Parser[Expression] = addOrRelationExpr ~ ("&&" | "||" ) ~ addOrRelationExpr ^^ {
     x => BoolOpExpr(x._1._1, x._1._2,x._2)
