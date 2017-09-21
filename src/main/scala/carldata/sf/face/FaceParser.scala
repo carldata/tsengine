@@ -42,11 +42,15 @@ object FaceParser extends RegexParsers {
 
   def addOrRelationExpr: Parser[Expression] = relationExpr | addExpr
 
-  def boolExpr  : Parser[Expression] = addOrRelationExpr ~ ("&&" | "||" ) ~ addOrRelationExpr ^^ {
+  def boolExpr : Parser[Expression] = addOrRelationExpr ~ ("&&" | "||" ) ~ addOrRelationExpr ^^ {
     x => BoolOpExpr(x._1._1, x._1._2,x._2)
   }
 
-  def addOrBoolExpr: Parser[Expression] = boolExpr | addOrRelationExpr
+  def negationExpr : Parser[Expression] = ("!") ~ addOrRelationExpr ^^ {
+    x => NegOpExpr(x._2)
+  }
+
+  def addOrBoolExpr: Parser[Expression] = boolExpr | negationExpr | addOrRelationExpr
 
   def parse(input: String): Either[String, Expression] = parseAll(addOrBoolExpr, input) match {
     case Success(result, _) => Right(result)

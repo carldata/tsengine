@@ -99,4 +99,11 @@ class FaceParserTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "parse boolean expression !" in {
+    val code = "if(!0 < 1,0,1)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("if", Seq(NegOpExpr(RelationExpr(NumberLiteral(0), "<", NumberLiteral(1))),NumberLiteral(0),NumberLiteral(1)))
+    result shouldBe Right(expected)
+  }
+
 }
