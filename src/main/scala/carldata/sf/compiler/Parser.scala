@@ -36,8 +36,8 @@ object Parser {
 
   /** Convert ANTLR Context into AST Module node */
   def convertCompilationUnit(ctx: CompilationUnitContext): Module = {
-    val xs = ctx.externalFunDef().asScala.map(convertExternFun)
-    val funDecl = ctx.functionDefinition().asScala.map(x => convertFunDef(x))
+    val xs = ctx.externalFunDef().asScala.map(convertExternFun).toList
+    val funDecl = ctx.functionDefinition().asScala.map(x => convertFunDef(x)).toList
     Module(xs, funDecl)
   }
 
@@ -51,7 +51,7 @@ object Parser {
     } else {
       ctx.paramList().param().asScala.map{pctx =>
         FunParam(pctx.Identifier().getText, convertTypeDecl(pctx.typeDefinition()))
-      }
+      }.toList
     }
     // Function type
     val typeDefCtx = ctx.typeDefinition()
@@ -70,7 +70,7 @@ object Parser {
     } else {
       ctx.paramList().param().asScala.map{pctx =>
         FunParam(pctx.Identifier().getText, convertTypeDecl(pctx.typeDefinition))
-      }
+      }.toList
     }
     // Function type
     val typeDefCtx = ctx.typeDefinition()
@@ -83,7 +83,7 @@ object Parser {
 
   def convertTypeDecl(context: TypeDefinitionContext): TypeDecl = {
     if(context.typeList() != null) {
-      val inputTypes = context.typeList().Identifier().asScala.map(_.getText)
+      val inputTypes = context.typeList().Identifier().asScala.map(_.getText).toList
       val outputType = context.Identifier.getText
       FunType(inputTypes, outputType)
     } else {
@@ -94,7 +94,7 @@ object Parser {
   def convertBody(ctx: FunctionBodyContext): FunctionBody = {
     val as = ctx.assignment().asScala.map { actx =>
       Assignment(actx.Identifier().getText, convertExpr(actx.expression()))
-    }
+    }.toList
     val e = convertExpr(ctx.expression())
     FunctionBody(as, e)
   }
@@ -137,7 +137,7 @@ object Parser {
       val params = if(ctx.funApp().expressionList() == null) {
         Seq()
       } else {
-        ctx.funApp().expressionList().expression().asScala.map(convertExpr)
+        ctx.funApp().expressionList().expression().asScala.map(convertExpr).toList
       }
       AppExpr(name, params)
     } else if(ctx.variableExpr() != null) {
