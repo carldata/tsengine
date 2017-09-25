@@ -1,34 +1,35 @@
 package carldata.sf.face
 
 import carldata.sf.compiler.AST._
-import carldata.sf.compiler.Parser
 
 /**
   * Convert FACE AST to FlowScript compatible AST
   */
 object FaceConverter {
 
-  def template(p: Seq[String], e: Seq[String]): String =
-    """
-      |def f(""".stripMargin + p.mkString(",") + """):Number = """ + e.mkString("") + """
-      |def main(ts: TimeSeries): TimeSeries = map(ts, f)
-    """.stripMargin
-
   def convert(face: Expression): Module = {
-    def stringify(e: Expression): (Seq[String], Seq[String]) = {
-      e match {
-        case v: VariableExpr => (Seq(v.name + ":Number"), Seq(v.name))
-        case n: NumberLiteral => (Seq(), Seq(n.v.toString))
-        case b: BinaryOpExpr => {
-          val t1 = stringify(b.e1)
-          val t2 = stringify(b.e2)
-          (Seq((t1._1 ++ t2._1).mkString(",")), Seq(t1._2.mkString, b.op.toString, t2._2.mkString))
-        }
-        case _ => (Seq(), Seq())
-      }
-    }
-
-    val paramsAndExpr = stringify(face)
-    Parser.parse(template(paramsAndExpr._1, paramsAndExpr._2)).getOrElse(Module(Seq(), Seq()))
+    val v = freeVariable(face, Set.empty)
+    Module(Seq(), Seq(mkFunction(face, v), mkMain(v)))
   }
+
+  def freeVariable(e: Expression, s: Set[String]): Set[String] = {
+    e match {
+      case v: VariableExpr => s + v.name
+      case b: BinaryOpExpr => freeVariable(b.e1, s) ++ freeVariable(b.e2, Set.empty)
+      case _ => s
+    }
+  }
+
+  def mkFunction(e: Expression, s: Set[String]): FunctionDef = {
+    FunctionDef("f", s.map(x => FunParam(x, ValueType("Number"))).toList, ValueType("Number"), FunctionBody(Seq.empty, e))
+  }
+
+  def mkMain(s: Set[String]): FunctionDef = {
+    val e: Expression = if (s.size == 1) {
+      AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
+    }
+    else AppExpr("join_with", s.map(x => VariableExpr(x)).toList :+ VariableExpr("f"))
+    FunctionDef("main", s.map(x => FunParam(x, ValueType("TimeSeries"))).toList, ValueType("TimeSeries"), FunctionBody(Seq.empty, e))
+  }
+
 }

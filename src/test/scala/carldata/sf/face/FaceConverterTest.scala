@@ -14,7 +14,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val flowScript =
       """
         |def f(a: Number): Number = a
-        |def main(ts: TimeSeries): TimeSeries = map(ts, f)
+        |def main(a: TimeSeries): TimeSeries = map(a, f)
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -28,7 +28,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val flowScript =
       """
         |def f(a: Number, b: Number): Number = 2 * a + 4 / b
-        |def main(ts: TimeSeries): TimeSeries = map(ts, f)
+        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = join_with(a, b, f)
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
