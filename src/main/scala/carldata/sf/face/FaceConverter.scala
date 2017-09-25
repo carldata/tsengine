@@ -8,15 +8,15 @@ import carldata.sf.compiler.AST._
 object FaceConverter {
 
   def convert(face: Expression): Module = {
-    val v = freeVariable(face, Set.empty)
+    val v = freeVariable(face)
     Module(Seq(), Seq(mkFunction(face, v), mkMain(v)))
   }
 
-  def freeVariable(e: Expression, s: Set[String]): Set[String] = {
+  def freeVariable(e: Expression): Set[String] = {
     e match {
-      case v: VariableExpr => s + v.name
-      case b: BinaryOpExpr => freeVariable(b.e1, s) ++ freeVariable(b.e2, Set.empty)
-      case _ => s
+      case v: VariableExpr => Set(v.name)
+      case b: BinaryOpExpr => freeVariable(b.e1) ++ freeVariable(b.e2)
+      case _ => Set()
     }
   }
 
