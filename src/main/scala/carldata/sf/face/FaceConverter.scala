@@ -7,9 +7,12 @@ import carldata.sf.compiler.AST._
   */
 object FaceConverter {
 
-  def convert(face: Expression): Module = {
+  def convert(face: Expression): Either[String, Module] = {
     val v = freeVariable(face)
-    Module(Seq(), Seq(mkFunction(face, v), mkMain(v)))
+    val main = mkMain(v)
+    if (main.isRight)
+      Right(Module(Seq(), Seq(mkFunction(face, v), main.right.get)))
+    else Left(main.left.get)
   }
 
   def freeVariable(e: Expression): Set[String] = {
@@ -24,12 +27,18 @@ object FaceConverter {
     FunctionDef("f", s.map(x => FunParam(x, ValueType("Number"))).toList, ValueType("Number"), FunctionBody(Seq.empty, e))
   }
 
-  def mkMain(s: Set[String]): FunctionDef = {
-    val e: Expression = if (s.size == 1) {
-      AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
+  def mkMain(s: Set[String]): Either[String, FunctionDef] = {
+    if (s.isEmpty || s.size > 4) {
+      Left("Wrong number of parameters")
     }
-    else AppExpr("join_with", s.map(x => VariableExpr(x)).toList :+ VariableExpr("f"))
-    FunctionDef("main", s.map(x => FunParam(x, ValueType("TimeSeries"))).toList, ValueType("TimeSeries"), FunctionBody(Seq.empty, e))
+    else {
+      val e: Expression = s.size match {
+        case 1 => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
+        case 2 => AppExpr("join_with", s.map(x => VariableExpr(x)).toList :+ VariableExpr("f"))
+        case 3 => AppExpr("join_with3", s.map(x => VariableExpr(x)).toList :+ VariableExpr("f"))
+        case 4 => AppExpr("join_with4", s.map(x => VariableExpr(x)).toList :+ VariableExpr("f"))
+      }
+      Right(FunctionDef("main", s.map(x => FunParam(x, ValueType("TimeSeries"))).toList, ValueType("TimeSeries"), FunctionBody(Seq.empty, e)))
+    }
   }
-
 }
