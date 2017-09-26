@@ -8,19 +8,29 @@ import carldata.sf.compiler.AST._
 object FaceConverter {
 
   def convert(face: Expression): Either[String, Module] = {
-    val v = freeVariable(face)
-    val main = mkMain(v)
-    if (main.isRight)
-      Right(Module(Seq(), Seq(mkFunction(face, v), main.right.get)))
-    else Left(main.left.get)
+    val vs = freeVariable(face)
+    val expr = convertIf(face)
+    val main = mkMain(vs)
+    main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
   }
 
   def freeVariable(e: Expression): Set[String] = {
     e match {
       case v: VariableExpr => Set(v.name)
       case b: BinaryOpExpr => freeVariable(b.e1) ++ freeVariable(b.e2)
+      case r: RelationExpr => freeVariable(r.e1) ++ freeVariable(r.e2)
       case a: AppExpr => a.params.flatMap(x=>freeVariable(x)).toSet
       case _ => Set()
+    }
+  }
+
+  def convertIf(expr: Expression): Expression = {
+    expr match {
+      case b: BinaryOpExpr => BinaryOpExpr(convertIf(b.e1), b.op, convertIf(b.e2))
+      case a: AppExpr =>
+        if(a.name.toLowerCase == "if" && a.params.size == 3) IfExpr(a.params.head, a.params(1), a.params(2))
+        else AppExpr(a.name, a.params.map(convertIf))
+      case e => e
     }
   }
 
