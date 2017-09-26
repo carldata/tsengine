@@ -87,7 +87,9 @@ class FaceConverterTest extends FlatSpec with Matchers {
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
-    FaceConverter.convert(faceAST).isLeft
+    val expected = Parser.parse(flowScript).right.get
+    val result = FaceConverter.convert(faceAST).right.get
+    result shouldBe expected
 
   }
 
