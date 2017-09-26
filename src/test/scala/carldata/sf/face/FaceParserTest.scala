@@ -113,4 +113,11 @@ class FaceParserTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "parse expression with null" in {
+    val code = "if(A == NULL ,0,A)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("if", Seq(RelationExpr(VariableExpr("A"), "==", NumberLiteral(Float.NaN)), NumberLiteral(0), VariableExpr("A")))
+    result.toString shouldBe Right(expected).toString
+  }
+
 }
