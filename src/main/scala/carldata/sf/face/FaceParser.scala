@@ -9,7 +9,7 @@ import scala.util.parsing.combinator.RegexParsers
   */
 object FaceParser extends RegexParsers {
 
-  def identifier: Parser[String] = """\w[a-zA-Z0-9_]?""".r
+  def identifier: Parser[String] = """\w[a-zA-Z0-9_]*""".r
   def function: Parser[AppExpr] = identifier ~ "(" ~ funParams ~")" ^^ {
     x => AppExpr(x._1._1._1,x._1._2)
   }

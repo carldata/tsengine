@@ -78,5 +78,18 @@ class FaceConverterTest extends FlatSpec with Matchers {
 
   }
 
+  it should "convert functions" in {
+    val face = "CIRCLE(a,1)"
+    val flowScript =
+      """
+        |def f(a: Number): Number = CIRCLE(a,1)
+        |def main(a: TimeSeries): TimeSeries = map(a, f)
+      """.stripMargin
+
+    val faceAST = FaceParser.parse(face).right.get
+    FaceConverter.convert(faceAST).isLeft
+
+  }
+
 }
 

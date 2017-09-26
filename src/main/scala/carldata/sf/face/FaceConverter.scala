@@ -19,6 +19,7 @@ object FaceConverter {
     e match {
       case v: VariableExpr => Set(v.name)
       case b: BinaryOpExpr => freeVariable(b.e1) ++ freeVariable(b.e2)
+      case a: AppExpr => a.params.flatMap(x=>freeVariable(x)).toSet
       case _ => Set()
     }
   }
