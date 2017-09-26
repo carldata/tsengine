@@ -135,5 +135,19 @@ class FaceConverterTest extends FlatSpec with Matchers {
     result shouldBe expected
   }
 
+  it should "convert expression with negation" in {
+    val face = "if(!(a < 1),0,1)"
+    val flowScript =
+      """
+        |def f(a: Number): Number = if !a  < 1 then 0 else 1
+        |def main(a: TimeSeries): TimeSeries = map(a, f)
+      """.stripMargin
+
+    val faceAST = FaceParser.parse(face).right.get
+    val expected = Parser.parse(flowScript).right.get
+    val result = FaceConverter.convert(faceAST).right.get
+    result shouldBe expected
+  }
+
 }
 
