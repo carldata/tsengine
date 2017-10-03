@@ -1,5 +1,6 @@
 package carldata.sf
 
+import carldata.sf.compiler.Parser
 import org.scalatest._
 
 
@@ -264,6 +265,17 @@ class InterpreterTest extends FlatSpec with Matchers {
       Interpreter(ast).run("main", Seq(13, 25))
     }
     result shouldBe Right(38)
+  }
+
+  it should "parse NULLs" in {
+    val code =
+      """
+        |def main(a: Number): Number = a + NULL
+      """.stripMargin
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      Interpreter(ast).run("main", Seq(13))
+    }
+    result.right.get.asInstanceOf[Float].isNaN shouldBe true
   }
 
 }

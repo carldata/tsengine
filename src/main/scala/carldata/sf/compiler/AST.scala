@@ -92,7 +92,7 @@ object AST {
       case AppExpr(name, params) => name + "(%s)".format(params.map(printExpr).mkString(","))
       case VariableExpr(name) => name
       case StringLiteral(text) => '\'' + text + '\''
-      case NumberLiteral(v) => v.toString
+      case NumberLiteral(v) => if(v.isNaN) "NULL" else v.toString
       case BoolLiteral(b) => if(b) "True" else "False"
     }
   }
