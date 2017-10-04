@@ -181,7 +181,7 @@ class TimeSeriesModule extends Runtime {
     xs.join(ys).join(zs).mapValues(x => f(x._1._1, x._1._2, x._2))
   }
   def $join_with4(xs: TimeSeries[Float], ws: TimeSeries[Float], ys: TimeSeries[Float], zs: TimeSeries[Float], f: (Float, Float, Float, Float) => Float): TimeSeries[Float] = {
-    xs.join(ws).join((ys).join(zs)).mapValues(x => f(x._1._1,x._1._2, x._2._1, x._2._2))
+    xs.join(ws).join(ys.join(zs)).mapValues(x => f(x._1._1,x._1._2, x._2._1, x._2._2))
   }
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
