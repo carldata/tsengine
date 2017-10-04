@@ -48,6 +48,7 @@ expression
     | negOp=NEG expression
     | expression boolOp=(AND | OR) expression
     | boolLiteral
+    | nullLiteral
     | stringLiteral
     | numberLiteral
     | variableExpr
@@ -57,6 +58,10 @@ expression
 boolLiteral
     : TRUE
     | FALSE
+    ;
+
+nullLiteral
+    : NULL
     ;
 
 stringLiteral
@@ -93,6 +98,7 @@ NEG: '!';
 IF: 'if';
 THEN: 'then';
 ELSE: 'else';
+NULL: 'NULL';
 
 // Whitespace and comments
 WS  :  [ \t\r\n\u000C]+ -> skip;

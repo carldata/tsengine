@@ -155,6 +155,8 @@ object Parser {
       NumberLiteral(v2.toFloat)
     } else if(ctx.boolLiteral() != null){
       BoolLiteral(ctx.boolLiteral().TRUE() != null)
+    } else if(ctx.nullLiteral() != null){
+      NumberLiteral(Float.NaN)
     } else {
       // Convert: '(' expression ')'
       convertExpr(ctx.expression(0))
