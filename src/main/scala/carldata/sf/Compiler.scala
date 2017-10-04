@@ -7,6 +7,8 @@ import carldata.sf.compiler.Executable.ExecCode
 import carldata.sf.compiler._
 import carldata.sf.core._
 
+import scala.collection.mutable.ListBuffer
+
 /**
   * Compiler for FlowScript. It consists of the following phases:
   *  1. Parser and Lexer implemented with the help of ANTLR
@@ -43,33 +45,31 @@ object Compiler {
 
   /** Find longest duration in AST */
   def getDuration(ast: Module): Duration = {
-    var res: Seq[Duration] = Seq()
     val dict = Seq("minutes", "hours", "days", "weeks", "months", "years")
 
     def execute(r: Runtime, name: String, params: Seq[Float]): Duration = {
       r.executeFunction(name, params).get.asInstanceOf[Duration]
     }
 
-    def freeDuration(e: Expression): Seq[Duration] = {
+    def freeDuration(e: Expression, d: Duration): Duration = {
       e match {
-        case b: BinaryOpExpr => freeDuration(b.e1) ++ freeDuration(b.e2)
-        case l: BoolOpExpr => freeDuration(l.e1) ++ freeDuration(l.e2)
-        case r: RelationExpr => freeDuration(r.e1) ++ freeDuration(r.e2)
+        case b: BinaryOpExpr => Seq(freeDuration(b.e1, d), freeDuration(b.e2, d)).max
+        case l: BoolOpExpr => Seq(freeDuration(l.e1, d), freeDuration(l.e2, d)).max
+        case r: RelationExpr => Seq(freeDuration(r.e1, d), freeDuration(r.e2, d)).max
         case a: AppExpr => {
           if (dict.contains(a.name)) {
-            res :+ execute(new DateTimeModule(), a.name, a.params.map(x => AST.printExpr(x).toFloat))
+            Seq(execute(new DateTimeModule(), a.name, a.params.map(x => AST.printExpr(x).toFloat)), d).max
           }
           else
-            a.params.flatMap(x => freeDuration(x))
+            a.params.map(x => freeDuration(x, d)).max
         }
-        case n: NegOpExpr => freeDuration(n.expr)
-        case _ => Seq(Duration.ZERO)
+        case n: NegOpExpr => freeDuration(n.expr, d)
+        case _ => Duration.ZERO
       }
     }
 
     ast.funDecl.map(x => x.body.expr)
-      .flatMap(freeDuration)
-      .max
+      .map(x => freeDuration(x, Duration.ZERO)).max
   }
 
 
