@@ -3,6 +3,7 @@ package carldata.sf.core
 import java.time.{Duration, LocalDateTime}
 import java.time.format.DateTimeFormatter
 
+import carldata.sf.compiler.Parser
 import carldata.sf.{Compiler, Interpreter}
 import org.scalatest._
 
@@ -181,6 +182,20 @@ class DateTimeTest extends FlatSpec with Matchers {
       Interpreter(exec).run("main", Seq(1f))
     }
     result.right.get.asInstanceOf[Duration].toDays shouldBe 365
+  }
+
+  "With compiler" should "find longest duration" in {
+    val code =
+      """
+        |def f(a: Number, b: Number, c: Number): Number = a+b+c
+        |
+        |def main(xs: TimeSeries, ys: TimeSeries, zs: TimeSeries): TimeSeries = join_with3(groupby_sum(xs, minutes(3)), groupby_sum(xs, days(11)), groupby_sum(xs, hours(4)), f)
+      """.stripMargin
+
+    //val params = Seq("2017-08-21T10:30:30")
+    val result = Parser.parse(code)
+    Compiler.getDuration(result.right.get).toString shouldBe Duration.ofDays(11).toString
+
   }
 
 

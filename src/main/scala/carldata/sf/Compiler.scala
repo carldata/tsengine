@@ -1,6 +1,8 @@
 package carldata.sf
 
-import carldata.sf.compiler.AST.Module
+import java.time.Duration
+
+import carldata.sf.compiler.AST._
 import carldata.sf.compiler.Executable.ExecCode
 import carldata.sf.compiler._
 import carldata.sf.core._
@@ -29,14 +31,46 @@ object Compiler {
     val ast = Parser.parse(code)
     val ast2 = libs.map(Parser.parse).foldLeft(ast)(joinAst)
 
-      ast2.flatMap(SymbolChecker.check)
-        .flatMap(TypeChecker.check)
-        .map(CodeGenerator.generate)
+    ast2.flatMap(SymbolChecker.check)
+      .flatMap(TypeChecker.check)
+      .map(CodeGenerator.generate)
   }
 
   /** Helper function for joining parser results */
   def joinAst(ast1: Either[String, Module], ast2: Either[String, Module]): Either[String, Module] = {
     ast1.flatMap(a => ast2.map(b => AST.mergeModules(a, b)))
   }
+
+  /** Find longest duration in AST */
+  def getDuration(ast: Module): Duration = {
+    var res: Seq[Duration] = Seq()
+    val dict = Seq("minutes", "hours", "days", "weeks", "months", "years")
+
+    def execute(r: Runtime, name: String, params: Seq[Float]): Duration = {
+      r.executeFunction(name, params).get.asInstanceOf[Duration]
+    }
+
+    def freeDuration(e: Expression): Seq[Duration] = {
+      e match {
+        case b: BinaryOpExpr => freeDuration(b.e1) ++ freeDuration(b.e2)
+        case l: BoolOpExpr => freeDuration(l.e1) ++ freeDuration(l.e2)
+        case r: RelationExpr => freeDuration(r.e1) ++ freeDuration(r.e2)
+        case a: AppExpr => {
+          if (dict.contains(a.name)) {
+            res :+ execute(new DateTimeModule(), a.name, a.params.map(x => AST.printExpr(x).toFloat))
+          }
+          else
+            a.params.flatMap(x => freeDuration(x))
+        }
+        case n: NegOpExpr => freeDuration(n.expr)
+        case _ => Seq(Duration.ZERO)
+      }
+    }
+
+    ast.funDecl.map(x => x.body.expr)
+      .flatMap(freeDuration)
+      .max
+  }
+
 
 }
