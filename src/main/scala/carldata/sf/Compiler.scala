@@ -1,9 +1,13 @@
 package carldata.sf
 
-import carldata.sf.compiler.AST.Module
+import java.time.Duration
+
+import carldata.sf.compiler.AST._
 import carldata.sf.compiler.Executable.ExecCode
 import carldata.sf.compiler._
 import carldata.sf.core._
+
+import scala.collection.mutable.ListBuffer
 
 /**
   * Compiler for FlowScript. It consists of the following phases:
@@ -29,14 +33,44 @@ object Compiler {
     val ast = Parser.parse(code)
     val ast2 = libs.map(Parser.parse).foldLeft(ast)(joinAst)
 
-      ast2.flatMap(SymbolChecker.check)
-        .flatMap(TypeChecker.check)
-        .map(CodeGenerator.generate)
+    ast2.flatMap(SymbolChecker.check)
+      .flatMap(TypeChecker.check)
+      .map(CodeGenerator.generate)
   }
 
   /** Helper function for joining parser results */
   def joinAst(ast1: Either[String, Module], ast2: Either[String, Module]): Either[String, Module] = {
     ast1.flatMap(a => ast2.map(b => AST.mergeModules(a, b)))
   }
+
+  /** Find longest duration in AST */
+  def getDuration(ast: Module): Duration = {
+    val dict = Seq("minutes", "hours", "days", "weeks", "months", "years")
+
+    def execute(r: Runtime, name: String, params: Seq[Float]): Duration = {
+      r.executeFunction(name, params).get.asInstanceOf[Duration]
+    }
+
+    def freeDuration(e: Expression, d: Duration): Duration = {
+      e match {
+        case b: BinaryOpExpr => Seq(freeDuration(b.e1, d), freeDuration(b.e2, d)).max
+        case l: BoolOpExpr => Seq(freeDuration(l.e1, d), freeDuration(l.e2, d)).max
+        case r: RelationExpr => Seq(freeDuration(r.e1, d), freeDuration(r.e2, d)).max
+        case a: AppExpr => {
+          if (dict.contains(a.name)) {
+            Seq(execute(new DateTimeModule(), a.name, a.params.map(x => AST.printExpr(x).toFloat)), d).max
+          }
+          else
+            a.params.map(x => freeDuration(x, d)).max
+        }
+        case n: NegOpExpr => freeDuration(n.expr, d)
+        case _ => Duration.ZERO
+      }
+    }
+
+    ast.funDecl.map(x => x.body.expr)
+      .map(x => freeDuration(x, Duration.ZERO)).max
+  }
+
 
 }
