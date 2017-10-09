@@ -183,6 +183,27 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "slice timeseries" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, sd: DateTime, ed: DateTime): TimeSeries = slice(xs, sd, ed)
+      """.stripMargin
+    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val startDate = now.plusMinutes(15)
+    val endDate = now.plusMinutes(60)
+    val idx = Vector(now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45),
+      now.plusMinutes(59), now.plusMinutes(60))
+    val idx2 = Vector(now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45), now.plusMinutes(59))
+    val vs = Vector(1f, 2f, 3f, 4f, 5f, 6f)
+    val vs2 = Vector(2f, 3f, 4f, 5f)
+    val ts = TimeSeries(idx, vs)
+    val expected = TimeSeries(idx2, vs2)
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, startDate, endDate))
+    }
+    result shouldBe Right(expected)
+  }
+
   it should "find cumulative" in {
     val code =
       """

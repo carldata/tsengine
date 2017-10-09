@@ -32,6 +32,7 @@ object TimeSeriesModule {
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
+      |external def slice(xs: TimeSeries, sd: DateTime, ed: DateTime): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
       |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
       |external def join_left_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number, d: Number): TimeSeries
@@ -44,7 +45,6 @@ object TimeSeriesModule {
 }
 
 class TimeSeriesModule extends Runtime {
-
   // Function definition
   def $map(xs: TimeSeries[Float], f: Float => Float): TimeSeries[Float] = xs.mapValues(f)
 
@@ -146,6 +146,8 @@ class TimeSeriesModule extends Runtime {
 
   def $shift(xs: TimeSeries[Float], d: Duration, f: Boolean): TimeSeries[Float] = xs.shiftTime(d, f)
 
+  def $slice(xs: TimeSeries[Float], sd: LocalDateTime, ed: LocalDateTime): TimeSeries[Float] = xs.slice(sd, ed)
+
   def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
 
   def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
@@ -180,8 +182,9 @@ class TimeSeriesModule extends Runtime {
   def $join_with3(xs: TimeSeries[Float], ys: TimeSeries[Float], zs: TimeSeries[Float], f: (Float, Float, Float) => Float): TimeSeries[Float] = {
     xs.join(ys).join(zs).mapValues(x => f(x._1._1, x._1._2, x._2))
   }
+
   def $join_with4(xs: TimeSeries[Float], ws: TimeSeries[Float], ys: TimeSeries[Float], zs: TimeSeries[Float], f: (Float, Float, Float, Float) => Float): TimeSeries[Float] = {
-    xs.join(ws).join(ys.join(zs)).mapValues(x => f(x._1._1,x._1._2, x._2._1, x._2._2))
+    xs.join(ws).join(ys.join(zs)).mapValues(x => f(x._1._1, x._1._2, x._2._1, x._2._2))
   }
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
