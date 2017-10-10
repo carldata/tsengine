@@ -184,6 +184,20 @@ class DateTimeTest extends FlatSpec with Matchers {
     result.right.get.asInstanceOf[Duration].toDays shouldBe 365
   }
 
+  it should "convert calendar expression" in {
+    val code =
+      """
+        |def main(s: String): DateTime => DateTime = dt_convert(s)
+      """.stripMargin
+    val now = LocalDateTime.of(2017, 10, 13, 11, 7)
+    val expected = LocalDateTime.of(2017, 9, 14, 23, 59)
+    val result = Compiler.compile(code, libs).flatMap { exec =>
+      Interpreter(exec).run("main", Seq("* * 14 * *"))
+    }
+    result.right.get.asInstanceOf[LocalDateTime => LocalDateTime](now) shouldBe expected
+
+  }
+
   "With compiler" should "find longest duration" in {
     val code =
       """
