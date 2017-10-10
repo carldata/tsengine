@@ -30,7 +30,7 @@ object TimeSeriesModule {
       |external def repeat(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Duration): TimeSeries
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
-      |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
+      |external def running_total(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def slice(xs: TimeSeries, sd: DateTime, ed: DateTime): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
@@ -142,7 +142,7 @@ class TimeSeriesModule extends Runtime {
 
   def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.rollingWindow(d, _.sum)
 
-  def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
+  def $running_total(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = TimeSeries.integrateByTime(xs, f)
 
   def $shift(xs: TimeSeries[Float], d: Duration, f: Boolean): TimeSeries[Float] = xs.shiftTime(d, f)
 

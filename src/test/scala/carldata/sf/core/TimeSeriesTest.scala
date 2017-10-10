@@ -207,15 +207,16 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find cumulative" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = running_total(xs, hours(d))
+        |def main(xs: TimeSeries, f: DateTime => DateTime): TimeSeries = running_total(xs, f)
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:00")
     val idx = Vector(now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45),
       now.plusMinutes(60), now.plusMinutes(70))
+    def f(d: LocalDateTime):LocalDateTime = d.withMinute(0)
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 4f, 5f, 6f))
     val expected = TimeSeries(idx, Vector(1f, 3f, 6f, 10f, 5f, 11f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts,f(_)))
     }
     result shouldBe Right(expected)
   }
@@ -413,7 +414,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val zs = TimeSeries(idx, Vector(1f, 2f, 3f, 4f))
     val expected = TimeSeries(idx, Vector(4.1f, 22.4f, 8.9f, 11.6f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(xs,ws, ys, zs))
+      Interpreter(exec).run("main", Seq(xs, ws, ys, zs))
     }
     result shouldBe Right(expected)
   }
@@ -436,7 +437,6 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     }
     result shouldBe Right(expected)
   }
-
 
 
   it should "remove outliers" in {
