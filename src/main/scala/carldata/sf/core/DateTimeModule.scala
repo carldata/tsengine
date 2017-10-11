@@ -48,12 +48,9 @@ class DateTimeModule extends Runtime {
 
   def $days(n: Float): Duration = Duration.ofDays(n.toLong)
 
-  def $dt_convert(d: String): LocalDateTime => LocalDateTime = {
-    TimeConverter.mkCronLike(d) match {
-      case Some(x) => TimeConverter.mkConverter(x)
-      case _ => LocalDateTime => LocalDateTime
-    }
-  }
+  def $dt_convert(d: String): LocalDateTime => LocalDateTime =
+    TimeConverter.mkCronLike(d).map(TimeConverter.mkConverter).getOrElse(identity)
+
 
   def $from_date(y: Float, m: Float, d: Float): LocalDateTime =
     LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0)
