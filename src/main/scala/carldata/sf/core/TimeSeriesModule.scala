@@ -19,18 +19,18 @@ object TimeSeriesModule {
       |external def discrete(xs: TimeSeries, v: Number): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
-      |external def groupby_avg(xs: TimeSeries, d: Duration): TimeSeries
-      |external def groupby_max(xs: TimeSeries, d: Duration): TimeSeries
-      |external def groupby_median(xs: TimeSeries, d: Duration): TimeSeries
-      |external def groupby_min(xs: TimeSeries, d: Duration): TimeSeries
-      |external def groupby_sum(xs: TimeSeries, d: Duration): TimeSeries
+      |external def groupby_avg(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
+      |external def groupby_max(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
+      |external def groupby_median(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
+      |external def groupby_min(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
+      |external def groupby_sum(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
       |external def interpolate(xs: TimeSeries, d: Duration): TimeSeries
       |external def interpolate_outliers(xs: TimeSeries, bottom: Number, top: Number): TimeSeries
       |external def remove_outliers(xs: TimeSeries, bottom: Number, top: Number): TimeSeries
       |external def repeat(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Duration): TimeSeries
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
-      |external def running_total(xs: TimeSeries, d: Duration): TimeSeries
+      |external def running_total(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
       |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
       |external def slice(xs: TimeSeries, sd: DateTime, ed: DateTime): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
@@ -77,26 +77,19 @@ class TimeSeriesModule extends Runtime {
 
   def $remove_outliers(xs: TimeSeries[Float], bottom: Float, top: Float): TimeSeries[Float] = xs.removeOutliers(bottom, top)
 
-  def $groupby_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    def f(seq: Seq[Float]): Float = seq.sum / seq.length
+  def $groupby_avg(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = {
+    def g(seq: Seq[Float]): Float = seq.sum / seq.length
 
     if (xs.isEmpty) xs
     else {
-      val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), x => f(x.unzip._2))
+      xs.groupByTime(f, x => g(x.unzip._2))
     }
   }
 
-  def $groupby_max(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    if (xs.isEmpty) xs
-    else {
-      val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), _.unzip._2.max)
-    }
-  }
+  def $groupby_max(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.max)
 
-  def $groupby_median(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    def f(seq: Seq[Float]): Float = {
+  def $groupby_median(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = {
+    def g(seq: Seq[Float]): Float = {
       val sorted = seq.sorted
       val center = Math.abs(sorted.length / 2)
       if (seq.length % 2 == 0) {
@@ -109,28 +102,17 @@ class TimeSeriesModule extends Runtime {
 
     if (xs.isEmpty) xs
     else {
-      val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), x => f(x.unzip._2))
+      xs.groupByTime(f, x => g(x.unzip._2))
     }
 
 
   }
 
-  def $groupby_min(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    if (xs.isEmpty) xs
-    else {
-      val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), _.unzip._2.min)
-    }
-  }
+  def $groupby_min(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.min)
 
-  def $groupby_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    if (xs.isEmpty) xs
-    else {
-      val st = xs.index.head
-      xs.groupByTime(floor_time(st, _, d), _.unzip._2.sum)
-    }
-  }
+
+  def $groupby_sum(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.sum)
+
 
   def $repeat(xs: TimeSeries[Float], sd: LocalDateTime, ed: LocalDateTime, d: Duration): TimeSeries[Float] = xs.repeat(sd, ed, d)
 
@@ -142,7 +124,7 @@ class TimeSeriesModule extends Runtime {
 
   def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.rollingWindow(d, _.sum)
 
-  def $running_total(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.integrateByTime(xs, d)
+  def $running_total(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = TimeSeries.integrateByTime(xs, f)
 
   def $shift(xs: TimeSeries[Float], d: Duration, f: Boolean): TimeSeries[Float] = xs.shiftTime(d, f)
 

@@ -73,14 +73,14 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find average in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_avg(xs, minutes(d))
+        |def main(xs: TimeSeries, d: String): TimeSeries = groupby_avg(xs, dt_convert(d))
       """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val now = LocalDateTime.parse("2015-01-01T00:01:00")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
     val expected = TimeSeries(Vector(now, now.plusMinutes(1), now.plusMinutes(3)), Vector(2.25f, 2f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
     result shouldBe Right(expected)
   }
@@ -88,14 +88,14 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find maximum in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_max(xs, minutes(d))
+        |def main(xs: TimeSeries, d: String): TimeSeries = groupby_max(xs, dt_convert(d))
       """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:00")
+    val now = LocalDateTime.parse("2015-01-01T00:01:00")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
     val expected = TimeSeries(Vector(now, now.plusMinutes(1), now.plusMinutes(3)), Vector(3f, 2f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
     result shouldBe Right(expected)
   }
@@ -103,14 +103,14 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find minimum in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_min(xs, minutes(d))
+        |def main(xs: TimeSeries, d: String): TimeSeries = groupby_min(xs, dt_convert(d))
       """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:02")
+    val now = LocalDateTime.parse("2015-01-01T00:01:00")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
     val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(1f, 2f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
     result shouldBe Right(expected)
   }
@@ -118,14 +118,14 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find median in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_median(xs, minutes(d))
+        |def main(xs: TimeSeries, d: String): TimeSeries = groupby_median(xs, dt_convert(d))
       """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:02")
+    val now = LocalDateTime.parse("2015-01-01T00:01:00")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80), now.plusSeconds(85))
     val ts = TimeSeries(idx, Vector(3f, 2f, 1f, 3f, 2f, 6f, 7f))
     val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(2.5f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
     result shouldBe Right(expected)
   }
@@ -133,14 +133,14 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find sum in fixed-interval series" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = groupby_sum(xs, minutes(d))
+        |def main(xs: TimeSeries, d: String): TimeSeries = groupby_sum(xs, dt_convert(d))
       """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:02")
+    val now = LocalDateTime.parse("2015-01-01T00:01:00")
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
     val expected = TimeSeries(Vector(now, now.plusMinutes(1)), Vector(9f, 8f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
     result shouldBe Right(expected)
   }
@@ -207,15 +207,16 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find cumulative" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number): TimeSeries = running_total(xs, hours(d))
+        |def main(xs: TimeSeries, f: DateTime => DateTime): TimeSeries = running_total(xs, f)
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:00")
     val idx = Vector(now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45),
       now.plusMinutes(60), now.plusMinutes(70))
+    def f(d: LocalDateTime):LocalDateTime = d.withMinute(0)
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 4f, 5f, 6f))
     val expected = TimeSeries(idx, Vector(1f, 3f, 6f, 10f, 5f, 11f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts,f(_)))
     }
     result shouldBe Right(expected)
   }
@@ -413,7 +414,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val zs = TimeSeries(idx, Vector(1f, 2f, 3f, 4f))
     val expected = TimeSeries(idx, Vector(4.1f, 22.4f, 8.9f, 11.6f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(xs,ws, ys, zs))
+      Interpreter(exec).run("main", Seq(xs, ws, ys, zs))
     }
     result shouldBe Right(expected)
   }
@@ -436,7 +437,6 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     }
     result shouldBe Right(expected)
   }
-
 
 
   it should "remove outliers" in {

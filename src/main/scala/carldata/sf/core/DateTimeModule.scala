@@ -3,6 +3,7 @@ package carldata.sf.core
 import java.time.temporal.ChronoUnit
 import java.time.{Duration, LocalDateTime}
 
+import carldata.series.TimeConverter
 import carldata.sf.Runtime
 
 /**
@@ -17,6 +18,7 @@ object DateTimeModule {
       |external def adjust_time(dt: DateTime, h: Number, m: Number, s: Number): DateTime
       |external def date(d: String): DateTime
       |external def days(n: Number): Duration
+      |external def dt_convert(d: String): DateTime => DateTime
       |external def from_date(y: Number, m: Number, d: Number): DateTime
       |external def from_datetime(y: Number, m: Number, d: Number, h: Number, mt: Number, s: Number, ns: Number): DateTime
       |external def day_of_week(dt: DateTime) : Number
@@ -45,6 +47,10 @@ class DateTimeModule extends Runtime {
   def $date(s: String): LocalDateTime = LocalDateTime.parse(s)
 
   def $days(n: Float): Duration = Duration.ofDays(n.toLong)
+
+  def $dt_convert(d: String): LocalDateTime => LocalDateTime =
+    TimeConverter.mkCronLike(d).map(TimeConverter.mkConverter).getOrElse(identity)
+
 
   def $from_date(y: Float, m: Float, d: Float): LocalDateTime =
     LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0)
