@@ -3,6 +3,7 @@ package carldata.sf.compiler
 import carldata.sf.compiler.AST._
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Gen, Properties}
+import org.slf4j.LoggerFactory
 
 /**
   * This test check the following property:
@@ -11,12 +12,14 @@ import org.scalacheck.{Gen, Properties}
   */
 object ParserCheck extends Properties("Parser") {
 
+  private val Log = LoggerFactory.getLogger(ParserCheck.getClass)
+
   val keywords: Set[String] = Set("def", "if", "then", "else", "let", "in")
 
   /** Keywords can't be used as identifiers */
   private val idGen = for {
     varName <- Gen.identifier
-  } yield if(keywords.contains(varName)) "df" else varName
+  } yield if (keywords.contains(varName)) "df" else varName
 
   private val varGen = for {
     varName <- idGen
@@ -123,16 +126,16 @@ object ParserCheck extends Properties("Parser") {
     val code = AST.printModule(module)
     Parser.parse(code) match {
       case Left(error) =>
-        println("EXPECTED:\n%s\n".format(module.toString))
-        println("CODE:\n%s\n".format(code))
-        println("PARSER ERROR:\n%s\n".format(error))
+        Log.error("EXPECTED:\n%s\n".format(module.toString))
+        Log.error("CODE:\n%s\n".format(code))
+        Log.error("PARSER ERROR:\n%s\n".format(error))
         false
 
       case Right(m) =>
-        if(m != module) {
-          println("EXPECTED:\n%s\n".format(module.toString))
-          println("CODE:\n%s\n".format(code))
-          println("AST:\n%s\n".format(m.toString))
+        if (m != module) {
+          Log.error("EXPECTED:\n%s\n".format(module.toString))
+          Log.error("CODE:\n%s\n".format(code))
+          Log.error("AST:\n%s\n".format(m.toString))
           false
         }
         else {
