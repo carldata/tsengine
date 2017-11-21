@@ -3,6 +3,7 @@ package carldata.sf
 import carldata.sf.compiler.AST._
 import carldata.sf.compiler.Executable.ExecCode
 import carldata.sf.core.{DBImplementation, TimeSeriesModule}
+import org.slf4j.LoggerFactory
 
 
 /**
@@ -20,6 +21,8 @@ object Interpreter {
 
 
 class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
+
+  private val Log = LoggerFactory.getLogger(Interpreter.getClass)
 
   /**
     * The runtime return either error string or computed value.
@@ -113,7 +116,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       case "*"  => mkFloat(a) * mkFloat(b)
       case "/"  => mkFloat(a) / mkFloat(b)
       case err =>
-        println("Wrong binary operator: " + err)
+        Log.error("Wrong binary operator: " + err)
         0f
     }
     v
@@ -132,7 +135,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       case "&&" => mkBool(a) && mkBool(b)
       case "||" => mkBool(a) || mkBool(b)
       case err =>
-        println("Wrong boolean operator: " + err)
+        Log.error("Wrong boolean operator: " + err)
         false
     }
   }
@@ -148,7 +151,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       case ">=" => mkFloat(a) >= mkFloat(b)
       case "<=" => mkFloat(a) < mkFloat(b)
       case err =>
-        println("Wrong relation operator: " + err)
+        Log.error("Wrong relation operator: " + err)
         false
     }
   }

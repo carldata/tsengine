@@ -18,7 +18,7 @@ object BenchmarkApp {
     """.stripMargin
   val deltaTimeScript = "def main(xs: TimeSeries): TimeSeries = delta_time(xs)"
 
-  val lookupScript =
+  val lookupScript: String =
     """
       |def f(a: Number): Number = lookup("test", a)
       |

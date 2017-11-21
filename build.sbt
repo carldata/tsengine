@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
 
   // Java dependencies
   "org.antlr" % "antlr4-runtime" % "4.7",
+  "org.slf4j" % "slf4j-api" % "1.7.25",
 
   // Test dependencies
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
