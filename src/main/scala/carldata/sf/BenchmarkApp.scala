@@ -3,15 +3,12 @@ package carldata.sf
 import carldata.series.TimeSeries
 import carldata.sf.core.DBImplementation
 import org.scalameter._
-import org.slf4j.LoggerFactory
 
 
 /**
   * Sandbox for testing implementation.
   */
 object BenchmarkApp {
-
-  private val Log = LoggerFactory.getLogger(BenchmarkApp.getClass)
 
   val mapScript: String =
     """
@@ -21,7 +18,7 @@ object BenchmarkApp {
     """.stripMargin
   val deltaTimeScript = "def main(xs: TimeSeries): TimeSeries = delta_time(xs)"
 
-  val lookupScript =
+  val lookupScript: String =
     """
       |def f(a: Number): Number = lookup("test", a)
       |
@@ -33,11 +30,11 @@ object BenchmarkApp {
     val size1M = 1000000
     val size100K = 100000
 
-    Log.info("\n1. Measure map")
+    println("\n1. Measure map")
     measureScript(size1M, mapScript)
-    Log.info("\n2. Measure delta_time")
+    println("\n2. Measure delta_time")
     measureScript(size1M, deltaTimeScript)
-    Log.info("\n3. Measure 100 items in lookup table")
+    println("\n3. Measure 100 items in lookup table")
     measureScript(size100K, lookupScript)
     println()
   }
@@ -53,7 +50,7 @@ object BenchmarkApp {
     }
 
     val sizeFormatted = intFormatter.format(size)
-    Log.info(s"$sizeFormatted points: $time.")
+    println(s"$sizeFormatted points: $time.")
   }
 
 }
