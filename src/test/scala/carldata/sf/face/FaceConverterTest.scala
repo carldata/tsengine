@@ -149,5 +149,18 @@ class FaceConverterTest extends FlatSpec with Matchers {
     result shouldBe expected
   }
 
+  it should "convert expression with single number" in {
+    val face = "5.4"
+    val flowScript =
+      """
+        |def f(x: Number): Number = 5.4
+        |def main(x: TimeSeries): TimeSeries = map(x, f)
+      """.stripMargin
+
+    val faceAST = FaceParser.parse(face).right.get
+    val expected = Parser.parse(flowScript).right.get
+    val result = FaceConverter.convert(faceAST).right.get
+    result shouldBe expected
+  }
 }
 

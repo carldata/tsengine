@@ -8,7 +8,7 @@ import carldata.sf.compiler.AST._
 object FaceConverter {
 
   def convert(face: Expression): Either[String, Module] = {
-    val vs = freeVariable(face)
+    val vs = if(face.isInstanceOf[NumberLiteral]) Set("x") else freeVariable(face)
     val expr = convertIf(face)
     val main = mkMain(vs)
     main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
