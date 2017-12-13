@@ -120,4 +120,18 @@ class FaceParserTest extends FlatSpec with Matchers {
     result.toString shouldBe Right(expected).toString
   }
 
+  it should "parse expression with number in .x format" in {
+    val code = "if(A == .05 ,0,A)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("if", Seq(RelationExpr(VariableExpr("A"), "==", NumberLiteral(0.05f)), NumberLiteral(0), VariableExpr("A")))
+    result.toString shouldBe Right(expected).toString
+  }
+
+  it should "parse expression with negative number in .x format" in {
+    val code = "if(A == -.05 ,0,A)"
+    val result = FaceParser.parse(code)
+    val expected = AppExpr("if", Seq(RelationExpr(VariableExpr("A"), "==", NumberLiteral(-0.05f)), NumberLiteral(0), VariableExpr("A")))
+    result.toString shouldBe Right(expected).toString
+  }
+
 }
