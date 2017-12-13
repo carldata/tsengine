@@ -15,7 +15,7 @@ object FaceParser extends RegexParsers {
   }
 
   def funParams: Parser[Seq[Expression]] = repsep(addOrBoolExpr, ",")
-  def number: Parser[NumberLiteral] = """-?\d+(\.\d*)?""".r ^^ { ds => NumberLiteral(ds.toFloat) }
+  def number: Parser[NumberLiteral] = """[+-]?([0-9]*[.])?[0-9]+""".r ^^ { ds =>  NumberLiteral(ds.toFloat) }
   def nullVariable: Parser[NumberLiteral] = ("null" | "NULL") ^^ { _ => NumberLiteral(Float.NaN)}
   def variable: Parser[VariableExpr] = identifier ^^ { id => VariableExpr(id) }
   def factor: Parser[Expression] = function | number | nullVariable | variable | "(" ~> addOrBoolExpr <~ ")"
