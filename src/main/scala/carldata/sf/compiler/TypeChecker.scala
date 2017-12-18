@@ -100,6 +100,9 @@ object TypeChecker {
 
   /** Check expression. Return error message or expression type */
   private def checkExpr(expr: Expression, env: Environment): Either[String, TypeDecl] = {
+
+    def numericType(t: TypeDecl) = t == ValueType("Number") || t == ValueType("TimeSeries")
+
     expr match {
       case StringLiteral(_) => Right(ValueType("String"))
       case NumberLiteral(_) => Right(ValueType("Number"))
@@ -113,8 +116,11 @@ object TypeChecker {
         }
 
       case BinaryOpExpr(e1, op, e2) =>
-        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
-          Right(ValueType("Number"))
+        val t1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
+        val t2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
+        if (numericType(t1) && numericType(t2)) {
+          if(t1 == ValueType("TimeSeries") || t2 == ValueType("TimeSeries")) Right(ValueType("TimeSeries"))
+          else Right(ValueType("Number"))
         } else {
           Left("Type error for operation: " + op)
         }
@@ -134,8 +140,11 @@ object TypeChecker {
         }
 
       case RelationExpr(e1, op, e2) =>
-        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
-          Right(ValueType("Bool"))
+        val t1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
+        val t2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
+        if (numericType(t1) && numericType(t2)) {
+          if(t1 == ValueType("TimeSeries") || t2 == ValueType("TimeSeries")) Right(ValueType("TimeSeries"))
+          else Right(ValueType("Bool"))
         } else {
           Left("Type error for relation: " + op)
         }
@@ -144,11 +153,13 @@ object TypeChecker {
         env.getSymbolType(name).toRight("variable type not defined: " + name)
 
       case IfExpr(e1, e2, e3) =>
-        val c1 = checkExpr(e1, env)
-        val c2 = checkExpr(e2, env)
-        val c3 = checkExpr(e3, env)
-        if (c1 == Right(ValueType("Bool")) && c2.isRight && c2 == c3) {
-          c2
+        val c1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
+        val c2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
+        val c3 = checkExpr(e3, env).right.getOrElse(ValueType(""))
+        if (c1 == ValueType("Bool") && c2 != ValueType("") && c2 == c3) {
+          Right(c2)
+        } else if (c1 == ValueType("TimeSeries") && numericType(c2) && numericType(c2)) {
+          Right(ValueType("TimeSeries"))
         } else {
           Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))
         }

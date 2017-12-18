@@ -380,45 +380,6 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
-  it should "join 3 series" in {
-    val code =
-      """
-        |def f(a: Number, b: Number, c: Number): Number = a+b*c
-        |
-        |def main(xs: TimeSeries, ys: TimeSeries, zs: TimeSeries): TimeSeries = join_with3(xs, ys, zs, f)
-      """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:00")
-    val idx = Vector(now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4))
-    val xs = TimeSeries(idx, Vector(3f, 20f, 5f, 6f))
-    val ys = TimeSeries(idx, Vector(1f, 2f, 3f, 4f))
-    val zs = TimeSeries(idx, Vector(0.1f, 0.2f, 0.3f, 0.4f))
-    val expected = TimeSeries(idx, Vector(3.1f, 20.4f, 5.9f, 7.6f))
-    val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(xs, ys, zs))
-    }
-    result shouldBe Right(expected)
-  }
-
-  it should "join 4 series" in {
-    val code =
-      """
-        |def f(a: Number, b: Number, c: Number, d: Number): Number = a+b*c+d
-        |
-        |def main(xs: TimeSeries, ws: TimeSeries, ys: TimeSeries, zs: TimeSeries): TimeSeries = join_with4(xs, ws, ys, zs, f)
-      """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:00")
-    val idx = Vector(now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4))
-    val xs = TimeSeries(idx, Vector(3f, 20f, 5f, 6f))
-    val ws = TimeSeries(idx, Vector(1f, 2f, 3f, 4f))
-    val ys = TimeSeries(idx, Vector(0.1f, 0.2f, 0.3f, 0.4f))
-    val zs = TimeSeries(idx, Vector(1f, 2f, 3f, 4f))
-    val expected = TimeSeries(idx, Vector(4.1f, 22.4f, 8.9f, 11.6f))
-    val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(xs, ws, ys, zs))
-    }
-    result shouldBe Right(expected)
-  }
-
   it should "join left 2 series" in {
     val code =
       """
