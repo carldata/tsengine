@@ -1,5 +1,6 @@
 package carldata.sf
 
+import carldata.series.TimeSeries
 import carldata.sf.compiler.AST._
 import carldata.sf.compiler.Executable.ExecCode
 import carldata.sf.core.{DBImplementation, TimeSeriesModule}
@@ -14,7 +15,8 @@ object Interpreter {
   def apply(exec: ExecCode): Interpreter = {
     new Interpreter(exec, Seq(core.MathModule(), TimeSeriesModule(), core.DateTimeModule(), core.HydrologyModule()))
   }
-  def apply(exec: ExecCode, db: DBImplementation ): Interpreter = {
+
+  def apply(exec: ExecCode, db: DBImplementation): Interpreter = {
     new Interpreter(exec, Seq(core.MathModule(), TimeSeriesModule(), core.DateTimeModule(), core.HydrologyModule(), core.DBModule(db)))
   }
 }
@@ -28,29 +30,29 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     * The runtime return either error string or computed value.
     * Before running the following conditions have to be met:
     *   - The program can only be run if number of provided parameters
-    *     matches number of parameters in function declaration
+    * matches number of parameters in function declaration
     */
   def run(funName: String, params: Seq[Any]): Either[String, Any] = {
     try {
       // Add compatible functions as Function1Value
-      val sm: Map[String, Any] = exec.functions.flatMap{ f =>
-        if(f.params.nonEmpty && f.params.forall(_.typeName == ValueType("Number")) && f.typeName== ValueType("Number")) {
+      val sm: Map[String, Any] = exec.functions.flatMap { f =>
+        if (f.params.nonEmpty && f.params.forall(_.typeName == ValueType("Number")) && f.typeName == ValueType("Number")) {
           f.params.size match {
             case 1 =>
-              Seq(f.name -> new ((Float) => Float){
+              Seq(f.name -> new ((Float) => Float) {
                 def apply(x: Float): Float = execFunction(f.name, Seq(x), Map()).asInstanceOf[Float]
               })
             case 2 =>
-              Seq(f.name -> new ((Float, Float) => Float){
+              Seq(f.name -> new ((Float, Float) => Float) {
                 def apply(x1: Float, x2: Float): Float = execFunction(f.name, Seq(x1, x2), Map()).asInstanceOf[Float]
               })
             case 3 =>
-              Seq(f.name -> new ((Float, Float, Float) => Float){
+              Seq(f.name -> new ((Float, Float, Float) => Float) {
                 def apply(x1: Float, x2: Float, x3: Float): Float =
                   execFunction(f.name, Seq(x1, x2, x3), Map()).asInstanceOf[Float]
               })
             case 4 =>
-              Seq(f.name -> new ((Float, Float, Float, Float) => Float){
+              Seq(f.name -> new ((Float, Float, Float, Float) => Float) {
                 def apply(x1: Float, x2: Float, x3: Float, x4: Float): Float =
                   execFunction(f.name, Seq(x1, x2, x3, x4), Map()).asInstanceOf[Float]
               })
@@ -68,7 +70,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
 
   def execFunction(name: String, params: Seq[Any], symbolMemory: Map[String, Any]): Any = {
     exec.functions.find(f => f.name == name && params.size == f.params.size)
-      .map{f =>
+      .map { f =>
         val sm = symbolMemory ++ f.params.zip(params).map(x => x._1.name -> x._2).toMap
         execBody(f.body, sm)
       }
@@ -76,7 +78,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
   }
 
   def execBody(body: FunctionBody, sm: Map[String, Any]): Any = {
-    val sm2 = body.assignments.foldLeft(sm){ (t, a) =>
+    val sm2 = body.assignments.foldLeft(sm) { (t, a) =>
       t + (a.varName -> execExpr(a.expr, t))
     }
     execExpr(body.expr, sm2)
@@ -107,19 +109,56 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     -v
   }
 
-  def execBinaryOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Any]): Float = {
+  //noinspection TypeCheckCanBeMatch
+  def execBinaryOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Any]): Any = {
     val a = execExpr(e1, mem)
     val b = execExpr(e2, mem)
-    val v = op match {
-      case "+" => mkFloat(a) + mkFloat(b)
-      case "-" => mkFloat(a) - mkFloat(b)
-      case "*"  => mkFloat(a) * mkFloat(b)
-      case "/"  => mkFloat(a) / mkFloat(b)
-      case err =>
-        Log.error("Wrong binary operator: " + err)
-        0f
+
+    if (a.isInstanceOf[TimeSeries[_]] && b.isInstanceOf[TimeSeries[_]]) {
+      val xs: TimeSeries[Float] = a.asInstanceOf[TimeSeries[Float]]
+      val ys: TimeSeries[Float] = b.asInstanceOf[TimeSeries[Float]]
+      op match {
+        case "+" => xs.join(ys).mapValues(v => v._1 + v._2)
+        case "-" => xs.join(ys).mapValues(v => v._1 - v._2)
+        case "*" => xs.join(ys).mapValues(v => v._1 * v._2)
+        case "/" => xs.join(ys).mapValues(v => v._1 / v._2)
+        case err =>
+          Log.error("Wrong binary operator: " + err)
+          0f
+      }
+    } else if (a.isInstanceOf[TimeSeries[_]]) {
+      val xs: TimeSeries[Float] = a.asInstanceOf[TimeSeries[Float]]
+      op match {
+        case "+" => xs.mapValues(_ + mkFloat(b))
+        case "-" => xs.mapValues(_ - mkFloat(b))
+        case "*" => xs.mapValues(_ * mkFloat(b))
+        case "/" => xs.mapValues(_ / mkFloat(b))
+        case err =>
+          Log.error("Wrong binary operator: " + err)
+          0f
+      }
+    } else if (b.isInstanceOf[TimeSeries[_]]) {
+      val ys: TimeSeries[Float] = b.asInstanceOf[TimeSeries[Float]]
+      op match {
+        case "+" => ys.mapValues(mkFloat(a) + _)
+        case "-" => ys.mapValues(mkFloat(a) - _)
+        case "*" => ys.mapValues(mkFloat(a) * _)
+        case "/" => ys.mapValues(mkFloat(a) / _)
+        case err =>
+          Log.error("Wrong binary operator: " + err)
+          0f
+      }
+    } else {
+      op match {
+        case "+" => mkFloat(a) + mkFloat(b)
+        case "-" => mkFloat(a) - mkFloat(b)
+        case "*" => mkFloat(a) * mkFloat(b)
+        case "/" => mkFloat(a) / mkFloat(b)
+        case err =>
+          Log.error("Wrong binary operator: " + err)
+          0f
+      }
     }
-    v
   }
 
   def execNegOpExpr(e1: Expression, mem: Map[String, Any]): Boolean = {
@@ -146,10 +185,10 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     op match {
       case "==" => a == b
       case "!=" => a != b
-      case ">"  => mkFloat(a) > mkFloat(b)
-      case "<"  => mkFloat(a) < mkFloat(b)
+      case ">" => mkFloat(a) > mkFloat(b)
+      case "<" => mkFloat(a) < mkFloat(b)
       case ">=" => mkFloat(a) >= mkFloat(b)
-      case "<=" => mkFloat(a) < mkFloat(b)
+      case "<=" => mkFloat(a) <= mkFloat(b)
       case err =>
         Log.error("Wrong relation operator: " + err)
         false
@@ -158,7 +197,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
 
   def execIfExpr(p: Expression, e1: Expression, e2: Expression, mem: Map[String, Any]): Any = {
     val pred = execExpr(p, mem)
-    if(mkBool(pred)) execExpr(e1, mem) else execExpr(e2, mem)
+    if (mkBool(pred)) execExpr(e1, mem) else execExpr(e2, mem)
   }
 
   def mkFloat(a: Any): Float = {
@@ -166,7 +205,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       case v: Float => v
       case v: Int => v.toFloat
       case v: Double => v.toFloat
-      case v: Boolean => if(v) 1f else 0f
+      case v: Boolean => if (v) 1f else 0f
       case _ => 0f
     }
   }

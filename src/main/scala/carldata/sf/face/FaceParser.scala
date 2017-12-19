@@ -47,7 +47,7 @@ object FaceParser extends RegexParsers {
     x => BoolOpExpr(x._1._1, x._1._2,x._2)
   }
 
-  def negationExpr : Parser[Expression] = ("!") ~ addOrRelationExpr ^^ {
+  def negationExpr : Parser[Expression] = "!" ~ addOrRelationExpr ^^ {
     x => NegOpExpr(x._2)
   }
 

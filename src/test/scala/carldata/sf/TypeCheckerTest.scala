@@ -128,6 +128,15 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "type check time series and value arithmetic operation" in {
+    val code =
+      """
+        |def main(ts: TimeSeries): TimeSeries = (ts*12)+3
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(MathModule.header))
+    ast.isRight shouldBe true
+  }
+
   it should "type check minus on wrong type" in {
     val code =
       """

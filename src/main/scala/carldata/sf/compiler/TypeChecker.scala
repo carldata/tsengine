@@ -100,6 +100,9 @@ object TypeChecker {
 
   /** Check expression. Return error message or expression type */
   private def checkExpr(expr: Expression, env: Environment): Either[String, TypeDecl] = {
+
+    def numericType(t: TypeDecl) = t == ValueType("Number") || t == ValueType("TimeSeries")
+
     expr match {
       case StringLiteral(_) => Right(ValueType("String"))
       case NumberLiteral(_) => Right(ValueType("Number"))
@@ -113,8 +116,11 @@ object TypeChecker {
         }
 
       case BinaryOpExpr(e1, op, e2) =>
-        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
-          Right(ValueType("Number"))
+        val t1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
+        val t2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
+        if (numericType(t1) && numericType(t2)) {
+          if(t1 == ValueType("TimeSeries") || t2 == ValueType("TimeSeries")) Right(ValueType("TimeSeries"))
+          else Right(ValueType("Number"))
         } else {
           Left("Type error for operation: " + op)
         }

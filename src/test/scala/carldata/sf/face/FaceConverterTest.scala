@@ -139,7 +139,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "if(!(a < 1),0,1)"
     val flowScript =
       """
-        |def f(a: Number): Number = if !a  < 1 then 0 else 1
+        |def f(a: Number): Number = if !a < 1 then 0 else 1
         |def main(a: TimeSeries): TimeSeries = map(a, f)
       """.stripMargin
 

@@ -3,13 +3,11 @@
 [![Build status](https://travis-ci.org/carldata/flow-script.svg?branch=master)](https://travis-ci.org/carldata/flow-script)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.carldata/flow-script_2.12)
 
-FlowScript is a script engine targeted at processing Time Series data.
+FlowScript is a script engine for Time Series data.
 
 The goal for FlowScript is to add the possibility for writing user scripts working on Time Series data.
 Since scripts will be written be users and run on the server, then it is important that the scripts
 run in a safe sandbox and don't introduce any security loopholes. 
-The reason for yet another script language is security. It should be safe to run script written by the user 
-on the server. 
 The program written in FlowScript is executed by interpreter with the help of runtime functions.
 
 
@@ -17,14 +15,14 @@ The program written in FlowScript is executed by interpreter with the help of ru
  
  Add the following dependency to the build.sbt
  ```scala
- libraryDependencies += "io.github.carldata" %% "flow-script" % "0.7.11"
+ libraryDependencies += "io.github.carldata" %% "flow-script" % "0.8.0"
  ```
 
 ### Create test script
 Lets say that we have this minimalistic script
 
 ```flowscript
-def main(a: Number, b: Number): Number = a+b 
+def main(xs: TimeSeries, b: Number): TimeSeries = xs+b 
 ```
  
 ### Compile script
