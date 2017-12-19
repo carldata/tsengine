@@ -140,10 +140,10 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     } else if (b.isInstanceOf[TimeSeries[_]]) {
       val ys: TimeSeries[Float] = b.asInstanceOf[TimeSeries[Float]]
       op match {
-        case "+" => ys.mapValues(mkFloat(b) + _)
-        case "-" => ys.mapValues(mkFloat(b) - _)
-        case "*" => ys.mapValues(mkFloat(b) * _)
-        case "/" => ys.mapValues(mkFloat(b) / _)
+        case "+" => ys.mapValues(mkFloat(a) + _)
+        case "-" => ys.mapValues(mkFloat(a) - _)
+        case "*" => ys.mapValues(mkFloat(a) * _)
+        case "/" => ys.mapValues(mkFloat(a) / _)
         case err =>
           Log.error("Wrong binary operator: " + err)
           0f
@@ -188,7 +188,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       case ">" => mkFloat(a) > mkFloat(b)
       case "<" => mkFloat(a) < mkFloat(b)
       case ">=" => mkFloat(a) >= mkFloat(b)
-      case "<=" => mkFloat(a) < mkFloat(b)
+      case "<=" => mkFloat(a) <= mkFloat(b)
       case err =>
         Log.error("Wrong relation operator: " + err)
         false
