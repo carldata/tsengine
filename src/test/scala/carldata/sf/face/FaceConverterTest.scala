@@ -13,8 +13,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "a"
     val flowScript =
       """
-        |def f(a: Number): Number = a
-        |def main(a: TimeSeries): TimeSeries = map(a, f)
+        |def main(a: TimeSeries): TimeSeries = a
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -27,8 +26,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "2 * a + 4 / b"
     val flowScript =
       """
-        |def f(a: Number, b: Number): Number = 2 * a + 4 / b
-        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = join_with(a, b, f)
+        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = 2 * a + 4 / b
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -41,8 +39,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "a + b * c"
     val flowScript =
       """
-        |def f(a: Number, b: Number, c: Number): Number = a + b * c
-        |def main(a: TimeSeries, b: TimeSeries, c: TimeSeries): TimeSeries = join_with3(a, b, c, f)
+        |def main(a: TimeSeries, b: TimeSeries, c: TimeSeries): TimeSeries = a + b * c
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -55,27 +52,13 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "a + b + c * d"
     val flowScript =
       """
-        |def f(a: Number, b: Number, c: Number, d: Number): Number = a + b + c * d
-        |def main(a: TimeSeries, b: TimeSeries, c: TimeSeries, d: TimeSeries): TimeSeries = join_with4(a, b, c, d, f)
+        |def main(a: TimeSeries, b: TimeSeries, c: TimeSeries, d: TimeSeries): TimeSeries = a + b + c * d
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
     val expected = Parser.parse(flowScript).right.get
     val result = FaceConverter.convert(faceAST).right.get
     result shouldBe expected
-  }
-
-  it should "give error message on too much od params" in {
-    val face = "2 * a + 4 / b + c + d + e"
-    val flowScript =
-      """
-        |def f(a: Number, b: Number): Number = 2 * a + 4 / b
-        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = join_with(a, b, f)
-      """.stripMargin
-
-    val faceAST = FaceParser.parse(face).right.get
-    FaceConverter.convert(faceAST).isLeft
-
   }
 
   it should "convert functions" in {
@@ -111,8 +94,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "IF(a > 10, 5, 0)"
     val flowScript =
       """
-        |def f(a: Number): Number = if a > 10 then 5 else 0
-        |def main(a: TimeSeries): TimeSeries = map(a, f)
+        |def main(a: TimeSeries): TimeSeries = if a > 10 then 5 else 0
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -125,8 +107,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "IF(a > 10 && 0 < 1,5,0)"
     val flowScript =
       """
-        |def f(a: Number): Number = if a > 10 && 0 < 1 then 5 else 0
-        |def main(a: TimeSeries): TimeSeries = map(a, f)
+        |def main(a: TimeSeries): TimeSeries = if a > 10 && 0 < 1 then 5 else 0
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -139,8 +120,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "if(!(a < 1),0,1)"
     val flowScript =
       """
-        |def f(a: Number): Number = if !a < 1 then 0 else 1
-        |def main(a: TimeSeries): TimeSeries = map(a, f)
+        |def main(a: TimeSeries): TimeSeries =  if !a < 1 then 0 else 1
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -153,8 +133,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "5.4"
     val flowScript =
       """
-        |def f(x: Number): Number = 5.4
-        |def main(x: TimeSeries): TimeSeries = map(x, f)
+        |def main(x: TimeSeries): TimeSeries = 5.4
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
