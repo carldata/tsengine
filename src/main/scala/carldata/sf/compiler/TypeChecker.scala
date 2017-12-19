@@ -140,11 +140,8 @@ object TypeChecker {
         }
 
       case RelationExpr(e1, op, e2) =>
-        val t1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
-        val t2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
-        if (numericType(t1) && numericType(t2)) {
-          if(t1 == ValueType("TimeSeries") || t2 == ValueType("TimeSeries")) Right(ValueType("TimeSeries"))
-          else Right(ValueType("Bool"))
+        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
+          Right(ValueType("Bool"))
         } else {
           Left("Type error for relation: " + op)
         }
@@ -153,13 +150,11 @@ object TypeChecker {
         env.getSymbolType(name).toRight("variable type not defined: " + name)
 
       case IfExpr(e1, e2, e3) =>
-        val c1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
-        val c2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
-        val c3 = checkExpr(e3, env).right.getOrElse(ValueType(""))
-        if (c1 == ValueType("Bool") && c2 != ValueType("") && c2 == c3) {
-          Right(c2)
-        } else if (c1 == ValueType("TimeSeries") && numericType(c2) && numericType(c2)) {
-          Right(ValueType("TimeSeries"))
+        val c1 = checkExpr(e1, env)
+        val c2 = checkExpr(e2, env)
+        val c3 = checkExpr(e3, env)
+        if (c1 == Right(ValueType("Bool")) && c2.isRight && c2 == c3) {
+          c2
         } else {
           Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))
         }

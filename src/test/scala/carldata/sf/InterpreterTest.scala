@@ -1,5 +1,6 @@
 package carldata.sf
 
+import carldata.series.TimeSeries
 import org.scalatest._
 
 
@@ -277,21 +278,31 @@ class InterpreterTest extends FlatSpec with Matchers {
     result.right.get.asInstanceOf[Float].isNaN shouldBe true
   }
 
-//  it should "add number to time series" in {
-//    val code =
-//      """
-//        |def main(xs: TimeSeries): TimeSeries = xs + 1
-//      """.stripMargin
-//    val ts = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f)))
-//    val expected = TimeSeries.fromTimestamps(Seq((1L, 2f), (2L, 3f), (3L, 4f)))
-//    val result = Compiler.compile(code, Seq()).flatMap { ast =>
-//      Interpreter(ast).run("main", Seq(ts))
-//    }
-//    result.right.get shouldBe expected
-//  }
+  it should "add number to time series" in {
+    val code =
+      """
+        |def main(xs: TimeSeries): TimeSeries = xs + 1
+      """.stripMargin
+    val ts = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 2f), (2L, 3f), (3L, 4f)))
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      Interpreter(ast).run("main", Seq(ts))
+    }
+    result.right.get shouldBe expected
+  }
 
-// Add 2 time series with different index
-// Use if on timeseries with TS as rule
-// Use if on timeseries with TS as value
+  it should "multiply 2 series" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, ys: TimeSeries): TimeSeries = xs * ys
+      """.stripMargin
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f)))
+    val ys = TimeSeries.fromTimestamps(Seq((1L, 1f), (3L, 3f), (4L, 4f)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 1f), (3L, 9f)))
+    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+      Interpreter(ast).run("main", Seq(xs, ys))
+    }
+    result.right.get shouldBe expected
+  }
 
 }
