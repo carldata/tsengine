@@ -41,6 +41,7 @@ object FaceConverter {
     expr match {
       case AppExpr(_, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
       case IfExpr(_, _, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
+      case NumberLiteral(_) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
       case _ => main.map(f => Module(Seq(), Seq(f)))
     }
   }
@@ -57,6 +58,7 @@ object FaceConverter {
       val e: Expression = expr match {
         case AppExpr(_, _) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
         case IfExpr(_, _, _) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
+        case NumberLiteral(_) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
         case _ => expr
       }
       Right(FunctionDef("main", s.map(x => FunParam(x, ValueType("TimeSeries"))).toList, ValueType("TimeSeries"), FunctionBody(Seq.empty, e)))

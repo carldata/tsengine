@@ -136,7 +136,8 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "5.4"
     val flowScript =
       """
-        |def main(x: TimeSeries): TimeSeries = 5.4
+        |def f(x: Number): Number = 5.4
+        |def main(x: TimeSeries): TimeSeries = map(x, f)
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
