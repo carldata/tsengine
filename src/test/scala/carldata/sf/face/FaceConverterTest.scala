@@ -94,7 +94,8 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "IF(a > 10, 5, 0)"
     val flowScript =
       """
-        |def main(a: TimeSeries): TimeSeries = if a > 10 then 5 else 0
+        |def f(a: Number): Number = if a > 10 then 5 else 0
+        |def main(a: TimeSeries): TimeSeries = map(a,f)
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -107,7 +108,8 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "IF(a > 10 && 0 < 1,5,0)"
     val flowScript =
       """
-        |def main(a: TimeSeries): TimeSeries = if a > 10 && 0 < 1 then 5 else 0
+        |def f(a:Number): Number = if a > 10 && 0 < 1 then 5 else 0
+        |def main(a: TimeSeries): TimeSeries = map(a,f)
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -120,7 +122,8 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "if(!(a < 1),0,1)"
     val flowScript =
       """
-        |def main(a: TimeSeries): TimeSeries =  if !a < 1 then 0 else 1
+        |def f(a: Number):Number =  if !a < 1 then 0 else 1
+        |def main(a: TimeSeries): TimeSeries = map(a,f)
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get

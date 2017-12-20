@@ -11,10 +11,7 @@ object FaceConverter {
     val vs = if (face.isInstanceOf[NumberLiteral]) Set("x") else freeVariable(face)
     val expr = convertIf(face)
     val main = mkMain(expr, vs)
-    expr match {
-      case AppExpr(_, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
-      case _ => main.map(f => Module(Seq(), Seq(f)))
-    }
+    mkModule(expr, main, vs)
   }
 
 
@@ -40,6 +37,14 @@ object FaceConverter {
     }
   }
 
+  def mkModule(expr: Expression, main: Either[String, FunctionDef], vs: Set[String]): Either[String, Module] = {
+    expr match {
+      case AppExpr(_, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
+      case IfExpr(_, _, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
+      case _ => main.map(f => Module(Seq(), Seq(f)))
+    }
+  }
+
   def mkFunction(e: Expression, s: Set[String]): FunctionDef = {
     FunctionDef("f", s.map(x => FunParam(x, ValueType("Number"))).toList, ValueType("Number"), FunctionBody(Seq.empty, e))
   }
@@ -50,7 +55,8 @@ object FaceConverter {
     }
     else {
       val e: Expression = expr match {
-        case AppExpr(name, params) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
+        case AppExpr(_, _) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
+        case IfExpr(_, _, _) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
         case _ => expr
       }
       Right(FunctionDef("main", s.map(x => FunParam(x, ValueType("TimeSeries"))).toList, ValueType("TimeSeries"), FunctionBody(Seq.empty, e)))
