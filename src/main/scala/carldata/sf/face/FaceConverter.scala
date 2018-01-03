@@ -47,7 +47,7 @@ object FaceConverter {
   }
 
   def mkFunction(e: Expression, s: Set[String]): FunctionDef = {
-    FunctionDef("f", s.map(x => FunParam(x, ValueType("Number"))).toList, ValueType("Number"), FunctionBody(Seq.empty, e))
+    FunctionDef("f", s.map(x => FunParam(x, NumberType)).toList, NumberType, FunctionBody(Seq.empty, e))
   }
 
   def mkMain(expr: Expression, s: Set[String]): Either[String, FunctionDef] = {
@@ -61,7 +61,7 @@ object FaceConverter {
         case NumberLiteral(_) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
         case _ => expr
       }
-      Right(FunctionDef("main", s.map(x => FunParam(x, ValueType("TimeSeries"))).toList, ValueType("TimeSeries"), FunctionBody(Seq.empty, e)))
+      Right(FunctionDef("main", s.map(x => FunParam(x, SeriesType)).toList, SeriesType, FunctionBody(Seq.empty, e)))
     }
   }
 }

@@ -1,6 +1,0 @@
-// Calculate square root
-
-def main(a: Number): Number = cos(a)+sin(a)+tan(a)+tanh(a)
-
-// Assert
-def assert(): Bool = main(0) == 1

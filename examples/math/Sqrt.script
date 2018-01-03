@@ -1,6 +1,0 @@
-// Calculate square root
-
-def main(a: Number): Number = sqrt(a)
-
-// Assert
-def assert(): Bool = main(9) == 3

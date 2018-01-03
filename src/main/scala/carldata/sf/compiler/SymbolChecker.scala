@@ -110,9 +110,7 @@ object SymbolChecker {
           Err("Unresolved function: %s".format(name))
         }
 
-      case StringLiteral(_) => Ok
       case NumberLiteral(_) => Ok
-      case BoolLiteral(_) => Ok
     }
   }
 }

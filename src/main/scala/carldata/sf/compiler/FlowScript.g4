@@ -47,25 +47,14 @@ expression
     | expression RelationOp expression
     | negOp=NEG expression
     | expression boolOp=(AND | OR) expression
-    | boolLiteral
     | nullLiteral
-    | stringLiteral
     | numberLiteral
     | variableExpr
     | funApp
     ;
 
-boolLiteral
-    : TRUE
-    | FALSE
-    ;
-
 nullLiteral
     : NULL
-    ;
-
-stringLiteral
-    : QuotedString
     ;
 
 numberLiteral
@@ -106,11 +95,6 @@ LINE_COMMENT:   '//' ~[\r\n]* -> skip;
 
 Identifier
 	: Letter LetterOrDigit*
-    ;
-
-QuotedString
-    : '\'' (~('\n'|'\r'|'\''))* '\''
-    | '"' ('\\"' | ~('\n'|'\r'|'"'))* '"'
     ;
 
 Integer

@@ -36,7 +36,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     try {
       // Add compatible functions as Function1Value
       val sm: Map[String, Any] = exec.functions.flatMap { f =>
-        if (f.params.nonEmpty && f.params.forall(_.typeName == ValueType("Number")) && f.typeName == ValueType("Number")) {
+        if (f.params.nonEmpty && f.params.forall(_.typeName == NumberType) && f.typeName == NumberType) {
           f.params.size match {
             case 1 =>
               Seq(f.name -> new ((Float) => Float) {
@@ -69,7 +69,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
   }
 
   def execFunction(name: String, params: Seq[Any], symbolMemory: Map[String, Any]): Any = {
-    exec.functions.find(f => f.name == name && params.size == f.params.size)
+    exec.functions.find(f => f.name == name && params.lengthCompare(f.params.size) == 0)
       .map { f =>
         val sm = symbolMemory ++ f.params.zip(params).map(x => x._1.name -> x._2).toMap
         execBody(f.body, sm)
@@ -97,9 +97,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       case AppExpr(name, params) =>
         val xs = params.map(x => execExpr(x, symbolMemory))
         execFunction(name, xs, symbolMemory)
-      case StringLiteral(text) => text
       case NumberLiteral(v) => v
-      case BoolLiteral(v) => v
     }
   }
 
