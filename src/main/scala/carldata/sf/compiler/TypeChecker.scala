@@ -102,6 +102,7 @@ object TypeChecker {
   private def checkExpr(expr: Expression, env: Environment): Either[String, TypeDecl] = {
 
     def numericType(t: TypeDecl) = t == ValueType("Number") || t == ValueType("TimeSeries")
+    def boolType(t: TypeDecl) = t == ValueType("Bool") || t == ValueType("TimeSeries")
 
     expr match {
       case StringLiteral(_) => Right(ValueType("String"))
@@ -133,15 +134,25 @@ object TypeChecker {
         }
 
       case BoolOpExpr(e1, op, e2) =>
-        if (checkExpr(e1, env) == Right(ValueType("Bool")) && checkExpr(e2, env) == Right(ValueType("Bool"))) {
+        val t1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
+        val t2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
+        if (t1 == ValueType("Bool") && t2  == ValueType("Bool")) {
           Right(ValueType("Bool"))
+        } else if (boolType(t1) && boolType(t2)) {
+          Right(ValueType("TimeSeries"))
         } else {
-          Left("Type error for operation: " + op)
+          Left("Type error for relation: " + op)
         }
 
       case RelationExpr(e1, op, e2) =>
-        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
+        val t1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
+        val t2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
+        if (t1 == ValueType("Number") && t2  == ValueType("Number")) {
           Right(ValueType("Bool"))
+        } else if (t1 == ValueType("TimeSeries") && t2 == ValueType("Number")) {
+          Right(ValueType("TimeSeries"))
+        } else if (t1 == ValueType("Number") && t2 == ValueType("TimeSeries")) {
+          Right(ValueType("TimeSeries"))
         } else {
           Left("Type error for relation: " + op)
         }
@@ -155,6 +166,8 @@ object TypeChecker {
         val c3 = checkExpr(e3, env)
         if (c1 == Right(ValueType("Bool")) && c2.isRight && c2 == c3) {
           c2
+        } else if (c1 == Right(ValueType("TimeSeries")) && c2 == Right(ValueType("Number")) && c2 == c3) {
+          c1
         } else {
           Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))
         }

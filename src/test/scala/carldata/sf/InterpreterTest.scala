@@ -305,4 +305,17 @@ class InterpreterTest extends FlatSpec with Matchers {
     result.right.get shouldBe expected
   }
 
+//  it should "allow time series in if" in {
+//    val code =
+//      """
+//        |def main(xs: TimeSeries): TimeSeries = if xs > 2 && xs < 5 then 1 else 0
+//      """.stripMargin
+//    val xs = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f), (4L, 4f), (5L, 5f)))
+//    val expected = TimeSeries.fromTimestamps(Seq((1L, 0f), (2L, 0f), (3L, 1f), (4L, 1f), (5L, 0f)))
+//    val result = Compiler.compile(code, Seq()).flatMap { ast =>
+//      Interpreter(ast).run("main", Seq(xs))
+//    }
+//    print(result)
+//    result.right.get shouldBe expected
+//  }
 }

@@ -167,7 +167,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     !b
   }
 
-  def execBoolOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Any]): Boolean = {
+  def execBoolOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Any]): Any = {
     val a = execExpr(e1, mem)
     val b = execExpr(e2, mem)
     op match {
@@ -179,19 +179,35 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     }
   }
 
-  def execRelationExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Any]): Boolean = {
+  def execRelationExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Any]): Any = {
     val a = execExpr(e1, mem)
     val b = execExpr(e2, mem)
-    op match {
-      case "==" => a == b
-      case "!=" => a != b
-      case ">" => mkFloat(a) > mkFloat(b)
-      case "<" => mkFloat(a) < mkFloat(b)
-      case ">=" => mkFloat(a) >= mkFloat(b)
-      case "<=" => mkFloat(a) <= mkFloat(b)
-      case err =>
-        Log.error("Wrong relation operator: " + err)
-        false
+    if(a.isInstanceOf[TimeSeries[_]]){
+      val xs: TimeSeries[Float] = a.asInstanceOf[TimeSeries[Float]]
+      val y = mkFloat(b)
+      op match {
+        case "==" => xs.filter(_._2 == y)
+        case "!=" => xs.filter(_._2 != y)
+        case ">" => xs.filter(_._2 > y)
+        case "<" => xs.filter(_._2 < y)
+        case ">=" => xs.filter(_._2 >= y)
+        case "<=" => xs.filter(_._2 <= y)
+        case err =>
+          Log.error("Wrong relation operator: " + err)
+          false
+      }
+    } else {
+      op match {
+        case "==" => a == b
+        case "!=" => a != b
+        case ">" => mkFloat(a) > mkFloat(b)
+        case "<" => mkFloat(a) < mkFloat(b)
+        case ">=" => mkFloat(a) >= mkFloat(b)
+        case "<=" => mkFloat(a) <= mkFloat(b)
+        case err =>
+          Log.error("Wrong relation operator: " + err)
+          false
+      }
     }
   }
 
