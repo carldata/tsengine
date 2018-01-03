@@ -16,6 +16,7 @@ object AST {
 
   sealed trait TypeDecl
   case object NumberType extends TypeDecl
+  case object StringType extends TypeDecl
   case object SeriesType extends TypeDecl
   case class CustomType(name: String) extends TypeDecl
   case class FunType(paramTypes: Seq[TypeDecl], outputType: TypeDecl) extends TypeDecl
@@ -30,6 +31,7 @@ object AST {
   case class AppExpr(name: String, params: Seq[Expression]) extends Expression
   case class VariableExpr(name: String) extends Expression
   case class NumberLiteral(v: Float) extends Expression
+  case class StringLiteral(text: String) extends Expression
 
 
   def mergeModules(m1: Module, m2: Module): Module = {
@@ -64,6 +66,7 @@ object AST {
   def printTypeDecl(t: TypeDecl): String = t match {
     case NumberType => "Number"
     case SeriesType => "TimeSeries"
+    case StringType => "String"
     case CustomType(name) => name
     case FunType(inputTypes, outputType) => inputTypes.map(_ => "Number").mkString(",") + " => " + "Number"
   }
@@ -93,6 +96,7 @@ object AST {
       case RelationExpr(e1, op, e2) => printExpr(e1) + op + printExpr(e2)
       case AppExpr(name, params) => name + "(%s)".format(params.map(printExpr).mkString(","))
       case VariableExpr(name) => name
+      case StringLiteral(text) => '\'' + text + '\''
       case NumberLiteral(v) => if(v.isNaN) "NULL" else v.toString
     }
   }

@@ -48,6 +48,7 @@ expression
     | negOp=NEG expression
     | expression boolOp=(AND | OR) expression
     | nullLiteral
+    | stringLiteral
     | numberLiteral
     | variableExpr
     | funApp
@@ -55,6 +56,10 @@ expression
 
 nullLiteral
     : NULL
+    ;
+
+stringLiteral
+    : QuotedString
     ;
 
 numberLiteral
@@ -95,6 +100,11 @@ LINE_COMMENT:   '//' ~[\r\n]* -> skip;
 
 Identifier
 	: Letter LetterOrDigit*
+    ;
+
+QuotedString
+    : '\'' (~('\n'|'\r'|'\''))* '\''
+    | '"' ('\\"' | ~('\n'|'\r'|'"'))* '"'
     ;
 
 Integer

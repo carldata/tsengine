@@ -97,6 +97,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       case AppExpr(name, params) =>
         val xs = params.map(x => execExpr(x, symbolMemory))
         execFunction(name, xs, symbolMemory)
+      case StringLiteral(text) => text
       case NumberLiteral(v) => v
     }
   }
