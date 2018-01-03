@@ -8,7 +8,44 @@ import carldata.sf.core.MathModule
   */
 class TypeCheckerTest extends FlatSpec with Matchers {
 
-  "TypeChecker" should "type check number literal" in {
+  "TypeChecker" should "catch function return type error" in {
+    val code =
+      """
+        |def my_fun(a: Int, xs: String): String = a
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
+  it should "catch external function type mismatch" in {
+    val code =
+      """
+        |external def min(a: Number, b: Number): Number
+        |def my_fun(a: Number, b: Number): String = min(a, b)
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
+
+  it should "type check string literal" in {
+    val code =
+      """
+        |def main(): String = 'hello'
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(MathModule.header))
+    ast.isRight shouldBe true
+  }
+
+  it should "type check number literal" in {
+    val code =
+      """
+        |def main(): Number = 12
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(MathModule.header))
+    ast.isRight shouldBe true
+  }
+
+  it should "type check bool series add" in {
     val code =
       """
         |def main(xs: TimeSeries): TimeSeries = xs+12

@@ -56,6 +56,24 @@ class ParserTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
+  it should "parse string literal" in {
+    val code =
+      """
+        |def main(): String = 'hello'
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
+  it should "parse string literal in double quotes" in {
+    val code =
+      """
+        |def main(): String = "hello \"world\""
+      """.stripMargin
+    val ast = Parser.parse(code)
+    ast.isRight shouldBe true
+  }
+
   it should "parse numeric literal" in {
     val code =
       """

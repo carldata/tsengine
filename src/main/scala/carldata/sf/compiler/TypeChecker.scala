@@ -97,6 +97,7 @@ object TypeChecker {
 
     expr match {
       case NumberLiteral(_) => Right(NumberType)
+      case StringLiteral(_) => Right(StringType)
 
       case MinusOpExpr(e) =>
         if (checkExpr(e, env) == Right(NumberType)) {

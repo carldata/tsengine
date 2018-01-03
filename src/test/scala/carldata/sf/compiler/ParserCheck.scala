@@ -90,7 +90,7 @@ object ParserCheck extends Properties("Parser") {
 
   private val paramsGen = Gen.oneOf(paramsGenV, paramsGenF)
 
-  private val typeGen = Gen.oneOf(NumberType, SeriesType)
+  private val typeGen = Gen.oneOf(NumberType, StringType, SeriesType)
 
   private val externFunGen = for {
     funName <- idGen

@@ -82,10 +82,11 @@ object Parser {
 
   def convertTypeDecl(context: TypeDefinitionContext): TypeDecl = {
 
-    def toType(name: String): TypeDecl = {
-      if (name == "Number") NumberType
-      else if (name == "TimeSeries") SeriesType
-      else CustomType(name)
+    def toType(name: String): TypeDecl = name match {
+      case "Number" => NumberType
+      case "String" => StringType
+      case "TimeSeries" =>  SeriesType
+      case other => CustomType(other)
     }
 
     if(context.typeList() != null) {
