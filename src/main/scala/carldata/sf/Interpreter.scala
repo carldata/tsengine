@@ -169,7 +169,7 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
   def execBoolOpExpr(e1: Expression, op: String, e2: Expression, mem: Map[String, Any]): TimeSeries[Boolean] = {
     val a = execExpr(e1, mem)
     val b = execExpr(e2, mem)
-    if(a.isInstanceOf[TimeSeries[_]] && b.isInstanceOf[TimeSeries[_]]){
+    if(a.isInstanceOf[TimeSeries[_]] && b.isInstanceOf[TimeSeries[_]] && (op == "&&" || op == "||")){
       val xs: TimeSeries[Boolean] = a.asInstanceOf[TimeSeries[Boolean]]
       val ys: TimeSeries[Boolean] = b.asInstanceOf[TimeSeries[Boolean]]
       op match {
