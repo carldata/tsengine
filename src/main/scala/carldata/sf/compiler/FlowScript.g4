@@ -47,17 +47,11 @@ expression
     | expression RelationOp expression
     | negOp=NEG expression
     | expression boolOp=(AND | OR) expression
-    | boolLiteral
     | nullLiteral
     | stringLiteral
     | numberLiteral
     | variableExpr
     | funApp
-    ;
-
-boolLiteral
-    : TRUE
-    | FALSE
     ;
 
 nullLiteral

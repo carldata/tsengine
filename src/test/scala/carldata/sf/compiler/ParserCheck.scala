@@ -62,25 +62,14 @@ object ParserCheck extends Properties("Parser") {
     params <- Gen.listOf(varGen)
   } yield AppExpr(name, params)
 
-  private val strLiteralGen = for {
-    varName <- Gen.alphaNumStr
-  } yield StringLiteral(varName)
-
   private val numLiteralGen = for {
     v <- Gen.posNum[Float]
   } yield NumberLiteral(v)
 
-  private val boolLiteralGen = for {
-    b <- Gen.oneOf(true, false)
-  } yield BoolLiteral(b)
-
-  private val literalGen = Gen.oneOf(strLiteralGen, numLiteralGen, boolLiteralGen)
-
-
   private val exprGen: Gen[Expression] = for {
     appExpr <- appExprGen
     varExpr <- varGen
-    literal <- literalGen
+    literal <- numLiteralGen
     binaryOpExpr <- binaryExprGen
     boolOpExpr <- boolExprGen
     relExpr <- relExprGen
@@ -92,29 +81,29 @@ object ParserCheck extends Properties("Parser") {
 
   private val paramsGenV = for {
     name <- idGen
-    typeName <- idGen
-  } yield FunParam(name, ValueType(typeName))
+    typeName <- Gen.oneOf(NumberType, SeriesType)
+  } yield FunParam(name, typeName)
 
   private val paramsGenF = for {
     name <- idGen
-    srcName <- idGen
-    dstName <- idGen
-  } yield FunParam(name, FunType(Seq(srcName), dstName))
+  } yield FunParam(name, FunType(Seq(NumberType), NumberType))
 
   private val paramsGen = Gen.oneOf(paramsGenV, paramsGenF)
+
+  private val typeGen = Gen.oneOf(NumberType, StringType, SeriesType)
 
   private val externFunGen = for {
     funName <- idGen
     funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
-    funTypeName <- idGen
-  } yield ExternalFun(funName, funParams, ValueType(funTypeName))
+    funTypeName <- typeGen
+  } yield ExternalFun(funName, funParams, funTypeName)
 
   private val funDefGen = for {
     funName <- idGen
     funParams <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, paramsGen) }
-    funTypeName <- idGen
+    funTypeName <- typeGen
     bodyExpr <- exprGen
-  } yield FunctionDef(funName, funParams, ValueType(funTypeName), FunctionBody(Seq(), bodyExpr))
+  } yield FunctionDef(funName, funParams, funTypeName, FunctionBody(Seq(), bodyExpr))
 
   private val moduleGen = for {
     efs <- Gen.choose(0, 10) flatMap { sz => Gen.listOfN(sz, externFunGen) }
@@ -126,16 +115,17 @@ object ParserCheck extends Properties("Parser") {
     val code = AST.printModule(module)
     Parser.parse(code) match {
       case Left(error) =>
-        Log.error("EXPECTED:\n%s\n".format(module.toString))
-        Log.error("CODE:\n%s\n".format(code))
-        Log.error("PARSER ERROR:\n%s\n".format(error))
+        println("EXPECTED:\n%s\n".format(module.toString))
+        println("CODE:\n%s\n".format(code))
+        println("PARSER ERROR:\n%s\n".format(error))
         false
 
       case Right(m) =>
         if (m != module) {
-          Log.error("EXPECTED:\n%s\n".format(module.toString))
-          Log.error("CODE:\n%s\n".format(code))
-          Log.error("AST:\n%s\n".format(m.toString))
+          println("EXPECTED:\n%s\n".format(module.toString))
+          println("CODE:\n%s\n".format(code))
+          println("AST:\n%s\n".format(m.toString))
+          println("Input Output mismatch")
           false
         }
         else {

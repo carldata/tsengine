@@ -1,6 +1,0 @@
-// Return the value of the first parameter
-
-def main(a: Number, b: Number): Number = a
-
-// Assert
-def assert(): Bool = main(1, 2) != 2

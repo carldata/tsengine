@@ -13,15 +13,7 @@ object TypeChecker {
   /** Type information about function */
   case class Function(name: String, returnType: TypeDecl, params: Seq[FunParam]) {
     /** Get type of the function */
-    def funType: TypeDecl = {
-      if (params.nonEmpty && returnType.isInstanceOf[ValueType]) {
-        val paramTypes = params.map(_.typeName).map {
-          case ValueType(typeName) => typeName
-          case _ => "???"
-        }
-        FunType(paramTypes, returnType.asInstanceOf[ValueType].name)
-      } else ValueType("? FuncType")
-    }
+    def funType: TypeDecl = FunType(params.map(_.typeName), returnType)
   }
 
   case class FunParam(name: String, typeName: TypeDecl)
@@ -101,47 +93,54 @@ object TypeChecker {
   /** Check expression. Return error message or expression type */
   private def checkExpr(expr: Expression, env: Environment): Either[String, TypeDecl] = {
 
-    def numericType(t: TypeDecl) = t == ValueType("Number") || t == ValueType("TimeSeries")
+    def numericType(t: TypeDecl) = t == NumberType || t == SeriesType
 
     expr match {
-      case StringLiteral(_) => Right(ValueType("String"))
-      case NumberLiteral(_) => Right(ValueType("Number"))
-      case BoolLiteral(_) => Right(ValueType("Bool"))
+      case NumberLiteral(_) => Right(NumberType)
+      case StringLiteral(_) => Right(StringType)
 
       case MinusOpExpr(e) =>
-        if (checkExpr(e, env) == Right(ValueType("Number"))) {
-          Right(ValueType("Number"))
+        if (checkExpr(e, env) == Right(NumberType)) {
+          Right(NumberType)
         } else {
           Left("Type error for operation: -")
         }
 
       case BinaryOpExpr(e1, op, e2) =>
-        val t1 = checkExpr(e1, env).right.getOrElse(ValueType(""))
-        val t2 = checkExpr(e2, env).right.getOrElse(ValueType(""))
+        val t1 = checkExpr(e1, env).right.getOrElse(SeriesType)
+        val t2 = checkExpr(e2, env).right.getOrElse(SeriesType)
         if (numericType(t1) && numericType(t2)) {
-          if(t1 == ValueType("TimeSeries") || t2 == ValueType("TimeSeries")) Right(ValueType("TimeSeries"))
-          else Right(ValueType("Number"))
+          if(t1 == SeriesType || t2 == SeriesType) Right(SeriesType)
+          else Right(NumberType)
         } else {
           Left("Type error for operation: " + op)
         }
 
       case NegOpExpr(e) =>
-        if (checkExpr(e, env) == Right(ValueType("Bool"))) {
-          Right(ValueType("Bool"))
+        if (checkExpr(e, env) == Right(SeriesType)) {
+          Right(SeriesType)
         } else {
           Left("Type error for operation: !")
         }
 
       case BoolOpExpr(e1, op, e2) =>
-        if (checkExpr(e1, env) == Right(ValueType("Bool")) && checkExpr(e2, env) == Right(ValueType("Bool"))) {
-          Right(ValueType("Bool"))
+        val t1 = checkExpr(e1, env).right.getOrElse(SeriesType)
+        val t2 = checkExpr(e2, env).right.getOrElse(SeriesType)
+        if (t1 == SeriesType && t2  == SeriesType) {
+          Right(SeriesType)
         } else {
-          Left("Type error for operation: " + op)
+          Left("Type error for relation: " + op)
         }
 
       case RelationExpr(e1, op, e2) =>
-        if (checkExpr(e1, env) == Right(ValueType("Number")) && checkExpr(e2, env) == Right(ValueType("Number"))) {
-          Right(ValueType("Bool"))
+        val t1 = checkExpr(e1, env).right.getOrElse(SeriesType)
+        val t2 = checkExpr(e2, env).right.getOrElse(SeriesType)
+        if (t1 == NumberType && t2  == NumberType) {
+          Right(SeriesType)
+        } else if (t1 == SeriesType && t2 == NumberType) {
+          Right(SeriesType)
+        } else if (t1 == NumberType && t2 == SeriesType) {
+          Right(SeriesType)
         } else {
           Left("Type error for relation: " + op)
         }
@@ -153,14 +152,14 @@ object TypeChecker {
         val c1 = checkExpr(e1, env)
         val c2 = checkExpr(e2, env)
         val c3 = checkExpr(e3, env)
-        if (c1 == Right(ValueType("Bool")) && c2.isRight && c2 == c3) {
-          c2
+        if (c1 == Right(SeriesType) && c2 == Right(NumberType) && c3 == Right(NumberType)) {
+          c1
         } else {
           Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))
         }
 
       case AppExpr(name, params) =>
-        val xs = params.map(x => checkExpr(x, env).getOrElse(ValueType("?")))
+        val xs = params.map(x => checkExpr(x, env).getOrElse(SeriesType))
         env.getFunction(name)
           .flatMap(f => if (checkFunctionParams(xs, f.params)) Some(f) else None)
           .map(_.returnType)

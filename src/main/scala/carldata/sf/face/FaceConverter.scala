@@ -10,8 +10,7 @@ object FaceConverter {
   def convert(face: Expression): Either[String, Module] = {
     val vs = if (face.isInstanceOf[NumberLiteral]) Set("x") else freeVariable(face)
     val expr = convertIf(face)
-    val main = mkMain(expr, vs)
-    mkModule(expr, main, vs)
+    mkMain(expr, vs).map(main => mkModule(expr, main, vs))
   }
 
 
@@ -37,17 +36,21 @@ object FaceConverter {
     }
   }
 
-  def mkModule(expr: Expression, main: Either[String, FunctionDef], vs: Set[String]): Either[String, Module] = {
+  def mkModule(expr: Expression, main: FunctionDef, vs: Set[String]): Module = {
     expr match {
-      case AppExpr(_, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
-      case IfExpr(_, _, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
-      case NumberLiteral(_) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
-      case _ => main.map(f => Module(Seq(), Seq(f)))
+      case AppExpr(_, _) =>
+        Module(Seq(), Seq(mkFunction(expr, vs), main))
+      case NumberLiteral(_) =>
+        Module(Seq(), Seq(mkFunction(expr, vs), main))
+      case IfExpr(_, _, _) =>
+        Module(Seq(), Seq(FunctionDef(main.name, main.params, main.typeName, FunctionBody(Seq(), expr))))
+      case _ =>
+        Module(Seq(), Seq(main))
     }
   }
 
   def mkFunction(e: Expression, s: Set[String]): FunctionDef = {
-    FunctionDef("f", s.map(x => FunParam(x, ValueType("Number"))).toList, ValueType("Number"), FunctionBody(Seq.empty, e))
+    FunctionDef("f", s.map(x => FunParam(x, NumberType)).toList, NumberType, FunctionBody(Seq.empty, e))
   }
 
   def mkMain(expr: Expression, s: Set[String]): Either[String, FunctionDef] = {
@@ -61,7 +64,7 @@ object FaceConverter {
         case NumberLiteral(_) => AppExpr("map", List(VariableExpr(s.head), VariableExpr("f")))
         case _ => expr
       }
-      Right(FunctionDef("main", s.map(x => FunParam(x, ValueType("TimeSeries"))).toList, ValueType("TimeSeries"), FunctionBody(Seq.empty, e)))
+      Right(FunctionDef("main", s.map(x => FunParam(x, SeriesType)).toList, SeriesType, FunctionBody(Seq.empty, e)))
     }
   }
 }

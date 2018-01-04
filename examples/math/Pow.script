@@ -1,6 +1,0 @@
-// Calculate square root
-
-def main(a: Number, b: Number): Number = pow(a, b)
-
-// Assert
-def assert(): Bool = main(2, 3) == 8

@@ -112,7 +112,6 @@ object SymbolChecker {
 
       case StringLiteral(_) => Ok
       case NumberLiteral(_) => Ok
-      case BoolLiteral(_) => Ok
     }
   }
 }

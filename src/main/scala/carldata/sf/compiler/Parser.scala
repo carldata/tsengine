@@ -78,16 +78,23 @@ object Parser {
     // function body
     val body = convertBody(ctx.functionBody())
     FunctionDef(funName, params, typeName, body)
-
   }
 
   def convertTypeDecl(context: TypeDefinitionContext): TypeDecl = {
+
+    def toType(name: String): TypeDecl = name match {
+      case "Number" => NumberType
+      case "String" => StringType
+      case "TimeSeries" =>  SeriesType
+      case other => CustomType(other)
+    }
+
     if(context.typeList() != null) {
-      val inputTypes = context.typeList().Identifier().asScala.map(_.getText).toList
-      val outputType = context.Identifier.getText
+      val inputTypes = context.typeList().Identifier().asScala.map(n => toType(n.getText)).toList
+      val outputType = toType(context.Identifier.getText)
       FunType(inputTypes, outputType)
     } else {
-      ValueType(context.Identifier.getText)
+      toType(context.Identifier.getText)
     }
   }
 
@@ -153,8 +160,6 @@ object Parser {
         v1
       }
       NumberLiteral(v2.toFloat)
-    } else if(ctx.boolLiteral() != null){
-      BoolLiteral(ctx.boolLiteral().TRUE() != null)
     } else if(ctx.nullLiteral() != null){
       NumberLiteral(Float.NaN)
     } else {
