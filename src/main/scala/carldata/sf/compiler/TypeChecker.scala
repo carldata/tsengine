@@ -152,9 +152,7 @@ object TypeChecker {
         val c1 = checkExpr(e1, env)
         val c2 = checkExpr(e2, env)
         val c3 = checkExpr(e3, env)
-        if (c1 == Right(SeriesType) && c2.isRight && c2 == c3) {
-          c2
-        } else if (c1 == Right(SeriesType) && c2 == Right(NumberType) && c2 == c3) {
+        if (c1 == Right(SeriesType) && c2 == Right(NumberType) && c3 == Right(NumberType)) {
           c1
         } else {
           Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))

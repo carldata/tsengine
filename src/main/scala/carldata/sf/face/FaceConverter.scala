@@ -10,8 +10,7 @@ object FaceConverter {
   def convert(face: Expression): Either[String, Module] = {
     val vs = if (face.isInstanceOf[NumberLiteral]) Set("x") else freeVariable(face)
     val expr = convertIf(face)
-    val main = mkMain(expr, vs)
-    mkModule(expr, main, vs)
+    mkMain(expr, vs).map(main => mkModule(expr, main, vs))
   }
 
 
@@ -37,12 +36,16 @@ object FaceConverter {
     }
   }
 
-  def mkModule(expr: Expression, main: Either[String, FunctionDef], vs: Set[String]): Either[String, Module] = {
+  def mkModule(expr: Expression, main: FunctionDef, vs: Set[String]): Module = {
     expr match {
-      case AppExpr(_, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
-      case IfExpr(_, _, _) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
-      case NumberLiteral(_) => main.map(f => Module(Seq(), Seq(mkFunction(expr, vs), f)))
-      case _ => main.map(f => Module(Seq(), Seq(f)))
+      case AppExpr(_, _) =>
+        Module(Seq(), Seq(mkFunction(expr, vs), main))
+      case NumberLiteral(_) =>
+        Module(Seq(), Seq(mkFunction(expr, vs), main))
+      case IfExpr(_, _, _) =>
+        Module(Seq(), Seq(FunctionDef(main.name, main.params, main.typeName, FunctionBody(Seq(), expr))))
+      case _ =>
+        Module(Seq(), Seq(main))
     }
   }
 

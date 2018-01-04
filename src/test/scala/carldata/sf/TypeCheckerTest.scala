@@ -137,14 +137,14 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
-//  it should "type check time series in if" in {
-//    val code =
-//      """
-//        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = if a > 12 || b < 3 then 1 else 0
-//      """.stripMargin
-//    val ast = Compiler.compile(code, Seq(MathModule.header))
-//    ast.isRight shouldBe true
-//  }
+  it should "type check time series in if" in {
+    val code =
+      """
+        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = if a > 12 || b < 3 then 1 else 0
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq(MathModule.header))
+    ast.isRight shouldBe true
+  }
 
   it should "type check minus on wrong type" in {
     val code =
@@ -164,23 +164,14 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe false
   }
 
-//  it should "check if-then-else - if expression" in {
-//    val code =
-//      """
-//        |def main(a: Number, b: Number): Number = if a then b else 100
-//      """.stripMargin
-//    val ast = Compiler.compile(code, Seq())
-//    ast.isRight shouldBe false
-//  }
-//
-//  it should "check if-then-else - else expression" in {
-//    val code =
-//      """
-//        |def main(a: Bool, b: Number): Number = if a then b else ''
-//      """.stripMargin
-//    val ast = Compiler.compile(code, Seq())
-//    ast.isRight shouldBe false
-//  }
+  it should "check if-then-else - if expression" in {
+    val code =
+      """
+        |def main(a: Number, b: Number): Number = if a then b else 100
+      """.stripMargin
+    val ast = Compiler.compile(code, Seq())
+    ast.isRight shouldBe false
+  }
 
   it should "check multiparam external function" in {
     val code =
