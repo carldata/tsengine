@@ -65,8 +65,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "CIRCLE(a,1)"
     val flowScript =
       """
-        |def f(a: Number): Number = CIRCLE(a,1)
-        |def main(a: TimeSeries): TimeSeries = map(a, f)
+        |def main(a: TimeSeries): TimeSeries = CIRCLE(a,1)
       """.stripMargin
 
     val faceAST = FaceParser.parse(face).right.get
@@ -80,8 +79,7 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val face = "h(g(a-2.41),1)"
     val flowScript =
       """
-        |def f(a: Number): Number = h(g(a-2.41),1)
-        |def main(a: TimeSeries): TimeSeries = map(a, f)
+        |def main(a: TimeSeries): TimeSeries = h(g(a-2.41),1)
       """.stripMargin
     val faceAST = FaceParser.parse(face).right.get
     val result = FaceConverter.convert(faceAST).right.get

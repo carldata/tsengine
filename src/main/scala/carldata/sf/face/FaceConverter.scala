@@ -39,7 +39,7 @@ object FaceConverter {
   def mkModule(expr: Expression, main: FunctionDef, vs: Set[String]): Module = {
     expr match {
       case AppExpr(_, _) =>
-        Module(Seq(), Seq(mkFunction(expr, vs), main))
+        Module(Seq(), Seq(FunctionDef(main.name, main.params, main.typeName, FunctionBody(Seq(), expr))))
       case NumberLiteral(_) =>
         val tsName = main.params.map(_.name).headOption.getOrElse("")
         val body = FunctionBody(Seq(), AppExpr("const", Seq(VariableExpr(tsName), expr)))

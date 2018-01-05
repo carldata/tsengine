@@ -1,5 +1,6 @@
 package carldata.sf.core
 
+import carldata.series.TimeSeries
 import carldata.sf.{Compiler, Interpreter}
 import org.scalatest._
 
@@ -19,51 +20,17 @@ class TestDB extends DBImplementation {
 
 class DBTest extends FlatSpec with Matchers {
   val test_db: TestDB = new TestDB
-  "DBCore" should "get value from lookup table for existing index" in {
+  "DBTest" should "get value from lookup table for existing index" in {
     val code =
       """
-        |def main(id: String, x: Number): Number = lookup(id, x)
+        |def main(id: String, xs: TimeSeries): TimeSeries = lookup(id, xs)
       """.stripMargin
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 2f), (2L, 3f), (3L, 0f), (4L, 20f)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 150f), (2L, 200f), (3L, 100f), (4L, 500f)))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec, test_db).run("main", Seq("velocity", 3f))
+      Interpreter(exec, test_db).run("main", Seq("velocity", xs))
     }
-    result.right.get.asInstanceOf[Float] shouldEqual 200f
-
-  }
-
-  it should "interpolate value from lookup table" in {
-    val code =
-      """
-        |def main(id: String, x: Number): Number = lookup(id, x)
-      """.stripMargin
-    val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec, test_db).run("main", Seq("velocity", 2f))
-    }
-    result.right.get.asInstanceOf[Float] shouldEqual 150f
-
-  }
-
-  it should "get value outside lookup table: less than" in {
-    val code =
-      """
-        |def main(id: String, x: Number): Number = lookup(id, x)
-      """.stripMargin
-    val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec, test_db).run("main", Seq("velocity", 0f))
-    }
-    result.right.get.asInstanceOf[Float] shouldEqual 100f
-
-  }
-
-  it should "get value outside lookup table: greater than" in {
-    val code =
-      """
-        |def main(id: String, x: Number): Number = lookup(id, x)
-      """.stripMargin
-    val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec, test_db).run("main", Seq("velocity", 20f))
-    }
-    result.right.get.asInstanceOf[Float] shouldEqual 500f
+    result.right.get shouldEqual expected
 
   }
 
