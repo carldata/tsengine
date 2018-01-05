@@ -35,8 +35,7 @@ object TimeSeriesModule {
       |external def slice(xs: TimeSeries, sd: DateTime, ed: DateTime): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
       |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
-      |external def join_left_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number, d: Number): TimeSeries
-      |external def join_with(xs: TimeSeries, ys: TimeSeries, f: Number, Number => Number): TimeSeries
+      |external def const(xs: TimeSeries, v: Number): TimeSeries
     """.stripMargin
 
   def apply(): TimeSeriesModule = new TimeSeriesModule()
@@ -151,12 +150,8 @@ class TimeSeriesModule extends Runtime {
     xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
   }
 
-  def $join_left_with(xs: TimeSeries[Float], ys: TimeSeries[Float], f: (Float, Float) => Float, d: Float): TimeSeries[Float] = {
-    xs.joinLeft(ys, d).mapValues(x => f(x._1, x._2))
-  }
-
-  def $join_with(xs: TimeSeries[Float], ys: TimeSeries[Float], f: (Float, Float) => Float): TimeSeries[Float] = {
-    xs.join(ys).mapValues(x => f(x._1, x._2))
+  def $const(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = {
+    xs.mapValues(_ => v)
   }
 
   private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
