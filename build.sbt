@@ -1,7 +1,7 @@
 
 name := "flow-script"
 
-version := "0.8.0"
+version := "0.9.0"
 
 organization := "io.github.carldata"
 
@@ -11,7 +11,7 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 libraryDependencies ++= Seq(
   // Scala native libraries
-  "io.github.carldata" %% "timeseries" % "0.4.6",
+  "io.github.carldata" %% "timeseries" % "0.4.7",
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
 
   // Java dependencies
