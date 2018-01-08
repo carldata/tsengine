@@ -43,8 +43,11 @@ object FaceParser extends RegexParsers {
 
   def addOrRelationExpr: Parser[Expression] = negationExpr | relationExpr | addExpr
 
-  def boolExpr : Parser[Expression] = addOrRelationExpr ~ ("&&" | "||" ) ~ addOrRelationExpr ^^ {
-    x => BoolOpExpr(x._1._1, x._1._2,x._2)
+  def boolExpr : Parser[Expression] = addOrRelationExpr ~ rep(("&&" | "||" ) ~ addOrRelationExpr) ^^ {
+    case expr ~ list => list.foldLeft(expr) {
+      case (x, "&&" ~ y) => BoolOpExpr(x, "&&", y)
+      case (x, "||" ~ y) => BoolOpExpr(x, "||", y)
+    }
   }
 
   def negationExpr : Parser[Expression] = "!" ~ addOrRelationExpr ^^ {

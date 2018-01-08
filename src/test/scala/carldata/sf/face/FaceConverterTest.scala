@@ -114,6 +114,18 @@ class FaceConverterTest extends FlatSpec with Matchers {
     result shouldBe expected
   }
 
+  it should "convert nested if expression 2" in {
+    val face = "IF(a > 1 && a < 10 && b < 10, 5,0)"
+    val flowScript =
+      """
+        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = if a > 1 && a < 10 && b < 10 then 5 else 0
+      """.stripMargin
+    val faceAST = FaceParser.parse(face).right.get
+    val expected = Parser.parse(flowScript).right.get
+    val result = FaceConverter.convert(faceAST).right.get
+    result shouldBe expected
+  }
+
   it should "convert expression with negation" in {
     val face = "if(!(a < 1),0,1)"
     val flowScript =
