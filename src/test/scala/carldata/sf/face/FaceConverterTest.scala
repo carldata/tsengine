@@ -139,5 +139,18 @@ class FaceConverterTest extends FlatSpec with Matchers {
     val result = FaceConverter.convert(faceAST).right.get
     result shouldBe expected
   }
+
+  it should "convert expression with 2 numbers" in {
+    val face = "2 + 5"
+    val flowScript =
+      """
+        |def main(x: TimeSeries): TimeSeries = const(x, 2 + 5)
+      """.stripMargin
+
+    val faceAST = FaceParser.parse(face).right.get
+    val expected = Parser.parse(flowScript).right.get
+    val result = FaceConverter.convert(faceAST).right.get
+    result shouldBe expected
+  }
 }
 
