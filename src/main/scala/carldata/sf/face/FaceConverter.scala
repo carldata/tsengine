@@ -57,7 +57,12 @@ object FaceConverter {
 
   def mkMain(expr: Expression, s: Set[String]): Either[String, FunctionDef] = {
     if (s.isEmpty) {
-      Left("Wrong number of parameters")
+      expr match {
+        case opExpr: BinaryOpExpr =>
+          val body = FunctionBody(Seq(), AppExpr("const", Seq(VariableExpr("x"), opExpr)))
+          Right(FunctionDef("main", Seq(FunParam("x", SeriesType)), SeriesType, body))
+        case _ => Left("Wrong number of parameters")
+      }
     }
     else {
       val e: Expression = expr match {
