@@ -34,6 +34,18 @@ class FaceConverterTest extends FlatSpec with Matchers {
     result shouldBe expected
   }
 
+  it should "convert functions with numbers" in {
+    val face = "CIRCLE(1,2)"
+    val flowScript =
+      """
+        |def main(x: TimeSeries): TimeSeries = CIRCLE(1,2)
+      """.stripMargin
+    val faceAST = FaceParser.parse(face).right.get
+    val expected = Parser.parse(flowScript).right.get
+    val result = FaceConverter.convert(faceAST).right.get
+    result shouldBe expected
+  }
+
   it should "convert nested power function" in {
     val face = "x^2^3"
     val flowScript =
