@@ -20,8 +20,10 @@ object FaceParser extends RegexParsers {
   def variable: Parser[VariableExpr] = identifier ^^ { id => VariableExpr(id) }
   def negativeExpr: Parser[MinusOpExpr] = "-" ~ factor ^^ { id => MinusOpExpr(id._2) }
   def factor: Parser[Expression] = function | number | nullVariable | variable | negativeExpr | "(" ~> addOrBoolExpr <~ ")"
-  def powExpr  : Parser[Expression] = factor ~ "^" ~ factor ^^ {
-    case x ~ "^" ~ y => AppExpr("pow", Seq(x,y))
+  def powExpr  : Parser[Expression] = factor ~ rep("^" ~ factor) ^^ {
+    case number ~ list => list.foldLeft(number) {
+      case (x, "^" ~ y) => AppExpr("pow", Seq(x,y))
+    }
   }
   def powOrFactor: Parser[Expression] = powExpr | factor
   def multiExpr  : Parser[Expression] = powOrFactor ~ rep( "*" ~ powOrFactor | "/" ~ powOrFactor) ^^ {
