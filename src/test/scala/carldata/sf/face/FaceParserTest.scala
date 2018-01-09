@@ -63,6 +63,14 @@ class FaceParserTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "parse nested power operator ^" in {
+    val code = "A^2^3"
+    val result = FaceParser.parse(code)
+    val expected =
+      AppExpr("pow", Seq(AppExpr("pow", Seq(VariableExpr("A"), NumberLiteral(2))),NumberLiteral(3)))
+    result shouldBe Right(expected)
+  }
+
   it should "parse nested function" in {
     val code = "f(g(2),2+A)"
     val result = FaceParser.parse(code)
