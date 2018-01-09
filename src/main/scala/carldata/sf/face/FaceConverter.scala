@@ -62,6 +62,9 @@ object FaceConverter {
         case opExpr: BinaryOpExpr =>
           val body = FunctionBody(Seq(), AppExpr("const", Seq(VariableExpr("x"), opExpr)))
           Right(FunctionDef("main", Seq(FunParam("x", SeriesType)), SeriesType, body))
+        case appExpr: AppExpr =>
+          val body = FunctionBody(Seq(), AppExpr(appExpr.name, Seq(VariableExpr("x"))))
+          Right(FunctionDef("main", Seq(FunParam("x", SeriesType)), SeriesType, body))
         case _ => Left("Wrong number of parameters")
       }
     }
