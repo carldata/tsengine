@@ -34,6 +34,18 @@ class FaceConverterTest extends FlatSpec with Matchers {
     result shouldBe expected
   }
 
+  it should "convert negative statement" in {
+    val face = "-(x+3)"
+    val flowScript =
+      """
+        |def main(x: TimeSeries): TimeSeries = -(x+3)
+      """.stripMargin
+    val faceAST = FaceParser.parse(face).right.get
+    val expected = Parser.parse(flowScript).right.get
+    val result = FaceConverter.convert(faceAST).right.get
+    result shouldBe expected
+  }
+
   it should "convert expression with 2 variables" in {
     val face = "2 * a + 4 / b"
     val flowScript =
