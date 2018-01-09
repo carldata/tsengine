@@ -22,6 +22,7 @@ object FaceConverter {
       case r: RelationExpr => freeVariable(r.e1) ++ freeVariable(r.e2)
       case a: AppExpr => a.params.flatMap(x => freeVariable(x)).toSet
       case n: NegOpExpr => freeVariable(n.expr)
+      case m: MinusOpExpr => freeVariable(m.expr)
       case _ => Set()
     }
   }
