@@ -15,14 +15,14 @@ The program written in FlowScript is executed by interpreter with the help of ru
  
  Add the following dependency to the build.sbt
  ```scala
- libraryDependencies += "io.github.carldata" %% "flow-script" % "0.9.2"
+ libraryDependencies += "io.github.carldata" %% "flow-script" % "0.9.3"
  ```
 
 ### Create test script
 Lets say that we have this minimalistic script
 
 ```flowscript
-def main(xs: TimeSeries, b: Number): TimeSeries = xs+b 
+def main(xs: TimeSeries): TimeSeries = xs+1 
 ```
  
 ### Compile script
