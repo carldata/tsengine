@@ -31,7 +31,7 @@ object TimeSeriesModule {
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
-      |external def shift(xs: TimeSeries, d: Duration, f: Boolean): TimeSeries
+      |external def shift(xs: TimeSeries, d: Duration, v: Number): TimeSeries
       |external def slice(xs: TimeSeries, sd: DateTime, ed: DateTime): TimeSeries
       |external def step(xs: TimeSeries, d: Duration): TimeSeries
       |external def time_weight_average(xs: TimeSeries, d: Duration): TimeSeries
@@ -123,7 +123,13 @@ class TimeSeriesModule extends Runtime {
 
   def $running_total(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = TimeSeries.integrateByTime(xs, f)
 
-  def $shift(xs: TimeSeries[Float], d: Duration, f: Boolean): TimeSeries[Float] = xs.shiftTime(d, f)
+  def $shift(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] =
+    v match {
+      case -1 => xs.shiftTime(d, forward = false)
+      case 1 => xs.shiftTime(d, forward = true)
+      case _ => xs
+    }
+
 
   def $slice(xs: TimeSeries[Float], sd: LocalDateTime, ed: LocalDateTime): TimeSeries[Float] = xs.slice(sd, ed)
 

@@ -148,7 +148,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "shift time forward" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number, f: Boolean): TimeSeries = shift(xs, hours(d), f)
+        |def main(xs: TimeSeries, d: Number, v: Number): TimeSeries = shift(xs, hours(d), v)
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:00")
     val idx = Vector(now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45),
@@ -159,7 +159,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val ts = TimeSeries(idx, vs)
     val expected = TimeSeries(idx2, vs)
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f, true))
+      Interpreter(exec).run("main", Seq(ts, 1f, 1))
     }
     result shouldBe Right(expected)
   }
@@ -167,7 +167,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "shift time backwards" in {
     val code =
       """
-        |def main(xs: TimeSeries, d: Number, f: Boolean): TimeSeries = shift(xs, hours(d), f)
+        |def main(xs: TimeSeries, d: Number, v: Number): TimeSeries = shift(xs, hours(d), v)
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:00")
     val idx = Vector(now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45),
@@ -178,7 +178,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val ts = TimeSeries(idx, vs)
     val expected = TimeSeries(idx2, vs)
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f, false))
+      Interpreter(exec).run("main", Seq(ts, 1f, -1))
     }
     result shouldBe Right(expected)
   }
