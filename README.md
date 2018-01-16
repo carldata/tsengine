@@ -15,7 +15,7 @@ The program written in FlowScript is executed by interpreter with the help of ru
  
  Add the following dependency to the build.sbt
  ```scala
- libraryDependencies += "io.github.carldata" %% "flow-script" % "0.9.3"
+ libraryDependencies += "io.github.carldata" %% "flow-script" % "0.9.4"
  ```
 
 ### Create test script
@@ -47,9 +47,12 @@ import com.carl.sf.Interpreter
 import com.carl.sf.compiler.Executable.ExecCode
 import com.carl.sf.core.Core
 import com.carl.sf.Runtime.{Value, NumberValue}
+import carldata.series.TimeSeries
+
 
 val exec: ExecCode = ???
-val result: Either[String, Value] = new Interpreter(exec, Core).run("main", Seq(NumberValue(1), NumberValue(2)))
+val ts = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 1f), (3L, 1f)))
+val result: Either[String, Value] = new Interpreter(exec, Core).run("main", Seq(ts))
 ```
 
 Interpreter returns either error string or computed value.
