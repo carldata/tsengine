@@ -141,13 +141,7 @@ class TimeSeriesModule extends Runtime {
   def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(x1: (LocalDateTime, Float), x2: (LocalDateTime, Float), tsh: LocalDateTime) = x1._2
 
-    def addToStart(xs: TimeSeries[Float], x: (LocalDateTime, Float)): TimeSeries[Float] = {
-      val idx = (xs.index.reverse :+ x._1).reverse
-      val vs = (xs.values.reverse :+ x._2).reverse
-      TimeSeries(idx, vs)
-    }
-
-    val xs2 = addToStart(xs, (xs.index.head.withMinute(0).withSecond(0), xs.values.head))
+    val xs2 = TimeSeries(xs.index.head.withMinute(0).withSecond(0) +: xs.index, 0f +: xs.values)
       .addMissing(d, f)
 
     def g(ys0: Seq[(LocalDateTime, Float)]): Float = {
