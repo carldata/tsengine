@@ -319,9 +319,9 @@ class TimeSeriesTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = time_weight_average(xs, minutes(5))
       """.stripMargin
-    val now = LocalDateTime.parse("2014-05-01T08:01:00")
-    val idx = Vector(now, now.plusMinutes(5), now.plusMinutes(10), now.plusMinutes(15), now.plusMinutes(20))
-    val idx2 = Vector(now.plusMinutes(4), now.plusMinutes(9), now.plusMinutes(14), now.plusMinutes(19), now.plusMinutes(24))
+    val now = LocalDateTime.parse("2014-05-01T08:00:00")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(6), now.plusMinutes(11), now.plusMinutes(16), now.plusMinutes(21))
+    val idx2 = Vector(now.plusMinutes(5), now.plusMinutes(10), now.plusMinutes(15), now.plusMinutes(20), now.plusMinutes(25))
     val ts = TimeSeries(idx, Vector(0.123912f, 0.123748004f, 0.12717001f, 0.13364601f, 0.136148f))
     val expected = TimeSeries(idx2, Vector(0.099061996f, 0.123824f, 0.12599f, 0.13250801f, 0.13593f))
     val result = Compiler.make(code).flatMap { exec =>
@@ -336,10 +336,10 @@ class TimeSeriesTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = time_weight_average(xs, minutes(5))
       """.stripMargin
-    val now = LocalDateTime.parse("2014-05-01T08:01:00")
-    val idx = Vector(now, now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4)
-      , now.plusMinutes(4), now.plusMinutes(5), now.plusMinutes(6), now.plusMinutes(7), now.plusMinutes(8))
-    val idx2 = Vector(now.plusMinutes(4), now.plusMinutes(9))
+    val now = LocalDateTime.parse("2014-05-01T08:00:00")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4)
+      , now.plusMinutes(5), now.plusMinutes(6), now.plusMinutes(7), now.plusMinutes(8),now.plusMinutes(9))
+    val idx2 = Vector(now.plusMinutes(5), now.plusMinutes(10))
     val ts = TimeSeries(idx, Vector(0.12359f, 0.12408999f, 0.12387f, 0.12376f, 0.12425f, 0.12348001f, 0.12327f, 0.12387f, 0.12425f))
     val expected = TimeSeries(idx2, Vector(0.099061996f, 0.123824f))
     val result = Compiler.make(code).flatMap { exec =>
