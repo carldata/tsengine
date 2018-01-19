@@ -141,9 +141,11 @@ class TimeSeriesModule extends Runtime {
   def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(x1: (LocalDateTime, Float), x2: (LocalDateTime, Float), tsh: LocalDateTime) = x1._2
 
-    val xs2 = xs.addMissing(d, f)
+    val xs2 = TimeSeries(xs.index.head.withMinute(0).withSecond(0) +: xs.index, 0f +: xs.values)
+      .addMissing(d, f)
 
-    def g(ys: Seq[(LocalDateTime, Float)]): Float = {
+    def g(ys0: Seq[(LocalDateTime, Float)]): Float = {
+      val ys = if (ys0.head._1 != xs.index.head && ys0.head._1 == xs2.index.head) ys0.tail else ys0
       val unzipped = ys.unzip
       val lastIndex = floor_time(xs2.index.head, unzipped._1.head, d).plus(d)
       val deltas = (unzipped._1.tail :+ lastIndex).zip(unzipped._1)
@@ -156,7 +158,8 @@ class TimeSeriesModule extends Runtime {
         .sum
     }
 
-    xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
+    val ys = xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
+    TimeSeries(ys.index.tail :+ ys.index.last.plusSeconds(d.getSeconds), ys.values)
   }
 
   def $const(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = {
