@@ -42,19 +42,6 @@ class InterpreterTest extends FlatSpec with Matchers {
     result shouldBe Right(1)
   }
 
-  it should "call external function" in {
-    val code =
-      """
-        |external def min(a: Number, b: Number): Number
-        |
-        |def main(a: Number, b: Number): Number = min(a, b)
-      """.stripMargin
-    val result = Compiler.compile(code, Seq()).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(11, 2))
-    }
-    result shouldBe Right(2)
-  }
-
   it should "calculate a+b*2" in {
     val code =
       """
@@ -97,17 +84,6 @@ class InterpreterTest extends FlatSpec with Matchers {
       Interpreter(ast).run("main", Seq(3))
     }
     result shouldBe Right(-6)
-  }
-
-  it should "calculate log" in {
-    val code =
-      """
-        |def main(a: Number): Number = log10(a)
-      """.stripMargin
-    val result = Compiler.make(code).flatMap { ast =>
-      Interpreter(ast).run("main", Seq(1000))
-    }
-    result shouldBe Right(3)
   }
 
   it should "check let-in" in {
