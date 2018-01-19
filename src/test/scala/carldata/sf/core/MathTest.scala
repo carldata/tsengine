@@ -44,4 +44,17 @@ class MathTest extends FlatSpec with Matchers {
     }
     result shouldBe Right(expected)
   }
+
+  it should "calculate acos" in {
+    val code =
+      """
+        |def main(xs: TimeSeries): TimeSeries = asin(xs)
+      """.stripMargin
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 0f), (2L, 0.5f), (3L, 1f)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 0f), (2L, 0.5235988f), (3L, 1.5707964f)))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(xs))
+    }
+    result shouldBe Right(expected)
+  }
 }

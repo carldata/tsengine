@@ -10,6 +10,8 @@ object MathModule {
   // Header which will be provided to the compiler
   val header: String =
     """
+      |external def acos(a: TimeSeries): TimeSeries
+      |external def asin(a: TimeSeries): TimeSeries
       |external def ceil(a: TimeSeries): TimeSeries
       |external def cos(a: TimeSeries): TimeSeries
       |external def exp(a: TimeSeries): TimeSeries
@@ -30,6 +32,8 @@ object MathModule {
 class MathModule extends Runtime{
 
   // Function definition
+  def $acos(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.acos(x).toFloat)
+  def $asin(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.asin(x).toFloat)
   def $ceil(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.ceil(x).toFloat)
   def $cos(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.cos(x).toFloat)
   def $exp(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.exp(x).toFloat)
