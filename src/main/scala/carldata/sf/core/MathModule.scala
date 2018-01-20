@@ -1,5 +1,6 @@
 package carldata.sf.core
 
+import carldata.series.TimeSeries
 import carldata.sf.Runtime
 
 /**
@@ -9,21 +10,20 @@ object MathModule {
   // Header which will be provided to the compiler
   val header: String =
     """
-      |external def ceil(a: Number): Number
-      |external def cos(a: Number): Number
-      |external def exp(a: Number): Number
-      |external def floor(a: Number): Number
-      |external def log(a: Number): Number
-      |external def log10(a: Number): Number
-      |external def max(a: Number, b: Number): Number
-      |external def min(a: Number, b: Number): Number
-      |external def pi(): Number
-      |external def pow(a: Number, b: Number): Number
-      |external def round(a: Number): Number
-      |external def sin(a: Number): Number
-      |external def sqrt(a: Number): Number
-      |external def tan(a: Number): Number
-      |external def tanh(a: Number): Number
+      |external def acos(a: TimeSeries): TimeSeries
+      |external def asin(a: TimeSeries): TimeSeries
+      |external def ceil(a: TimeSeries): TimeSeries
+      |external def cos(a: TimeSeries): TimeSeries
+      |external def exp(a: TimeSeries): TimeSeries
+      |external def floor(a: TimeSeries): TimeSeries
+      |external def log(a: TimeSeries): TimeSeries
+      |external def log10(a: TimeSeries): TimeSeries
+      |external def pow(a: TimeSeries, b: Number): TimeSeries
+      |external def round(a: TimeSeries): TimeSeries
+      |external def sin(a: TimeSeries): TimeSeries
+      |external def sqrt(a: TimeSeries): TimeSeries
+      |external def tan(a: TimeSeries): TimeSeries
+      |external def tanh(a: TimeSeries): TimeSeries
     """.stripMargin
 
   def apply(): MathModule = new MathModule()
@@ -32,20 +32,19 @@ object MathModule {
 class MathModule extends Runtime{
 
   // Function definition
-  def $ceil(a: Float): Float = math.ceil(a).toFloat
-  def $cos(a: Float): Float = math.cos(a).toFloat
-  def $exp(a: Float): Float = math.exp(a).toFloat
-  def $floor(a: Float): Float = math.floor(a).toFloat
-  def $log(a: Float): Float = math.log(a).toFloat
-  def $log10(a: Float): Float = math.log10(a).toFloat
-  def $max(a: Float, b: Float): Float = math.max(a, b)
-  def $min(a: Float, b: Float): Float = math.min(a, b)
-  def $pi(): Float = math.Pi.toFloat
-  def $pow(a: Float, b: Float): Float = math.pow(a, b).toFloat
-  def $round(a: Float): Float = math.round(a)
-  def $sin(a: Float): Float = math.sin(a).toFloat
-  def $sqrt(a: Float): Float = math.sqrt(a).toFloat
-  def $tan(a: Float): Float = math.tan(a).toFloat
-  def $tanh(a: Float): Float = math.tanh(a).toFloat
+  def $acos(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.acos(x).toFloat)
+  def $asin(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.asin(x).toFloat)
+  def $ceil(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.ceil(x).toFloat)
+  def $cos(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.cos(x).toFloat)
+  def $exp(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.exp(x).toFloat)
+  def $floor(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.floor(x).toFloat)
+  def $log(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.log(x).toFloat)
+  def $log10(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.log10(x).toFloat)
+  def $pow(xs: TimeSeries[Float], b: Float): TimeSeries[Float] = xs.mapValues(x => math.pow(x, b).toFloat)
+  def $round(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.round(x).toFloat)
+  def $sin(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.sin(x).toFloat)
+  def $sqrt(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.sqrt(x).toFloat)
+  def $tan(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.tan(x).toFloat)
+  def $tanh(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.tanh(x).toFloat)
 }
 

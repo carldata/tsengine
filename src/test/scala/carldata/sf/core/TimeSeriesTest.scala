@@ -193,11 +193,13 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:00:00")
     val idx = Vector(now, now.plusMinutes(15), now.plusMinutes(30), now.plusMinutes(45),
       now.plusMinutes(60), now.plusMinutes(70))
-    def f(d: LocalDateTime):LocalDateTime = d.withMinute(0)
+
+    def f(d: LocalDateTime): LocalDateTime = d.withMinute(0)
+
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 4f, 5f, 6f))
     val expected = TimeSeries(idx, Vector(1f, 3f, 6f, 10f, 5f, 11f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts,f(_)))
+      Interpreter(exec).run("main", Seq(ts, f(_)))
     }
     result shouldBe Right(expected)
   }
@@ -312,20 +314,39 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
-  it should "find time weight average" in {
+  it should "find time weight average #1" in {
     val code =
       """
-        |def main(xs: TimeSeries,  d: Number): TimeSeries = time_weight_average(xs, minutes(d))
+        |def main(xs: TimeSeries): TimeSeries = time_weight_average(xs, minutes(5))
       """.stripMargin
-    val now = LocalDateTime.parse("2015-01-01T00:00:00")
-    val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
-    val idx2 = Vector(now, now.plusMinutes(1))
-    val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
-    val expected = TimeSeries(idx2, Vector(2.25f, 4.75f))
+    val now = LocalDateTime.parse("2014-05-01T08:00:00")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(6), now.plusMinutes(11), now.plusMinutes(16), now.plusMinutes(21))
+    val idx2 = Vector(now.plusMinutes(5), now.plusMinutes(10), now.plusMinutes(15), now.plusMinutes(20), now.plusMinutes(25))
+    val ts = TimeSeries(idx, Vector(0.123912f, 0.123748004f, 0.12717001f, 0.13364601f, 0.136148f))
+    val expected = TimeSeries(idx2, Vector(0.099061996f, 0.123824f, 0.12599f, 0.13250801f, 0.13593f))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 1f))
+      Interpreter(exec).run("main", Seq(ts))
     }
-    result shouldBe Right(expected)
+    TimeSeries.almostEqual(expected, result.right.get.asInstanceOf[TimeSeries[Float]], 0.001f) shouldBe true
+
+  }
+
+  it should "find time weight average #2" in {
+    val code =
+      """
+        |def main(xs: TimeSeries): TimeSeries = time_weight_average(xs, minutes(5))
+      """.stripMargin
+    val now = LocalDateTime.parse("2014-05-01T08:00:00")
+    val idx = Vector(now.plusMinutes(1), now.plusMinutes(2), now.plusMinutes(3), now.plusMinutes(4)
+      , now.plusMinutes(5), now.plusMinutes(6), now.plusMinutes(7), now.plusMinutes(8),now.plusMinutes(9))
+    val idx2 = Vector(now.plusMinutes(5), now.plusMinutes(10))
+    val ts = TimeSeries(idx, Vector(0.12359f, 0.12408999f, 0.12387f, 0.12376f, 0.12425f, 0.12348001f, 0.12327f, 0.12387f, 0.12425f))
+    val expected = TimeSeries(idx2, Vector(0.099061996f, 0.123824f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts))
+    }
+    TimeSeries.almostEqual(expected, result.right.get.asInstanceOf[TimeSeries[Float]], 0.001f) shouldBe true
+
   }
 
   it should "find discrete values" in {
