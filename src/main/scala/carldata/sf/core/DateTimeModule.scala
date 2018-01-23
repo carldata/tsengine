@@ -1,7 +1,7 @@
 package carldata.sf.core
 
 import java.time.temporal.ChronoUnit
-import java.time.{Duration, LocalDateTime}
+import java.time.{Duration, Instant, LocalDateTime, ZoneOffset}
 
 import carldata.series.TimeConverter
 import carldata.sf.Runtime
@@ -48,8 +48,13 @@ class DateTimeModule extends Runtime {
 
   def $days(n: Float): Duration = Duration.ofDays(n.toLong)
 
-  def $dt_convert(d: String): LocalDateTime => LocalDateTime =
-    TimeConverter.mkCronLike(d).map(TimeConverter.mkConverter).getOrElse(identity)
+  def $dt_convert(d: String): Instant => Instant = {
+    val f: LocalDateTime => LocalDateTime = TimeConverter.mkCronLike(d)
+      .map(TimeConverter.mkConverter)
+      .getOrElse(identity)
+
+    (i: Instant) => f(LocalDateTime.ofInstant(i, ZoneOffset.UTC)).toInstant(ZoneOffset.UTC)
+  }
 
 
   def $from_date(y: Float, m: Float, d: Float): LocalDateTime =

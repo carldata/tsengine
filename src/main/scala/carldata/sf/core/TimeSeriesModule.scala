@@ -1,7 +1,7 @@
 package carldata.sf.core
 
 import java.time.temporal.ChronoUnit
-import java.time.{Duration, LocalDateTime, ZoneOffset}
+import java.time.{Duration, Instant}
 
 import carldata.series.TimeSeries
 import carldata.sf.Runtime
@@ -53,7 +53,7 @@ class TimeSeriesModule extends Runtime {
     else {
       val idx = xs.index.tail
       val vs = xs.index.tail.zip(xs.index)
-        .map(x => x._1.toEpochSecond(ZoneOffset.UTC) - x._2.toEpochSecond(ZoneOffset.UTC))
+        .map(x => x._1.getEpochSecond - x._2.getEpochSecond)
         .map(_.toFloat)
       TimeSeries(idx, vs)
     }
@@ -75,7 +75,7 @@ class TimeSeriesModule extends Runtime {
 
   def $remove_outliers(xs: TimeSeries[Float], bottom: Float, top: Float): TimeSeries[Float] = xs.removeOutliers(bottom, top)
 
-  def $groupby_avg(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = {
+  def $groupby_avg(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = {
     def g(seq: Seq[Float]): Float = seq.sum / seq.length
 
     if (xs.isEmpty) xs
@@ -84,9 +84,9 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
-  def $groupby_max(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.max)
+  def $groupby_max(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.max)
 
-  def $groupby_median(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = {
+  def $groupby_median(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = {
     def g(seq: Seq[Float]): Float = {
       val sorted = seq.sorted
       val center = Math.abs(sorted.length / 2)
@@ -106,10 +106,10 @@ class TimeSeriesModule extends Runtime {
 
   }
 
-  def $groupby_min(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.min)
+  def $groupby_min(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.min)
 
 
-  def $groupby_sum(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.sum)
+  def $groupby_sum(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.sum)
 
   def $prev(xs: TimeSeries[Float]): TimeSeries[Float] = {
     if (xs.isEmpty) xs
@@ -120,7 +120,7 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
-  def $repeat(xs: TimeSeries[Float], sd: LocalDateTime, ed: LocalDateTime, d: Duration): TimeSeries[Float] = xs.repeat(sd, ed, d)
+  def $repeat(xs: TimeSeries[Float], sd: Instant, ed: Instant, d: Duration): TimeSeries[Float] = xs.repeat(sd, ed, d)
 
   def $rolling_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
     def f(v: Seq[Float]): Float = v.sum / v.length
@@ -130,26 +130,26 @@ class TimeSeriesModule extends Runtime {
 
   def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.rollingWindow(d, _.sum)
 
-  def $running_total(xs: TimeSeries[Float], f: LocalDateTime => LocalDateTime): TimeSeries[Float] = TimeSeries.integrateByTime(xs, f)
+  def $running_total(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = TimeSeries.integrateByTime(xs, f)
 
   def $shift(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.shiftTime(d, forward = true)
 
-  def $slice(xs: TimeSeries[Float], sd: LocalDateTime, ed: LocalDateTime): TimeSeries[Float] = xs.slice(sd, ed)
+  def $slice(xs: TimeSeries[Float], sd: Instant, ed: Instant): TimeSeries[Float] = xs.slice(sd, ed)
 
   def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
 
   def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    def f(x1: (LocalDateTime, Float), x2: (LocalDateTime, Float), tsh: LocalDateTime) = x1._2
+    def f(x1: (Instant, Float), x2: (Instant, Float), tsh: Instant) = x1._2
 
-    val xs2 = TimeSeries(xs.index.head.withMinute(0).withSecond(0) +: xs.index, 0f +: xs.values)
+    val xs2 = TimeSeries(xs.index.head.truncatedTo(ChronoUnit.HOURS) +: xs.index, 0f +: xs.values)
       .addMissing(d, f)
 
-    def g(ys0: Seq[(LocalDateTime, Float)]): Float = {
+    def g(ys0: Seq[(Instant, Float)]): Float = {
       val ys = if (ys0.head._1 != xs.index.head && ys0.head._1 == xs2.index.head) ys0.tail else ys0
       val unzipped = ys.unzip
       val lastIndex = floor_time(xs2.index.head, unzipped._1.head, d).plus(d)
       val deltas = (unzipped._1.tail :+ lastIndex).zip(unzipped._1)
-        .map(x => x._1.toEpochSecond(ZoneOffset.UTC) - x._2.toEpochSecond(ZoneOffset.UTC))
+        .map(x => x._1.getEpochSecond - x._2.getEpochSecond)
         .map(_.toFloat)
 
       unzipped._2
@@ -166,8 +166,8 @@ class TimeSeriesModule extends Runtime {
     xs.mapValues(_ => v)
   }
 
-  private def floor_time(st: LocalDateTime, ct: LocalDateTime, d: Duration): LocalDateTime = {
-    val diff = ChronoUnit.SECONDS.between(st, ct)
+  private def floor_time(st: Instant, ct: Instant, d: Duration): Instant = {
+    val diff = st.getEpochSecond - ct.getEpochSecond
     st.plusSeconds((diff / d.getSeconds) * d.getSeconds)
   }
 

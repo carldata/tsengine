@@ -1,6 +1,6 @@
 package carldata.sf.core
 
-import java.time.{Duration, LocalDateTime}
+import java.time.{Duration, Instant, LocalDateTime, ZoneOffset}
 import java.time.format.DateTimeFormatter
 
 import carldata.sf.compiler.Parser
@@ -189,13 +189,13 @@ class DateTimeTest extends FlatSpec with Matchers {
       """
         |def main(s: String): DateTime => DateTime = dt_convert(s)
       """.stripMargin
-    val now = LocalDateTime.of(2017, 10, 13, 11, 7)
-    val expected = LocalDateTime.of(2017, 9, 14, 23, 59)
+    val now = LocalDateTime.of(2017, 10, 13, 11, 7).toInstant(ZoneOffset.UTC)
+    val expected = LocalDateTime.of(2017, 9, 14, 23, 59).toInstant(ZoneOffset.UTC)
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", Seq("* * 14 * *"))
     }
-    result.right.get.asInstanceOf[LocalDateTime => LocalDateTime](now) shouldBe expected
-
+    print(result)
+    result.right.get.asInstanceOf[Instant => Instant](now) shouldBe expected
   }
 
   "With compiler" should "find longest duration" in {
