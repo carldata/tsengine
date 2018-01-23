@@ -38,13 +38,23 @@ object DateTimeModule {
 class DateTimeModule extends Runtime {
 
   // Function definition
-  def $adjust_date(dt: LocalDateTime, y: Float, m: Float, d: Float): LocalDateTime =
-    dt.withYear(parse(y)).withMonth(parse(m)).withDayOfMonth(parse(d))
+  def $adjust_date(dt: Instant, y: Float, m: Float, d: Float): Instant = {
+    LocalDateTime.ofInstant(dt, ZoneOffset.UTC)
+      .withYear(parse(y))
+      .withMonth(parse(m))
+      .withDayOfMonth(parse(d))
+      .toInstant(ZoneOffset.UTC)
+  }
 
-  def $adjust_time(dt: LocalDateTime, h: Float, m: Float, s: Float): LocalDateTime =
-    dt.withHour(parse(h)).withMinute(parse(m)).withSecond(parse(m))
+  def $adjust_time(dt: Instant, h: Float, m: Float, s: Float): Instant = {
+    LocalDateTime.ofInstant(dt, ZoneOffset.UTC)
+      .withHour(parse(h))
+      .withMinute(parse(m))
+      .withSecond(parse(m))
+      .toInstant(ZoneOffset.UTC)
+  }
 
-  def $date(s: String): LocalDateTime = LocalDateTime.parse(s)
+  def $date(s: String): Instant = LocalDateTime.parse(s).toInstant(ZoneOffset.UTC)
 
   def $days(n: Float): Duration = Duration.ofDays(n.toLong)
 
@@ -57,20 +67,20 @@ class DateTimeModule extends Runtime {
   }
 
 
-  def $from_date(y: Float, m: Float, d: Float): LocalDateTime =
-    LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0)
+  def $from_date(y: Float, m: Float, d: Float): Instant =
+    LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0).toInstant(ZoneOffset.UTC)
 
   def $from_datetime(y: Float, m: Float, d: Float, h: Float, mt: Float,
-                     s: Float, ns: Float): LocalDateTime =
-    LocalDateTime.of(parse(y), parse(m), parse(d), parse(h), parse(mt), parse(s), parse(ns))
+                     s: Float, ns: Float): Instant =
+    LocalDateTime.of(parse(y), parse(m), parse(d), parse(h), parse(mt), parse(s), parse(ns)).toInstant(ZoneOffset.UTC)
 
-  def $day_of_week(dt: LocalDateTime): Float = dt.getDayOfWeek.getValue
+  def $day_of_week(dt: Instant): Float = LocalDateTime.ofInstant(dt, ZoneOffset.UTC).getDayOfWeek.getValue
 
-  def $floor_hours(dt: LocalDateTime): LocalDateTime = dt.withHour(0)
+  def $floor_hours(dt: Instant): Instant = dt.truncatedTo(ChronoUnit.DAYS)
 
-  def $floor_minutes(dt: LocalDateTime): LocalDateTime = dt.withMinute(0)
+  def $floor_minutes(dt: Instant): Instant = dt.truncatedTo(ChronoUnit.HOURS)
 
-  def $floor_seconds(dt: LocalDateTime): LocalDateTime = dt.withSecond(0)
+  def $floor_seconds(dt: Instant): Instant = dt.truncatedTo(ChronoUnit.MINUTES)
 
   def $hours(n: Float): Duration = Duration.ofHours(n.toLong)
 

@@ -2,9 +2,11 @@ package carldata.sf.core
 
 import java.time.{Duration, Instant, LocalDateTime, ZoneOffset}
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 import carldata.sf.compiler.Parser
 import carldata.sf.{Compiler, Interpreter}
+import org.scalacheck.Prop.Exception
 import org.scalatest._
 
 class DateTimeTest extends FlatSpec with Matchers {
@@ -83,7 +85,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result.right.get) shouldBe "2017-08-21T00:31:36"
+    toUTC(result.right.get) shouldBe "2017-08-21T00:00:00"
   }
 
   it should "floor minutes" in {
@@ -96,7 +98,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result.right.get) shouldBe "2017-08-21T11:00:36"
+    toUTC(result.right.get) shouldBe "2017-08-21T11:00:00"
   }
 
   it should "floor seconds" in {
@@ -194,7 +196,6 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", Seq("* * 14 * *"))
     }
-    print(result)
     result.right.get.asInstanceOf[Instant => Instant](now) shouldBe expected
   }
 
@@ -212,9 +213,9 @@ class DateTimeTest extends FlatSpec with Matchers {
 
   }
 
-
-  def toUTC(v: Any): String = {
-    v.asInstanceOf[LocalDateTime].format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+  def toUTC(v: Any): String = v match {
+    case i: Instant => LocalDateTime.ofInstant(i, ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    case _ => throw new ClassCastException()
   }
 
 }
