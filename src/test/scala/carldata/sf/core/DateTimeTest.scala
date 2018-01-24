@@ -1,7 +1,7 @@
 package carldata.sf.core
 
-import java.time.{Duration, LocalDateTime}
 import java.time.format.DateTimeFormatter
+import java.time.{Duration, Instant, LocalDateTime, ZoneOffset}
 
 import carldata.sf.compiler.Parser
 import carldata.sf.{Compiler, Interpreter}
@@ -83,7 +83,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result.right.get) shouldBe "2017-08-21T00:31:36"
+    toUTC(result.right.get) shouldBe "2017-08-21T00:00:00"
   }
 
   it should "floor minutes" in {
@@ -96,7 +96,7 @@ class DateTimeTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", params)
     }
-    toUTC(result.right.get) shouldBe "2017-08-21T11:00:36"
+    toUTC(result.right.get) shouldBe "2017-08-21T11:00:00"
   }
 
   it should "floor seconds" in {
@@ -189,13 +189,12 @@ class DateTimeTest extends FlatSpec with Matchers {
       """
         |def main(s: String): DateTime => DateTime = dt_convert(s)
       """.stripMargin
-    val now = LocalDateTime.of(2017, 10, 13, 11, 7)
-    val expected = LocalDateTime.of(2017, 9, 14, 23, 59)
+    val now = LocalDateTime.of(2017, 10, 13, 11, 7).toInstant(ZoneOffset.UTC)
+    val expected = LocalDateTime.of(2017, 9, 14, 23, 59).toInstant(ZoneOffset.UTC)
     val result = Compiler.compile(code, libs).flatMap { exec =>
       Interpreter(exec).run("main", Seq("* * 14 * *"))
     }
-    result.right.get.asInstanceOf[LocalDateTime => LocalDateTime](now) shouldBe expected
-
+    result.right.get.asInstanceOf[Instant => Instant](now) shouldBe expected
   }
 
   "With compiler" should "find longest duration" in {
@@ -206,15 +205,14 @@ class DateTimeTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, ys: TimeSeries, zs: TimeSeries): TimeSeries = join_with3(groupby_sum(xs, minutes(3)), groupby_sum(xs, days(11)), groupby_sum(xs, hours(4)), f)
       """.stripMargin
 
-    //val params = Seq("2017-08-21T10:30:30")
     val result = Parser.parse(code)
     Compiler.getDuration(result.right.get).toString shouldBe Duration.ofDays(11).toString
 
   }
 
-
-  def toUTC(v: Any): String = {
-    v.asInstanceOf[LocalDateTime].format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+  def toUTC(v: Any): String = v match {
+    case i: Instant => LocalDateTime.ofInstant(i, ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    case _ => throw new ClassCastException()
   }
 
 }
