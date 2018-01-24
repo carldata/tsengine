@@ -167,7 +167,7 @@ class TimeSeriesModule extends Runtime {
   }
 
   private def floor_time(st: Instant, ct: Instant, d: Duration): Instant = {
-    val diff = st.getEpochSecond - ct.getEpochSecond
+    val diff = ChronoUnit.SECONDS.between(st, ct)
     st.plusSeconds((diff / d.getSeconds) * d.getSeconds)
   }
 
