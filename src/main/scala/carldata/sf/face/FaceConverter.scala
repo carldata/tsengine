@@ -31,7 +31,7 @@ object FaceConverter {
     expr match {
       case b: BinaryOpExpr => BinaryOpExpr(convertIf(b.e1), b.op, convertIf(b.e2))
       case a: AppExpr =>
-        if (a.name.toLowerCase == "if" && a.params.size == 3) IfExpr(a.params.head, a.params(1), a.params(2))
+        if (a.name.toLowerCase == "if" && a.params.size == 3) IfExpr(a.params.head, convertIf(a.params(1)) , convertIf(a.params(2)))
         else AppExpr(a.name, a.params.map(convertIf))
       case e => e
     }
