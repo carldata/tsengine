@@ -54,15 +54,6 @@ class TypeCheckerTest extends FlatSpec with Matchers {
     ast.isRight shouldBe true
   }
 
-  it should "not compile wrong relation type" in {
-    val code =
-      """
-        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = a == b
-      """.stripMargin
-    val ast = Compiler.compile(code, Seq(MathModule.header))
-    ast.isRight shouldBe false
-  }
-
   it should "compile relation type" in {
     val code =
       """

@@ -47,7 +47,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries): TimeSeries = differentiate(xs)
       """.stripMargin
     val now = Instant.EPOCH
-    val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(60), 
+    val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(60),
       now.plusSeconds(75))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
     val expected = TimeSeries(idx.tail, Vector(1f, 1f, 0f, -1f, 4f))
@@ -80,7 +80,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:01:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
-    val expected = TimeSeries(Vector(now, now.plusSeconds(60), now.plusSeconds(3*60)), Vector(2.25f, 2f, 6f))
+    val expected = TimeSeries(Vector(now, now.plusSeconds(60), now.plusSeconds(3 * 60)), Vector(2.25f, 2f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
@@ -95,7 +95,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:01:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 3f, 2f, 6f))
-    val expected = TimeSeries(Vector(now, now.plusSeconds(60), now.plusSeconds(3*60)), Vector(3f, 2f, 6f))
+    val expected = TimeSeries(Vector(now, now.plusSeconds(60), now.plusSeconds(3 * 60)), Vector(3f, 2f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
@@ -153,10 +153,10 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, d: Number): TimeSeries = shift(xs, hours(d))
       """.stripMargin
     val now = Instant.EPOCH
-    val idx = Vector(now, now.plusSeconds(15*60), now.plusSeconds(30*60), now.plusSeconds(45*60),
-      now.plusSeconds(60*60), now.plusSeconds(70*60))
-    val idx2 = Vector(now.plusSeconds(60*60), now.plusSeconds(75*60), now.plusSeconds(90*60), now.plusSeconds(105*60),
-      now.plusSeconds(120*60), now.plusSeconds(130*60))
+    val idx = Vector(now, now.plusSeconds(15 * 60), now.plusSeconds(30 * 60), now.plusSeconds(45 * 60),
+      now.plusSeconds(60 * 60), now.plusSeconds(70 * 60))
+    val idx2 = Vector(now.plusSeconds(60 * 60), now.plusSeconds(75 * 60), now.plusSeconds(90 * 60), now.plusSeconds(105 * 60),
+      now.plusSeconds(120 * 60), now.plusSeconds(130 * 60))
     val vs = Vector(1f, 2f, 3f, 4f, 5f, 6f)
     val ts = TimeSeries(idx, vs)
     val expected = TimeSeries(idx2, vs)
@@ -172,11 +172,11 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, sd: DateTime, ed: DateTime): TimeSeries = slice(xs, sd, ed)
       """.stripMargin
     val now = Instant.EPOCH
-    val startDate = now.plusSeconds(15*60)
-    val endDate = now.plusSeconds(60*60)
-    val idx = Vector(now, now.plusSeconds(15*60), now.plusSeconds(30*60), now.plusSeconds(45*60),
-      now.plusSeconds(59*60), now.plusSeconds(60*60))
-    val idx2 = Vector(now.plusSeconds(15*60), now.plusSeconds(30*60), now.plusSeconds(45*60), now.plusSeconds(59*60))
+    val startDate = now.plusSeconds(15 * 60)
+    val endDate = now.plusSeconds(60 * 60)
+    val idx = Vector(now, now.plusSeconds(15 * 60), now.plusSeconds(30 * 60), now.plusSeconds(45 * 60),
+      now.plusSeconds(59 * 60), now.plusSeconds(60 * 60))
+    val idx2 = Vector(now.plusSeconds(15 * 60), now.plusSeconds(30 * 60), now.plusSeconds(45 * 60), now.plusSeconds(59 * 60))
     val vs = Vector(1f, 2f, 3f, 4f, 5f, 6f)
     val vs2 = Vector(2f, 3f, 4f, 5f)
     val ts = TimeSeries(idx, vs)
@@ -193,8 +193,8 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, f: DateTime => DateTime): TimeSeries = running_total(xs, f)
       """.stripMargin
     val now = Instant.EPOCH
-    val idx = Vector(now, now.plusSeconds(15*60), now.plusSeconds(30*60), now.plusSeconds(45*60),
-      now.plusSeconds(60*60), now.plusSeconds(70*60))
+    val idx = Vector(now, now.plusSeconds(15 * 60), now.plusSeconds(30 * 60), now.plusSeconds(45 * 60),
+      now.plusSeconds(60 * 60), now.plusSeconds(70 * 60))
 
     def f(d: Instant): Instant = d.truncatedTo(ChronoUnit.HOURS)
 
@@ -242,9 +242,9 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, d: Number): TimeSeries = step(xs, minutes(d))
       """.stripMargin
     val now = Instant.EPOCH
-    val idx = Vector(now, now.plusSeconds(60*60), now.plusSeconds(2*60*60))
-    val idx2 = Vector(now, now.plusSeconds(15*60), now.plusSeconds(30*60), now.plusSeconds(45*60), now.plusSeconds(60*60),
-      now.plusSeconds(75*60), now.plusSeconds(90*60), now.plusSeconds(105*60))
+    val idx = Vector(now, now.plusSeconds(60 * 60), now.plusSeconds(2 * 60 * 60))
+    val idx2 = Vector(now, now.plusSeconds(15 * 60), now.plusSeconds(30 * 60), now.plusSeconds(45 * 60), now.plusSeconds(60 * 60),
+      now.plusSeconds(75 * 60), now.plusSeconds(90 * 60), now.plusSeconds(105 * 60))
     val ts = TimeSeries(idx, Vector(10f, 8f, 12f))
     val expected = TimeSeries(idx2, Vector(2, 2, 2, 2, 3, 3, 3, 3))
     val result = Compiler.make(code).flatMap { exec =>
@@ -259,9 +259,9 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries):TimeSeries = prev(xs)
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:02").toInstant(ZoneOffset.UTC)
-    val idx = Vector(now.plusSeconds(1*60), now.plusSeconds(2*60), now.plusSeconds(3*60))
+    val idx = Vector(now.plusSeconds(1 * 60), now.plusSeconds(2 * 60), now.plusSeconds(3 * 60))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f))
-    val expected = TimeSeries(Vector(now.plusSeconds(2*60), now.plusSeconds(3*60)), Vector(1f, 2f))
+    val expected = TimeSeries(Vector(now.plusSeconds(2 * 60), now.plusSeconds(3 * 60)), Vector(1f, 2f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts))
     }
@@ -274,9 +274,9 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, d: Number): TimeSeries = interpolate(xs, minutes(d))
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:02").toInstant(ZoneOffset.UTC)
-    val idx = Vector(now.plusSeconds(1*60), now.plusSeconds(4*60), now.plusSeconds(6*60))
+    val idx = Vector(now.plusSeconds(1 * 60), now.plusSeconds(4 * 60), now.plusSeconds(6 * 60))
     val ts = TimeSeries(idx, Vector(1f, 4f, 6f))
-    val expected = TimeSeries(Vector(now.plusSeconds(1*60), now.plusSeconds(3*60), now.plusSeconds(5*60)),
+    val expected = TimeSeries(Vector(now.plusSeconds(1 * 60), now.plusSeconds(3 * 60), now.plusSeconds(5 * 60)),
       Vector(1f, 3f, 5f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 2f))
@@ -290,9 +290,9 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, d: Number, v: Number): TimeSeries = fill_missing(xs, minutes(d), v)
       """.stripMargin
     val now = LocalDateTime.parse("2015-01-01T00:00:02").toInstant(ZoneOffset.UTC)
-    val idx = Vector(now.plusSeconds(1*60), now.plusSeconds(3*60), now.plusSeconds(4*60))
+    val idx = Vector(now.plusSeconds(1 * 60), now.plusSeconds(3 * 60), now.plusSeconds(4 * 60))
     val ts = TimeSeries(idx, Vector(1f, 4f, 6f))
-    val expected = TimeSeries(Vector(now.plusSeconds(1*60), now.plusSeconds(2*60), now.plusSeconds(3*60), now.plusSeconds(4*60)),
+    val expected = TimeSeries(Vector(now.plusSeconds(1 * 60), now.plusSeconds(2 * 60), now.plusSeconds(3 * 60), now.plusSeconds(4 * 60)),
       Vector(1f, 0f, 4f, 6f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f, 0f))
@@ -306,12 +306,12 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Number): TimeSeries = repeat(xs, sd, ed, hours(d))
       """.stripMargin
     val now = Instant.EPOCH
-    val idx = Vector(now, now.plusSeconds(15*60), now.plusSeconds(30*60), now.plusSeconds(45*60))
+    val idx = Vector(now, now.plusSeconds(15 * 60), now.plusSeconds(30 * 60), now.plusSeconds(45 * 60))
     val ts = TimeSeries(idx, Vector(1, 4, 6, 8))
-    val idx2 = Vector(now.plusSeconds(60*60), now.plusSeconds(75*60), now.plusSeconds(90*60), now.plusSeconds(105*60))
+    val idx2 = Vector(now.plusSeconds(60 * 60), now.plusSeconds(75 * 60), now.plusSeconds(90 * 60), now.plusSeconds(105 * 60))
     val expected = TimeSeries(idx ++ idx2, Vector(1, 4, 6, 8, 1, 4, 6, 8))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, now, now.plusSeconds(2*60*60), 1f))
+      Interpreter(exec).run("main", Seq(ts, now, now.plusSeconds(2 * 60 * 60), 1f))
     }
     result shouldBe Right(expected)
   }
@@ -322,10 +322,10 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries): TimeSeries = time_weight_average(xs, minutes(5))
       """.stripMargin
     val now = LocalDateTime.parse("2014-05-01T08:00:00").toInstant(ZoneOffset.UTC)
-    val idx = Vector(now.plusSeconds(1*60), now.plusSeconds(6*60), now.plusSeconds(11*60), now.plusSeconds(16*60),
-      now.plusSeconds(21*60))
-    val idx2 = Vector(now.plusSeconds(5*60), now.plusSeconds(10*60), now.plusSeconds(15*60), now.plusSeconds(20*60),
-      now.plusSeconds(25*60))
+    val idx = Vector(now.plusSeconds(1 * 60), now.plusSeconds(6 * 60), now.plusSeconds(11 * 60), now.plusSeconds(16 * 60),
+      now.plusSeconds(21 * 60))
+    val idx2 = Vector(now.plusSeconds(5 * 60), now.plusSeconds(10 * 60), now.plusSeconds(15 * 60), now.plusSeconds(20 * 60),
+      now.plusSeconds(25 * 60))
     val ts = TimeSeries(idx, Vector(0.123912f, 0.123748004f, 0.12717001f, 0.13364601f, 0.136148f))
     val expected = TimeSeries(idx2, Vector(0.099061996f, 0.123824f, 0.12599f, 0.13250801f, 0.13593f))
     val result = Compiler.make(code).flatMap { exec =>
@@ -340,8 +340,8 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries): TimeSeries = time_weight_average(xs, minutes(5))
       """.stripMargin
     val now = LocalDateTime.parse("2014-05-01T08:00:00").toInstant(ZoneOffset.UTC)
-    val idx = Vector(1, 2, 3, 4, 5, 6, 7, 8, 9).map(i => now.plusSeconds(i*60))
-    val idx2 = Vector(5, 10).map(i => now.plusSeconds(i*60))
+    val idx = Vector(1, 2, 3, 4, 5, 6, 7, 8, 9).map(i => now.plusSeconds(i * 60))
+    val idx2 = Vector(5, 10).map(i => now.plusSeconds(i * 60))
     val ts = TimeSeries(idx, Vector(0.12359f, 0.12408999f, 0.12387f, 0.12376f, 0.12425f, 0.12348001f, 0.12327f, 0.12387f, 0.12425f))
     val expected = TimeSeries(idx2, Vector(0.099061996f, 0.123824f))
     val result = Compiler.make(code).flatMap { exec =>
@@ -357,7 +357,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
         |def main(xs: TimeSeries, v: Number): TimeSeries = discrete(xs, v)
       """.stripMargin
     val now = Instant.EPOCH
-    val idx = Vector(0, 5, 10, 15, 20, 25, 30).map(i => now.plusSeconds(i*60))
+    val idx = Vector(0, 5, 10, 15, 20, 25, 30).map(i => now.plusSeconds(i * 60))
     val ts = TimeSeries(idx, Vector(1f, 2f, 3f, 5f, 8f, 3f, 2f))
     val expected = TimeSeries(idx.tail, Vector(1f, 1f, 2f, 3f, 5f, 9f))
     val result = Compiler.make(code).flatMap { exec =>
@@ -408,6 +408,54 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val expected = TimeSeries(idx2, Vector(3f, 5f, 6f, 8f))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, 1f, 10f))
+    }
+    result shouldBe Right(expected)
+  }
+
+  it should "solve if statement: compare time series with const" in {
+    val code =
+      """
+        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = if a > 1 then a else b
+      """.stripMargin
+    val now = Instant.now
+    val idx = Vector(1, 2, 3, 4).map(i => now.plusSeconds(i))
+    val ts = TimeSeries(idx, Vector(3f, 20f, 3f, 0f))
+    val ts2 = TimeSeries(idx, Vector(3f, 18f, 5f, 1f))
+    val expected = TimeSeries(idx, Vector(3f, 20f, 3f, 1f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, ts2))
+    }
+    result shouldBe Right(expected)
+  }
+
+  it should "solve if statement: compare two time series (different size)" in {
+    val code =
+      """
+        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = if a == b then a else b
+      """.stripMargin
+    val now = Instant.now
+    val idx = Vector(1, 2, 3, 4).map(i => now.plusSeconds(i))
+    val ts = TimeSeries(idx, Vector(3f, 20f, 3f, 0f))
+    val ts2 = TimeSeries(idx.tail, Vector(20f, 3f, 1f))
+    val expected = TimeSeries(idx.tail, Vector(20f, 3f, 1f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, ts2))
+    }
+    result shouldBe Right(expected)
+  }
+
+  it should "solve if statement: compare two time series (same size)" in {
+    val code =
+      """
+        |def main(a: TimeSeries, b: TimeSeries): TimeSeries = if a > b then a else b
+      """.stripMargin
+    val now = Instant.now
+    val idx = Vector(1, 2, 3, 4).map(i => now.plusSeconds(i))
+    val ts = TimeSeries(idx, Vector(3f, 20f, 3f, 0f))
+    val ts2 = TimeSeries(idx, Vector(3f, 18f, 5f, 1f))
+    val expected = TimeSeries(idx, Vector(3f, 20f, 5f, 1f))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, ts2))
     }
     result shouldBe Right(expected)
   }
