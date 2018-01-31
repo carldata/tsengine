@@ -110,7 +110,7 @@ object TypeChecker {
         val t1 = checkExpr(e1, env).right.getOrElse(SeriesType)
         val t2 = checkExpr(e2, env).right.getOrElse(SeriesType)
         if (numericType(t1) && numericType(t2)) {
-          if(t1 == SeriesType || t2 == SeriesType) Right(SeriesType)
+          if (t1 == SeriesType || t2 == SeriesType) Right(SeriesType)
           else Right(NumberType)
         } else {
           Left("Type error for operation: " + op)
@@ -126,7 +126,7 @@ object TypeChecker {
       case BoolOpExpr(e1, op, e2) =>
         val t1 = checkExpr(e1, env).right.getOrElse(SeriesType)
         val t2 = checkExpr(e2, env).right.getOrElse(SeriesType)
-        if (t1 == SeriesType && t2  == SeriesType) {
+        if (t1 == SeriesType && t2 == SeriesType) {
           Right(SeriesType)
         } else {
           Left("Type error for relation: " + op)
@@ -135,13 +135,16 @@ object TypeChecker {
       case RelationExpr(e1, op, e2) =>
         val t1 = checkExpr(e1, env).right.getOrElse(SeriesType)
         val t2 = checkExpr(e2, env).right.getOrElse(SeriesType)
-        if (t1 == NumberType && t2  == NumberType) {
+        if (t1 == NumberType && t2 == NumberType) {
           Right(SeriesType)
         } else if (t1 == SeriesType && t2 == NumberType) {
           Right(SeriesType)
         } else if (t1 == NumberType && t2 == SeriesType) {
           Right(SeriesType)
-        } else {
+        } else if (t1 == SeriesType && t2 == SeriesType) {
+          Right(SeriesType)
+        }
+        else {
           Left("Type error for relation: " + op)
         }
 
@@ -152,10 +155,12 @@ object TypeChecker {
         val c1 = checkExpr(e1, env)
         val c2 = checkExpr(e2, env)
         val c3 = checkExpr(e3, env)
-        if (c1 == Right(SeriesType) && c2 == Right(NumberType) && c3 == Right(NumberType)) {
+        if (c1 == Right(SeriesType) &&
+          (c2 == Right(NumberType) || c2 == Right(SeriesType)) &&
+          (c3 == Right(NumberType) || c3 == Right(SeriesType))) {
           c1
         } else {
-          Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)))
+          Left("Type error for operation in if-then-else: " + printExpr(IfExpr(e1, e2, e3)) + "\t" + c1 + "\t" + c2.right + "\t" + c3.right)
         }
 
       case AppExpr(name, params) =>
