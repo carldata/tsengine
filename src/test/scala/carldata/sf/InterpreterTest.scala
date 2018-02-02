@@ -146,8 +146,8 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = xs + 1
       """.stripMargin
-    val ts = TimeSeries.fromTimestamps(Seq((1L, 1d), (2L, 2d), (3L, 3d)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 2d), (2L, 3d), (3L, 4d)))
+    val ts = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 2.0), (3L, 3.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 2.0), (2L, 3.0), (3L, 4.0)))
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq(ts))
     }
@@ -159,9 +159,9 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries, ys: TimeSeries): TimeSeries = xs * ys
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 1d), (2L, 2d), (3L, 3d)))
-    val ys = TimeSeries.fromTimestamps(Seq((1L, 1d), (3L, 3d), (4L, 4d)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 1d), (3L, 9d)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 2.0), (3L, 3.0)))
+    val ys = TimeSeries.fromTimestamps(Seq((1L, 1.0), (3L, 3.0), (4L, 4.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 1.0), (3L, 9.0)))
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq(xs, ys))
     }
@@ -173,8 +173,8 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = if xs > 2 && xs < 5 then 1 else 3
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 1d), (2L, 2d), (3L, 3d), (4L, 4d), (5L, 5d)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 3d), (2L, 3d), (3L, 1d), (4L, 1d), (5L, 3d)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 2.0), (3L, 3.0), (4L, 4.0), (5L, 5.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 3.0), (2L, 3.0), (3L, 1.0), (4L, 1.0), (5L, 3.0)))
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq(xs))
     }
