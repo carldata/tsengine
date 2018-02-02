@@ -138,7 +138,7 @@ class InterpreterTest extends FlatSpec with Matchers {
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq(13))
     }
-    result.right.get.asInstanceOf[Float].isNaN shouldBe true
+    result.right.get.asInstanceOf[Double].isNaN shouldBe true
   }
 
   it should "add number to time series" in {
@@ -146,8 +146,8 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = xs + 1
       """.stripMargin
-    val ts = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 2f), (2L, 3f), (3L, 4f)))
+    val ts = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 2.0), (3L, 3.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 2.0), (2L, 3.0), (3L, 4.0)))
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq(ts))
     }
@@ -159,9 +159,9 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries, ys: TimeSeries): TimeSeries = xs * ys
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f)))
-    val ys = TimeSeries.fromTimestamps(Seq((1L, 1f), (3L, 3f), (4L, 4f)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 1f), (3L, 9f)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 2.0), (3L, 3.0)))
+    val ys = TimeSeries.fromTimestamps(Seq((1L, 1.0), (3L, 3.0), (4L, 4.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 1.0), (3L, 9.0)))
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq(xs, ys))
     }
@@ -173,8 +173,8 @@ class InterpreterTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = if xs > 2 && xs < 5 then 1 else 3
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f), (4L, 4f), (5L, 5f)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 3f), (2L, 3f), (3L, 1f), (4L, 1f), (5L, 3f)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 2.0), (3L, 3.0), (4L, 4.0), (5L, 5.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 3.0), (2L, 3.0), (3L, 1.0), (4L, 1.0), (5L, 3.0)))
     val result = Compiler.compile(code, Seq()).flatMap { ast =>
       Interpreter(ast).run("main", Seq(xs))
     }

@@ -39,22 +39,22 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
         if (f.params.nonEmpty && f.params.forall(_.typeName == NumberType) && f.typeName == NumberType) {
           f.params.size match {
             case 1 =>
-              Seq(f.name -> new ((Float) => Float) {
-                def apply(x: Float): Float = execFunction(f.name, Seq(x), Map()).asInstanceOf[Float]
+              Seq(f.name -> new ((Double) => Double) {
+                def apply(x: Double): Double = execFunction(f.name, Seq(x), Map()).asInstanceOf[Double]
               })
             case 2 =>
-              Seq(f.name -> new ((Float, Float) => Float) {
-                def apply(x1: Float, x2: Float): Float = execFunction(f.name, Seq(x1, x2), Map()).asInstanceOf[Float]
+              Seq(f.name -> new ((Double, Double) => Double) {
+                def apply(x1: Double, x2: Double): Double = execFunction(f.name, Seq(x1, x2), Map()).asInstanceOf[Double]
               })
             case 3 =>
-              Seq(f.name -> new ((Float, Float, Float) => Float) {
-                def apply(x1: Float, x2: Float, x3: Float): Float =
-                  execFunction(f.name, Seq(x1, x2, x3), Map()).asInstanceOf[Float]
+              Seq(f.name -> new ((Double, Double, Double) => Double) {
+                def apply(x1: Double, x2: Double, x3: Double): Double =
+                  execFunction(f.name, Seq(x1, x2, x3), Map()).asInstanceOf[Double]
               })
             case 4 =>
-              Seq(f.name -> new ((Float, Float, Float, Float) => Float) {
-                def apply(x1: Float, x2: Float, x3: Float, x4: Float): Float =
-                  execFunction(f.name, Seq(x1, x2, x3, x4), Map()).asInstanceOf[Float]
+              Seq(f.name -> new ((Double, Double, Double, Double) => Double) {
+                def apply(x1: Double, x2: Double, x3: Double, x4: Double): Double =
+                  execFunction(f.name, Seq(x1, x2, x3, x4), Map()).asInstanceOf[Double]
               })
             case _ => Seq()
           }
@@ -102,9 +102,9 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     }
   }
 
-  def execMinusOpExpr(e1: Expression, mem: Map[String, Any]): Float = {
+  def execMinusOpExpr(e1: Expression, mem: Map[String, Any]): Double = {
     val a = execExpr(e1, mem)
-    val v = mkFloat(a)
+    val v = mkDouble(a)
     -v
   }
 
@@ -114,8 +114,8 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
     val b = execExpr(e2, mem)
 
     if (a.isInstanceOf[TimeSeries[_]] && b.isInstanceOf[TimeSeries[_]]) {
-      val xs: TimeSeries[Float] = a.asInstanceOf[TimeSeries[Float]]
-      val ys: TimeSeries[Float] = b.asInstanceOf[TimeSeries[Float]]
+      val xs: TimeSeries[Double] = a.asInstanceOf[TimeSeries[Double]]
+      val ys: TimeSeries[Double] = b.asInstanceOf[TimeSeries[Double]]
       op match {
         case "+" => xs.join(ys).mapValues(v => v._1 + v._2)
         case "-" => xs.join(ys).mapValues(v => v._1 - v._2)
@@ -126,33 +126,33 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
           0f
       }
     } else if (a.isInstanceOf[TimeSeries[_]]) {
-      val xs: TimeSeries[Float] = a.asInstanceOf[TimeSeries[Float]]
+      val xs: TimeSeries[Double] = a.asInstanceOf[TimeSeries[Double]]
       op match {
-        case "+" => xs.mapValues(_ + mkFloat(b))
-        case "-" => xs.mapValues(_ - mkFloat(b))
-        case "*" => xs.mapValues(_ * mkFloat(b))
-        case "/" => xs.mapValues(_ / mkFloat(b))
+        case "+" => xs.mapValues(_ + mkDouble(b))
+        case "-" => xs.mapValues(_ - mkDouble(b))
+        case "*" => xs.mapValues(_ * mkDouble(b))
+        case "/" => xs.mapValues(_ / mkDouble(b))
         case err =>
           Log.error("Wrong binary operator: " + err)
           0f
       }
     } else if (b.isInstanceOf[TimeSeries[_]]) {
-      val ys: TimeSeries[Float] = b.asInstanceOf[TimeSeries[Float]]
+      val ys: TimeSeries[Double] = b.asInstanceOf[TimeSeries[Double]]
       op match {
-        case "+" => ys.mapValues(mkFloat(a) + _)
-        case "-" => ys.mapValues(mkFloat(a) - _)
-        case "*" => ys.mapValues(mkFloat(a) * _)
-        case "/" => ys.mapValues(mkFloat(a) / _)
+        case "+" => ys.mapValues(mkDouble(a) + _)
+        case "-" => ys.mapValues(mkDouble(a) - _)
+        case "*" => ys.mapValues(mkDouble(a) * _)
+        case "/" => ys.mapValues(mkDouble(a) / _)
         case err =>
           Log.error("Wrong binary operator: " + err)
           0f
       }
     } else {
       op match {
-        case "+" => mkFloat(a) + mkFloat(b)
-        case "-" => mkFloat(a) - mkFloat(b)
-        case "*" => mkFloat(a) * mkFloat(b)
-        case "/" => mkFloat(a) / mkFloat(b)
+        case "+" => mkDouble(a) + mkDouble(b)
+        case "-" => mkDouble(a) - mkDouble(b)
+        case "*" => mkDouble(a) * mkDouble(b)
+        case "/" => mkDouble(a) / mkDouble(b)
         case err =>
           Log.error("Wrong binary operator: " + err)
           0f
@@ -187,8 +187,8 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
 
     a match {
       case _: TimeSeries[_] if b.isInstanceOf[TimeSeries[_]] =>
-        val xs: TimeSeries[(Float, Float)] = a.asInstanceOf[TimeSeries[Float]].
-          joinOuter(b.asInstanceOf[TimeSeries[Float]], Float.NaN, Float.NaN)
+        val xs: TimeSeries[(Double, Double)] = a.asInstanceOf[TimeSeries[Double]].
+          joinOuter(b.asInstanceOf[TimeSeries[Double]], Double.NaN, Double.NaN)
         op match {
           case "==" => xs.mapValues(t => t._1 == t._2)
           case "!=" => xs.mapValues(t => t._1 != t._2)
@@ -201,8 +201,8 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
             new TimeSeries[Boolean](Seq())
         }
       case _: TimeSeries[_] =>
-        val xs: TimeSeries[Float] = a.asInstanceOf[TimeSeries[Float]]
-        val y = mkFloat(b)
+        val xs: TimeSeries[Double] = a.asInstanceOf[TimeSeries[Double]]
+        val y = mkDouble(b)
         op match {
           case "==" => xs.mapValues(_ == y)
           case "!=" => xs.mapValues(_ != y)
@@ -215,8 +215,8 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
             new TimeSeries[Boolean](Seq())
         }
       case _ => if (b.isInstanceOf[TimeSeries[_]]) {
-        val xs: TimeSeries[Float] = b.asInstanceOf[TimeSeries[Float]]
-        val y = mkFloat(a)
+        val xs: TimeSeries[Double] = b.asInstanceOf[TimeSeries[Double]]
+        val y = mkDouble(a)
         op match {
           case "==" => xs.mapValues(y == _)
           case "!=" => xs.mapValues(y != _)
@@ -243,24 +243,24 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
 
 
       if (a.isInstanceOf[TimeSeries[_]] && b.isInstanceOf[TimeSeries[_]]) {
-        val tp = a.asInstanceOf[TimeSeries[Float]].joinOuter(b.asInstanceOf[TimeSeries[Float]], Float.NaN, Float.NaN)
+        val tp = a.asInstanceOf[TimeSeries[Double]].joinOuter(b.asInstanceOf[TimeSeries[Double]], Double.NaN, Double.NaN)
         xs.join(tp)
           .mapValues {
             x => if (x._1) x._2._1 else x._2._2
           }
-          .filter(x => !x._2.equals(Float.NaN))
+          .filter(x => !x._2.equals(Double.NaN))
       }
       else
 
         xs.mapValues(x => if (x) a else b)
-    } else TimeSeries.empty[Float]
+    } else TimeSeries.empty[Double]
   }
 
-  def mkFloat(a: Any): Float = {
+  def mkDouble(a: Any): Double = {
     a match {
-      case v: Float => v
-      case v: Int => v.toFloat
-      case v: Double => v.toFloat
+      case v: Double => v
+      case v: Int => v.toDouble
+      case v: Float => v.toDouble
       case v: Boolean => if (v) 1f else 0f
       case _ => 0f
     }
