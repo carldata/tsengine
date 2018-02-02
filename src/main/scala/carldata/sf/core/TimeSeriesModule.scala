@@ -44,39 +44,39 @@ object TimeSeriesModule {
 
 class TimeSeriesModule extends Runtime {
   // Function definition
-  def $map(xs: TimeSeries[Float], f: Float => Float): TimeSeries[Float] = xs.mapValues(f)
+  def $map(xs: TimeSeries[Double], f: Double => Double): TimeSeries[Double] = xs.mapValues(f)
 
-  def $differentiate(xs: TimeSeries[Float]): TimeSeries[Float] = TimeSeries.differentiate(xs)
+  def $differentiate(xs: TimeSeries[Double]): TimeSeries[Double] = TimeSeries.differentiate(xs)
 
-  def $delta_time(xs: TimeSeries[Float]): TimeSeries[Float] = {
+  def $delta_time(xs: TimeSeries[Double]): TimeSeries[Double] = {
     if (xs.isEmpty) xs
     else {
       val idx = xs.index.tail
       val vs = xs.index.tail.zip(xs.index)
         .map(x => x._1.getEpochSecond - x._2.getEpochSecond)
-        .map(_.toFloat)
+        .map(_.toDouble)
       TimeSeries(idx, vs)
     }
   }
 
-  def $fill_missing(xs: TimeSeries[Float], d: Duration, v: Float): TimeSeries[Float] = xs.resampleWithDefault(d, v)
+  def $fill_missing(xs: TimeSeries[Double], d: Duration, v: Double): TimeSeries[Double] = xs.resampleWithDefault(d, v)
 
-  def $discrete(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = TimeSeries.diffOverflow(xs, v)
+  def $discrete(xs: TimeSeries[Double], v: Double): TimeSeries[Double] = TimeSeries.diffOverflow(xs, v)
 
-  def $interpolate(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.interpolate(xs, d)
+  def $interpolate(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = TimeSeries.interpolate(xs, d)
 
-  def $interpolate_outliers(xs: TimeSeries[Float], bottom: Float, top: Float): TimeSeries[Float] = {
-    def f(x: Float, y: Float): Float = {
+  def $interpolate_outliers(xs: TimeSeries[Double], bottom: Double, top: Double): TimeSeries[Double] = {
+    def f(x: Double, y: Double): Double = {
       (x + y) / 2
     }
 
     xs.interpolateOutliers(bottom, top, f)
   }
 
-  def $remove_outliers(xs: TimeSeries[Float], bottom: Float, top: Float): TimeSeries[Float] = xs.removeOutliers(bottom, top)
+  def $remove_outliers(xs: TimeSeries[Double], bottom: Double, top: Double): TimeSeries[Double] = xs.removeOutliers(bottom, top)
 
-  def $groupby_avg(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = {
-    def g(seq: Seq[Float]): Float = seq.sum / seq.length
+  def $groupby_avg(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = {
+    def g(seq: Seq[Double]): Double = seq.sum / seq.length
 
     if (xs.isEmpty) xs
     else {
@@ -84,10 +84,10 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
-  def $groupby_max(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.max)
+  def $groupby_max(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = xs.groupByTime(f, _.unzip._2.max)
 
-  def $groupby_median(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = {
-    def g(seq: Seq[Float]): Float = {
+  def $groupby_median(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = {
+    def g(seq: Seq[Double]): Double = {
       val sorted = seq.sorted
       val center = Math.abs(sorted.length / 2)
       if (seq.length % 2 == 0) {
@@ -106,12 +106,12 @@ class TimeSeriesModule extends Runtime {
 
   }
 
-  def $groupby_min(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.min)
+  def $groupby_min(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = xs.groupByTime(f, _.unzip._2.min)
 
 
-  def $groupby_sum(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = xs.groupByTime(f, _.unzip._2.sum)
+  def $groupby_sum(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = xs.groupByTime(f, _.unzip._2.sum)
 
-  def $prev(xs: TimeSeries[Float]): TimeSeries[Float] = {
+  def $prev(xs: TimeSeries[Double]): TimeSeries[Double] = {
     if (xs.isEmpty) xs
     else {
       val idx = xs.index.tail
@@ -120,49 +120,50 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
-  def $repeat(xs: TimeSeries[Float], sd: Instant, ed: Instant, d: Duration): TimeSeries[Float] = xs.repeat(sd, ed, d)
+  def $repeat(xs: TimeSeries[Double], sd: Instant, ed: Instant, d: Duration): TimeSeries[Double] = xs.repeat(sd, ed, d)
 
-  def $rolling_avg(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    def f(v: Seq[Float]): Float = v.sum / v.length
+  def $rolling_avg(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = {
+    def f(v: Seq[Double]): Double = v.sum / v.length
 
     xs.rollingWindow(d, f)
   }
 
-  def $rolling_sum(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.rollingWindow(d, _.sum)
+  def $rolling_sum(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = xs.rollingWindow(d, _.sum)
 
-  def $running_total(xs: TimeSeries[Float], f: Instant => Instant): TimeSeries[Float] = TimeSeries.integrateByTime(xs, f)
+  def $running_total(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = TimeSeries.integrateByTime(xs, f)
 
-  def $shift(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = xs.shiftTime(d, forward = true)
+  def $shift(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = xs.shiftTime(d, forward = true)
 
-  def $slice(xs: TimeSeries[Float], sd: Instant, ed: Instant): TimeSeries[Float] = xs.slice(sd, ed)
+  def $slice(xs: TimeSeries[Double], sd: Instant, ed: Instant): TimeSeries[Double] = xs.slice(sd, ed)
 
-  def $step(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = TimeSeries.step(xs, d)
+  def $step(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = TimeSeries.step(xs, d)
 
-  def $time_weight_average(xs: TimeSeries[Float], d: Duration): TimeSeries[Float] = {
-    def f(x1: (Instant, Float), x2: (Instant, Float), tsh: Instant) = x1._2
+  def $time_weight_average(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = {
+     def f[V](x1: (Instant, V), x2: (Instant, V), tsh: Instant) = x1._2
 
     val xs2 = TimeSeries(xs.index.head.truncatedTo(ChronoUnit.HOURS) +: xs.index, 0f +: xs.values)
       .addMissing(d, f)
 
-    def g(ys0: Seq[(Instant, Float)]): Float = {
+    def g[V](ys0: Seq[(Instant, V)]): V = {
       val ys = if (ys0.head._1 != xs.index.head && ys0.head._1 == xs2.index.head) ys0.tail else ys0
       val unzipped = ys.unzip
       val lastIndex = floor_time(xs2.index.head, unzipped._1.head, d).plus(d)
       val deltas = (unzipped._1.tail :+ lastIndex).zip(unzipped._1)
         .map(x => x._1.getEpochSecond - x._2.getEpochSecond)
-        .map(_.toFloat)
+        .map(_.toDouble)
 
       unzipped._2
         .zip(deltas)
-        .map(x => x._2 * (x._1 / d.getSeconds))
+        .map(x => x._2.asInstanceOf[Double] * (x._1.asInstanceOf[Double] / d.getSeconds))
         .sum
+        .asInstanceOf[V]
     }
 
     val ys = xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
-    TimeSeries(ys.index.tail :+ ys.index.last.plusSeconds(d.getSeconds), ys.values)
+    TimeSeries(ys.index.tail :+ ys.index.last.plusSeconds(d.getSeconds), ys.values.map(_.asInstanceOf[Double]))
   }
 
-  def $const(xs: TimeSeries[Float], v: Float): TimeSeries[Float] = {
+  def $const(xs: TimeSeries[Double], v: Double): TimeSeries[Double] = {
     xs.mapValues(_ => v)
   }
 
