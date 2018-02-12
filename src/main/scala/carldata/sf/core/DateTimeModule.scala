@@ -3,8 +3,8 @@ package carldata.sf.core
 import java.time.temporal.ChronoUnit
 import java.time.{Duration, Instant, LocalDateTime, ZoneOffset}
 
-import carldata.series.TimeConverter
 import carldata.sf.Runtime
+import carldata.sf.face.TimeConverter
 
 /**
   * Core functions and types which can be accessed from the script
