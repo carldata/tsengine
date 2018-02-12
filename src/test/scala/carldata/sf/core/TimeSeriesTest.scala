@@ -80,7 +80,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:01:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
     val ts = TimeSeries(idx, Vector(1.0, 2.0, 3.0, 3.0, 2.0, 6.0))
-    val expected = TimeSeries(Vector(now, now.plusSeconds(60), now.plusSeconds(3 * 60)), Vector(2.25, 2.0, 6.0))
+    val expected = TimeSeries(Vector(now.plusSeconds(60), now.plusSeconds(120), now.plusSeconds(4 * 60)), Vector(2.25, 2.0, 6.0))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
@@ -95,7 +95,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:01:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(180))
     val ts = TimeSeries(idx, Vector(1.0, 2.0, 3.0, 3.0, 2.0, 6.0))
-    val expected = TimeSeries(Vector(now, now.plusSeconds(60), now.plusSeconds(3 * 60)), Vector(3.0, 2.0, 6.0))
+    val expected = TimeSeries(Vector(now.plusSeconds(60), now.plusSeconds(120), now.plusSeconds(4 * 60)), Vector(3.0, 2.0, 6.0))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
@@ -110,7 +110,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:01:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
     val ts = TimeSeries(idx, Vector(1.0, 2.0, 3.0, 3.0, 2.0, 6.0))
-    val expected = TimeSeries(Vector(now, now.plusSeconds(60)), Vector(1.0, 2.0))
+    val expected = TimeSeries(Vector(now.plusSeconds(60), now.plusSeconds(120)), Vector(1.0, 2.0))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
@@ -125,7 +125,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:01:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80), now.plusSeconds(85))
     val ts = TimeSeries(idx, Vector(3.0, 2.0, 1.0, 3.0, 2.0, 6.0, 7.0))
-    val expected = TimeSeries(Vector(now, now.plusSeconds(60)), Vector(2.5, 6.0))
+    val expected = TimeSeries(Vector(now.plusSeconds(60), now.plusSeconds(120)), Vector(2.5, 6.0))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
@@ -140,7 +140,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2015-01-01T00:01:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(now, now.plusSeconds(15), now.plusSeconds(30), now.plusSeconds(45), now.plusSeconds(65), now.plusSeconds(80))
     val ts = TimeSeries(idx, Vector(1.0, 2.0, 3.0, 3.0, 2.0, 6.0))
-    val expected = TimeSeries(Vector(now, now.plusSeconds(60)), Vector(9.0, 8.0))
+    val expected = TimeSeries(Vector(now.plusSeconds(60), now.plusSeconds(120)), Vector(9.0, 8.0))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts, "*/1 * * * *"))
     }
