@@ -342,11 +342,12 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val now = LocalDateTime.parse("2014-05-01T08:00:00").toInstant(ZoneOffset.UTC)
     val idx = Vector(1, 2, 3, 4, 5, 6, 7, 8, 9).map(i => now.plusSeconds(i * 60))
     val idx2 = Vector(5, 10).map(i => now.plusSeconds(i * 60))
-    val ts = TimeSeries(idx, Vector(0.12359, 0.12408999, 0.12387, 0.12376, 0.12425, 0.12348001, 0.12327, 0.12387, 0.12425))
+    val ts = TimeSeries[Double](idx, Vector(0.12359, 0.12408999, 0.12387, 0.12376, 0.12425, 0.12348001, 0.12327, 0.12387, 0.12425))
     val expected = TimeSeries(idx2, Vector(0.099061996, 0.123824))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(ts))
     }
+
     TimeSeries.almostEqual(expected, result.right.get.asInstanceOf[TimeSeries[Double]], 0.001) shouldBe true
 
   }

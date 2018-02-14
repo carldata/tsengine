@@ -132,20 +132,20 @@ class TimeSeriesModule extends Runtime {
 
   def $running_total(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = TimeSeries.integrateByTime(xs, f)
 
-  def $shift(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = xs.shiftTime(d, forward = true)
+  def $shift(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = xs.shiftTime(d)
 
   def $slice(xs: TimeSeries[Double], sd: Instant, ed: Instant): TimeSeries[Double] = xs.slice(sd, ed)
 
   def $step(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = TimeSeries.step(xs, d)
 
   def $time_weight_average(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = {
-     def f[V](x1: (Instant, V), x2: (Instant, V), tsh: Instant) = x1._2
+    def f[V](x1: (Instant, V), x2: (Instant, V), tsh: Instant) = x1._2
 
-    val xs2 = TimeSeries(xs.index.head.truncatedTo(ChronoUnit.HOURS) +: xs.index, 0f +: xs.values)
+    val xs2 = TimeSeries[Double](xs.index.head.truncatedTo(ChronoUnit.HOURS) +: xs.index, 0d +: xs.values)
       .addMissing(d, f)
-
+    
     def g[V](ys0: Seq[(Instant, V)]): V = {
-      val ys = if (ys0.head._1 != xs.index.head && ys0.head._1 == xs2.index.head) ys0.tail else ys0
+      val ys = if (ys0.head._1 != xs.index.head && ys0.head._1 == xs2.index.head) ys0.tail.sortBy(_._1) else ys0.sortBy(_._1)
       val unzipped = ys.unzip
       val lastIndex = floor_time(xs2.index.head, unzipped._1.head, d).plus(d)
       val deltas = (unzipped._1.tail :+ lastIndex).zip(unzipped._1)
@@ -154,7 +154,7 @@ class TimeSeriesModule extends Runtime {
 
       unzipped._2
         .zip(deltas)
-        .map(x => x._2.asInstanceOf[Double] * (x._1.asInstanceOf[Double] / d.getSeconds))
+        .map(x => x._2 * (x._1.asInstanceOf[Double] / d.getSeconds))
         .sum
         .asInstanceOf[V]
     }
