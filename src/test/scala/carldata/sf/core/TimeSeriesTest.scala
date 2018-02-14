@@ -303,7 +303,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "repeat values" in {
     val code =
       """
-        |def main(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Number): TimeSeries = repeat(xs, sd, ed, hours(d))
+        |def main(xs: TimeSeries, osd: DateTime, oed: DateTime, rsd: DateTime, red: DateTime): TimeSeries = repeat(xs, osd, oed, rsd, red)
       """.stripMargin
     val now = Instant.EPOCH
     val idx = Vector(now, now.plusSeconds(15 * 60), now.plusSeconds(30 * 60), now.plusSeconds(45 * 60))
@@ -311,7 +311,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val idx2 = Vector(now.plusSeconds(60 * 60), now.plusSeconds(75 * 60), now.plusSeconds(90 * 60), now.plusSeconds(105 * 60))
     val expected = TimeSeries(idx ++ idx2, Vector(1, 4, 6, 8, 1, 4, 6, 8))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, now, now.plusSeconds(2 * 60 * 60), 1f))
+      Interpreter(exec).run("main", Seq(ts, now, now.plusSeconds(105 * 60), now, now.plusSeconds(45 * 60).plusNanos(1) ))
     }
     result shouldBe Right(expected)
   }

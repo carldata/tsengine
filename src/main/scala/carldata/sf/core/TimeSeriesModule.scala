@@ -3,7 +3,7 @@ package carldata.sf.core
 import java.time.temporal.ChronoUnit
 import java.time.{Duration, Instant}
 
-import carldata.series.TimeSeries
+import carldata.series.{Gen, TimeSeries}
 import carldata.sf.Runtime
 
 /**
@@ -28,7 +28,7 @@ object TimeSeriesModule {
       |external def interpolate_outliers(xs: TimeSeries, bottom: Number, top: Number): TimeSeries
       |external def prev(xs: TimeSeries): TimeSeries
       |external def remove_outliers(xs: TimeSeries, bottom: Number, top: Number): TimeSeries
-      |external def repeat(xs: TimeSeries, sd: DateTime, ed: DateTime, d: Duration): TimeSeries
+      |external def repeat(xs: TimeSeries, osd: DateTime, oed: DateTime, rsd: DateTime, red: DateTime): TimeSeries
       |external def rolling_avg(xs: TimeSeries, d: Duration): TimeSeries
       |external def rolling_sum(xs: TimeSeries, d: Duration): TimeSeries
       |external def running_total(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
@@ -120,7 +120,17 @@ class TimeSeriesModule extends Runtime {
     }
   }
 
-  def $repeat(xs: TimeSeries[Double], sd: Instant, ed: Instant, d: Duration): TimeSeries[Double] = xs.repeat(sd, ed, d)
+  /**
+    * @param xs  Source series
+    * @param osd Start date of output series
+    * @param oed End date of output series
+    * @param rsd Start date of pattern to repeat from source data
+    * @param red End date of pattern to repeat from source data
+    */
+  def $repeat(xs: TimeSeries[Double], osd: Instant, oed: Instant, rsd: Instant, red: Instant): TimeSeries[Double] = {
+    Gen.repeat(xs.slice(rsd, red), osd, oed)
+  }
+
 
   def $rolling_avg(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = {
     def f(v: Seq[Double]): Double = v.sum / v.length
@@ -143,7 +153,7 @@ class TimeSeriesModule extends Runtime {
 
     val xs2 = TimeSeries[Double](xs.index.head.truncatedTo(ChronoUnit.HOURS) +: xs.index, 0d +: xs.values)
       .addMissing(d, f)
-    
+
     def g[V](ys0: Seq[(Instant, V)]): V = {
       val ys = if (ys0.head._1 != xs.index.head && ys0.head._1 == xs2.index.head) ys0.tail.sortBy(_._1) else ys0.sortBy(_._1)
       val unzipped = ys.unzip
