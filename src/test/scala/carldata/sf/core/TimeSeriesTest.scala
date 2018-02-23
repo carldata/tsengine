@@ -367,6 +367,22 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "find discrete values #2" in {
+    val code =
+      """
+        |def main(xs: TimeSeries, v: Number): TimeSeries = discrete(xs, v)
+      """.stripMargin
+    val now = Instant.EPOCH
+    val idx = Vector(now, now.plusSeconds(5), now.plusSeconds(10), now.plusSeconds(15),
+      now.plusSeconds(20), now.plusSeconds(25), now.plusSeconds(30))
+    val ts = TimeSeries(idx, Vector(1.0, 2.0, 3.0, 3.0, 8.0, 3.0, 2.0))
+    val expected = TimeSeries(idx, Vector(1.0, 1.0, 1.0, 0.0, 5.0, 3.0, 2.0))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 0))
+    }
+    result shouldBe Right(expected)
+  }
+
   it should "interpolate outliers" in {
     val code =
       """

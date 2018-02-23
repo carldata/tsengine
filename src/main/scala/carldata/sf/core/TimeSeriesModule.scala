@@ -61,7 +61,9 @@ class TimeSeriesModule extends Runtime {
 
   def $fill_missing(xs: TimeSeries[Double], d: Duration, v: Double): TimeSeries[Double] = xs.resampleWithDefault(d, v)
 
-  def $discrete(xs: TimeSeries[Double], v: Double): TimeSeries[Double] = TimeSeries.diffOverflow(xs, v)
+  def $discrete(xs: TimeSeries[Double], v: Double): TimeSeries[Double] = {
+    if (v == 0) TimeSeries.diffOverflow(xs) else TimeSeries.diffOverflow(xs, v)
+  }
 
   def $interpolate(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = TimeSeries.interpolate(xs, d)
 
