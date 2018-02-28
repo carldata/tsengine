@@ -47,7 +47,7 @@ object Compiler {
   def getDuration(ast: Module): Duration = {
     val dict = Seq("minutes", "hours", "days", "weeks", "months", "years")
 
-    def execute(r: Runtime, name: String, params: Seq[Float]): Duration = {
+    def execute(r: Runtime, name: String, params: Seq[Double]): Duration = {
       r.executeFunction(name, params).get.asInstanceOf[Duration]
     }
 
@@ -58,7 +58,7 @@ object Compiler {
         case r: RelationExpr => Seq(freeDuration(r.e1, d), freeDuration(r.e2, d)).max
         case a: AppExpr => {
           if (dict.contains(a.name)) {
-            Seq(execute(new DateTimeModule(), a.name, a.params.map(x => AST.printExpr(x).toFloat)), d).max
+            Seq(execute(new DateTimeModule(), a.name, a.params.map(x => AST.printExpr(x).toDouble)), d).max
           }
           else
             a.params.map(x => freeDuration(x, d)).max

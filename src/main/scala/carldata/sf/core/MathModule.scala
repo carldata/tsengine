@@ -32,19 +32,19 @@ object MathModule {
 class MathModule extends Runtime{
 
   // Function definition
-  def $acos(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.acos(x).toFloat)
-  def $asin(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.asin(x).toFloat)
-  def $ceil(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.ceil(x).toFloat)
-  def $cos(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.cos(x).toFloat)
-  def $exp(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.exp(x).toFloat)
-  def $floor(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.floor(x).toFloat)
-  def $log(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.log(x).toFloat)
-  def $log10(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.log10(x).toFloat)
-  def $pow(xs: TimeSeries[Float], b: Float): TimeSeries[Float] = xs.mapValues(x => math.pow(x, b).toFloat)
-  def $round(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.round(x).toFloat)
-  def $sin(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.sin(x).toFloat)
-  def $sqrt(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.sqrt(x).toFloat)
-  def $tan(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.tan(x).toFloat)
-  def $tanh(xs: TimeSeries[Float]): TimeSeries[Float] = xs.mapValues(x => math.tanh(x).toFloat)
+  def $acos(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.acos(x))
+  def $asin(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.asin(x))
+  def $ceil(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.ceil(x))
+  def $cos(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.cos(x))
+  def $exp(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.exp(x))
+  def $floor(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.floor(x))
+  def $log(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.log(x))
+  def $log10(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.log10(x))
+  def $pow(xs: TimeSeries[Double], b: Double): TimeSeries[Double] = xs.mapValues(x => math.pow(x, b))
+  def $round(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.round(x))
+  def $sin(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.sin(x))
+  def $sqrt(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.sqrt(x))
+  def $tan(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.tan(x))
+  def $tanh(xs: TimeSeries[Double]): TimeSeries[Double] = xs.mapValues(x => math.tanh(x))
 }
 

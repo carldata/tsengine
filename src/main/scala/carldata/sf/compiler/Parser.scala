@@ -159,9 +159,9 @@ object Parser {
       } else {
         v1
       }
-      NumberLiteral(v2.toFloat)
+      NumberLiteral(v2.toDouble)
     } else if(ctx.nullLiteral() != null){
-      NumberLiteral(Float.NaN)
+      NumberLiteral(Double.NaN)
     } else {
       // Convert: '(' expression ')'
       convertExpr(ctx.expression(0))

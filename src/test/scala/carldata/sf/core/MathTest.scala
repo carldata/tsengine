@@ -11,8 +11,8 @@ class MathTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = ceil(xs)
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.2f), (2L, 1.9f), (3L, 5.1f)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 2.0f), (2L, 2.0f), (3L, 6.0f)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.2), (2L, 1.9), (3L, 5.1)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 2.0), (2L, 2.0), (3L, 6.0)))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(xs))
     }
@@ -24,8 +24,8 @@ class MathTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = log10(xs)
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 10f), (3L, 100f)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 0.0f), (2L, 1.0f), (3L, 2.0f)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 10.0), (3L, 100.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 0.0), (2L, 1.0), (3L, 2.0)))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(xs))
     }
@@ -37,8 +37,8 @@ class MathTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = pow(xs, 2)
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 2f), (3L, 3f)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 1f), (2L, 4f), (3L, 9f)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 1.0), (2L, 2.0), (3L, 3.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 1), (2L, 4), (3L, 9)))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(xs))
     }
@@ -50,8 +50,8 @@ class MathTest extends FlatSpec with Matchers {
       """
         |def main(xs: TimeSeries): TimeSeries = asin(xs)
       """.stripMargin
-    val xs = TimeSeries.fromTimestamps(Seq((1L, 0f), (2L, 0.5f), (3L, 1f)))
-    val expected = TimeSeries.fromTimestamps(Seq((1L, 0f), (2L, 0.5235988f), (3L, 1.5707964f)))
+    val xs = TimeSeries.fromTimestamps(Seq((1L, 0.0), (2L, 0.5), (3L, 1.0)))
+    val expected = TimeSeries.fromTimestamps(Seq((1L, 0.0), (2L, 0.5235987755982989), (3L, 1.5707963267948966)))
     val result = Compiler.make(code).flatMap { exec =>
       Interpreter(exec).run("main", Seq(xs))
     }
