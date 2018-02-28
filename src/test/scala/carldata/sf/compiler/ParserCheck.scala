@@ -63,7 +63,7 @@ object ParserCheck extends Properties("Parser") {
   } yield AppExpr(name, params)
 
   private val numLiteralGen = for {
-    v <- Gen.posNum[Float]
+    v <- Gen.posNum[Double]
   } yield NumberLiteral(v)
 
   private val exprGen: Gen[Expression] = for {

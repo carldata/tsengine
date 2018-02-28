@@ -30,7 +30,7 @@ object AST {
   case class RelationExpr(e1: Expression, op: String, e2: Expression) extends Expression
   case class AppExpr(name: String, params: Seq[Expression]) extends Expression
   case class VariableExpr(name: String) extends Expression
-  case class NumberLiteral(v: Float) extends Expression
+  case class NumberLiteral(v: Double) extends Expression
   case class StringLiteral(text: String) extends Expression
 
 
