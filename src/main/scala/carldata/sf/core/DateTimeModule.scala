@@ -38,7 +38,7 @@ object DateTimeModule {
 class DateTimeModule extends Runtime {
 
   // Function definition
-  def $adjust_date(dt: Instant, y: Float, m: Float, d: Float): Instant = {
+  def $adjust_date(dt: Instant, y: Double, m: Double, d: Double): Instant = {
     LocalDateTime.ofInstant(dt, ZoneOffset.UTC)
       .withYear(parse(y))
       .withMonth(parse(m))
@@ -46,7 +46,7 @@ class DateTimeModule extends Runtime {
       .toInstant(ZoneOffset.UTC)
   }
 
-  def $adjust_time(dt: Instant, h: Float, m: Float, s: Float): Instant = {
+  def $adjust_time(dt: Instant, h: Double, m: Double, s: Double): Instant = {
     LocalDateTime.ofInstant(dt, ZoneOffset.UTC)
       .withHour(parse(h))
       .withMinute(parse(m))
@@ -56,7 +56,7 @@ class DateTimeModule extends Runtime {
 
   def $date(s: String): Instant = LocalDateTime.parse(s).toInstant(ZoneOffset.UTC)
 
-  def $days(n: Float): Duration = Duration.ofDays(n.toLong)
+  def $days(n: Double): Duration = Duration.ofDays(n.toLong)
 
   def $dt_convert(d: String): Instant => Instant = {
     val f: LocalDateTime => LocalDateTime = TimeConverter.mkCronLike(d)
@@ -67,14 +67,14 @@ class DateTimeModule extends Runtime {
   }
 
 
-  def $from_date(y: Float, m: Float, d: Float): Instant =
+  def $from_date(y: Double, m: Double, d: Double): Instant =
     LocalDateTime.of(parse(y), parse(m), parse(d), 0, 0, 0).toInstant(ZoneOffset.UTC)
 
-  def $from_datetime(y: Float, m: Float, d: Float, h: Float, mt: Float,
-                     s: Float, ns: Float): Instant =
+  def $from_datetime(y: Double, m: Double, d: Double, h: Double, mt: Double,
+                     s: Double, ns: Double): Instant =
     LocalDateTime.of(parse(y), parse(m), parse(d), parse(h), parse(mt), parse(s), parse(ns)).toInstant(ZoneOffset.UTC)
 
-  def $day_of_week(dt: Instant): Float = LocalDateTime.ofInstant(dt, ZoneOffset.UTC).getDayOfWeek.getValue
+  def $day_of_week(dt: Instant): Double = LocalDateTime.ofInstant(dt, ZoneOffset.UTC).getDayOfWeek.getValue
 
   def $floor_hours(dt: Instant): Instant = dt.truncatedTo(ChronoUnit.DAYS)
 
@@ -82,18 +82,18 @@ class DateTimeModule extends Runtime {
 
   def $floor_seconds(dt: Instant): Instant = dt.truncatedTo(ChronoUnit.MINUTES)
 
-  def $hours(n: Float): Duration = Duration.ofHours(n.toLong)
+  def $hours(n: Double): Duration = Duration.ofHours(n.toLong)
 
-  def $minutes(n: Float): Duration = Duration.ofMinutes(n.toLong)
+  def $minutes(n: Double): Duration = Duration.ofMinutes(n.toLong)
 
-  def $months(n: Float): Duration = ChronoUnit.MONTHS.getDuration.multipliedBy(n.toLong)
+  def $months(n: Double): Duration = ChronoUnit.MONTHS.getDuration.multipliedBy(n.toLong)
 
-  def $weeks(n: Float): Duration = ChronoUnit.WEEKS.getDuration.multipliedBy(n.toLong)
+  def $weeks(n: Double): Duration = ChronoUnit.WEEKS.getDuration.multipliedBy(n.toLong)
 
-  def $years(n: Float): Duration = ChronoUnit.YEARS.getDuration.multipliedBy(n.toLong)
+  def $years(n: Double): Duration = ChronoUnit.YEARS.getDuration.multipliedBy(n.toLong)
 
 
-  private def parse(n: Float): Int = n.toInt
+  private def parse(n: Double): Int = n.toInt
 
 }
 
