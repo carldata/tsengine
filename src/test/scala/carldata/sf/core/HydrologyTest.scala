@@ -10,11 +10,11 @@ class HydrologyTest extends FlatSpec with Matchers {
       """
         |def main(n: Number, d: Number, s: Number, u: String): Number = manning_velocity(n, d, s, u)
       """.stripMargin
-    val expected = 1.23f
+    val expected = 1.23
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(0.013f, 1f, 0.02f, "in"))
+      Interpreter(exec).run("main", Seq(0.013, 1, 0.02, "in"))
     }
-    Math.abs(result.right.get.asInstanceOf[Float] - expected) < epsilon shouldEqual true
+    Math.abs(result.right.get.asInstanceOf[Double] - expected) < epsilon shouldEqual true
 
   }
 
@@ -24,11 +24,11 @@ class HydrologyTest extends FlatSpec with Matchers {
       """
         |def main(n: Number, d: Number, s: Number, u: String): Number = manning_flow(n, d, s, u)
       """.stripMargin
-    val expected = 0.964f
+    val expected = 0.964
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(0.013f, 1f, 0.02f, "in"))
+      Interpreter(exec).run("main", Seq(0.013, 1, 0.02, "in"))
     }
-    Math.abs(result.right.get.asInstanceOf[Float] - expected) < epsilon shouldEqual true
+    Math.abs(result.right.get.asInstanceOf[Double] - expected) < epsilon shouldEqual true
 
   }
 }
