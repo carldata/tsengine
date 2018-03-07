@@ -1,7 +1,7 @@
 package carldata.sf.core
 
 import java.time.temporal.ChronoUnit
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.{Duration, Instant, LocalDateTime, ZoneOffset}
 
 import carldata.series.TimeSeries
 import carldata.sf.{Compiler, Interpreter}
@@ -311,7 +311,7 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     val idx2 = Vector(now.plusSeconds(60 * 60), now.plusSeconds(75 * 60), now.plusSeconds(90 * 60), now.plusSeconds(105 * 60))
     val expected = TimeSeries(idx ++ idx2, Vector(1, 4, 6, 8, 1, 4, 6, 8))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, now, now.plusSeconds(105 * 60), now, now.plusSeconds(45 * 60).plusNanos(1) ))
+      Interpreter(exec).run("main", Seq(ts, now, now.plusSeconds(105 * 60), now, now.plusSeconds(45 * 60).plusNanos(1)))
     }
     result shouldBe Right(expected)
   }
@@ -355,14 +355,15 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find discrete values" in {
     val code =
       """
-        |def main(xs: TimeSeries, v: Number): TimeSeries = discrete(xs, v)
+        |def main(xs: TimeSeries, d: Duration, v: Number): TimeSeries = discrete(xs,d,v)
       """.stripMargin
     val now = Instant.EPOCH
     val idx = Vector(0, 5, 10, 15, 20, 25, 30).map(i => now.plusSeconds(i * 60))
+    val idx2 = Vector(5, 10, 15, 20, 25, 30, 35).map(i => now.plusSeconds(i * 60))
     val ts = TimeSeries(idx, Vector(1.0, 2.0, 3.0, 5.0, 8.0, 3.0, 2.0))
-    val expected = TimeSeries(idx.tail, Vector(1.0, 1.0, 2.0, 3.0, 5.0, 9.0))
+    val expected = TimeSeries(idx2, Vector(0.0, 1.0, 1.0, 2.0, 3.0, 5.0, 9.0))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 10.0))
+      Interpreter(exec).run("main", Seq(ts, Duration.ofMinutes(5), 10.0))
     }
     result shouldBe Right(expected)
   }
@@ -370,15 +371,15 @@ class TimeSeriesTest extends FlatSpec with Matchers {
   it should "find discrete values #2" in {
     val code =
       """
-        |def main(xs: TimeSeries, v: Number): TimeSeries = discrete(xs, v)
+        |def main(xs: TimeSeries, d: Duration, v: Number): TimeSeries = discrete(xs,d,v)
       """.stripMargin
     val now = Instant.EPOCH
-    val idx = Vector(now, now.plusSeconds(5), now.plusSeconds(10), now.plusSeconds(15),
-      now.plusSeconds(20), now.plusSeconds(25), now.plusSeconds(30))
+    val idx = Vector(0, 5, 10, 15, 20, 25, 30).map(i => now.plusSeconds(i * 60))
+    val idx2 = Vector(5, 10, 15, 20, 25, 30, 35).map(i => now.plusSeconds(i * 60))
     val ts = TimeSeries(idx, Vector(1.0, 2.0, 3.0, 3.0, 8.0, 3.0, 2.0))
-    val expected = TimeSeries(idx, Vector(1.0, 1.0, 1.0, 0.0, 5.0, 3.0, 2.0))
+    val expected = TimeSeries(idx2, Vector(1.0, 1.0, 1.0, 0.0, 5.0, 3.0, 2.0))
     val result = Compiler.make(code).flatMap { exec =>
-      Interpreter(exec).run("main", Seq(ts, 0))
+      Interpreter(exec).run("main", Seq(ts, Duration.ofMinutes(5), 0))
     }
     result shouldBe Right(expected)
   }

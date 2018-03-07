@@ -1,9 +1,9 @@
 package carldata.sf.core
 
+import java.time._
 import java.time.temporal.ChronoUnit
-import java.time.{Duration, Instant}
 
-import carldata.series.{Gen, TimeSeries}
+import carldata.series.{Gen, Outliers, TimeSeries}
 import carldata.sf.Runtime
 
 /**
@@ -16,7 +16,7 @@ object TimeSeriesModule {
     """
       |external def map(xs: TimeSeries, f: Number => Number): TimeSeries
       |external def differentiate(xs: TimeSeries): TimeSeries
-      |external def discrete(xs: TimeSeries, v: Number): TimeSeries
+      |external def discrete(xs: TimeSeries, d: Duration, v: Number): TimeSeries
       |external def delta_time(xs: TimeSeries): TimeSeries
       |external def fill_missing(xs: TimeSeries, d: Duration, v: Number): TimeSeries
       |external def groupby_avg(xs: TimeSeries, f: DateTime => DateTime): TimeSeries
@@ -61,8 +61,42 @@ class TimeSeriesModule extends Runtime {
 
   def $fill_missing(xs: TimeSeries[Double], d: Duration, v: Double): TimeSeries[Double] = xs.resampleWithDefault(d, v)
 
-  def $discrete(xs: TimeSeries[Double], v: Double): TimeSeries[Double] = {
-    if (v == 0) TimeSeries.diffOverflow(xs) else TimeSeries.diffOverflow(xs, v)
+
+  /**
+    * This function calculate diffOverflow for each period for input TimeSeries,
+    * then resample by sum values in every period and put 0 if there is no data in this period
+    */
+  def $discrete(xs: TimeSeries[Double], d: Duration, v: Double): TimeSeries[Double] = {
+    val start: Instant = floor_time(xs.index.head.truncatedTo(ChronoUnit.HOURS), xs.index.head, d)
+
+    def ceiling(current: Instant): Instant = {
+      val diff = ChronoUnit.SECONDS.between(start, current)
+
+      def floor = start.plusSeconds((diff / d.getSeconds) * d.getSeconds + d.getSeconds)
+
+      val minutes = (LocalDateTime.ofInstant(floor, ZoneOffset.UTC).getMinute / (d.getSeconds / 60)) * (d.getSeconds / 60)
+      LocalDateTime.ofInstant(floor, ZoneOffset.UTC).withMinute(minutes.toInt).withSecond(0).toInstant(ZoneOffset.UTC)
+    }
+
+    def sum(ys: Seq[(Instant, Double)]): Double = ys.map(_._2).sum
+
+    val ys = if (v == 0) TimeSeries.diffOverflow(xs).groupByTime(ceiling, sum)
+    else {
+      TimeSeries.diffOverflow(xs, v).groupByTime(ceiling, sum)
+    }
+
+    val ps = if (ys.index.last != xs.index.last.plusSeconds(d.getSeconds)) {
+      val idx = start.plusSeconds(d.getSeconds) +: ys.index :+ xs.index.last.plusSeconds(d.getSeconds)
+      val vs = 0d +: ys.values :+ 0d
+      (idx, vs)
+    }
+    else if (ys.index.head != xs.index.head.plusSeconds(d.getSeconds)) {
+      val idx = start.plusSeconds(d.getSeconds) +: ys.index
+      val vs = 0d +: ys.values
+      (idx, vs)
+    }
+    else (ys.index, ys.values)
+    TimeSeries(ps._1, ps._2).addMissing(d, (_, _, _) => 0.0)
   }
 
   def $interpolate(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = TimeSeries.interpolate(xs, d)
@@ -72,10 +106,10 @@ class TimeSeriesModule extends Runtime {
       (x + y) / 2
     }
 
-    xs.interpolateOutliers(bottom, top, f)
+    Outliers.interpolate(xs, bottom, top, f)
   }
 
-  def $remove_outliers(xs: TimeSeries[Double], bottom: Double, top: Double): TimeSeries[Double] = xs.removeOutliers(bottom, top)
+  def $remove_outliers(xs: TimeSeries[Double], bottom: Double, top: Double): TimeSeries[Double] = Outliers.remove(xs, bottom, top)
 
   def $groupby_avg(xs: TimeSeries[Double], f: Instant => Instant): TimeSeries[Double] = {
     def g(seq: Seq[Double]): Double = seq.sum / seq.length
@@ -172,7 +206,7 @@ class TimeSeriesModule extends Runtime {
     }
 
     val ys = xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
-    TimeSeries(ys.index.tail :+ ys.index.last.plusSeconds(d.getSeconds), ys.values.map(_.asInstanceOf[Double]))
+    TimeSeries(ys.index.tail :+ ys.index.last.plusSeconds(d.getSeconds), ys.values)
   }
 
   def $const(xs: TimeSeries[Double], v: Double): TimeSeries[Double] = {
