@@ -61,8 +61,12 @@ class TimeSeriesModule extends Runtime {
 
   def $fill_missing(xs: TimeSeries[Double], d: Duration, v: Double): TimeSeries[Double] = xs.resampleWithDefault(d, v)
 
+
+  /**
+    * This function calculate diffOverflow for each period for input TimeSeries,
+    * then resample by sum values in every period and put 0 if there is no data in this period
+    */
   def $discrete(xs: TimeSeries[Double], d: Duration, v: Double): TimeSeries[Double] = {
-    //val d: Duration = Duration.ofMinutes(5)
     val start: Instant = floor_time(xs.index.head.truncatedTo(ChronoUnit.HOURS), xs.index.head, d)
 
     def ceiling(current: Instant): Instant = {
@@ -74,9 +78,7 @@ class TimeSeriesModule extends Runtime {
       LocalDateTime.ofInstant(floor, ZoneOffset.UTC).withMinute(minutes.toInt).withSecond(0).toInstant(ZoneOffset.UTC)
     }
 
-    def sum(ys: Seq[(Instant, Double)]): Double = ys.map(x => x._2).sum
-
-    def f(x1: (Instant, Double), x2: (Instant, Double), i: Instant): Double = 0d
+    def sum(ys: Seq[(Instant, Double)]): Double = ys.map(_._2).sum
 
     val ys = if (v == 0) TimeSeries.diffOverflow(xs).groupByTime(ceiling, sum)
     else {
@@ -94,7 +96,7 @@ class TimeSeriesModule extends Runtime {
       (idx, vs)
     }
     else (ys.index, ys.values)
-    TimeSeries(ps._1, ps._2).addMissing(d, f)
+    TimeSeries(ps._1, ps._2).addMissing(d, (_, _, _) => 0.0)
   }
 
   def $interpolate(xs: TimeSeries[Double], d: Duration): TimeSeries[Double] = TimeSeries.interpolate(xs, d)
@@ -204,7 +206,7 @@ class TimeSeriesModule extends Runtime {
     }
 
     val ys = xs2.groupByTime(floor_time(xs2.index.head, _, d), g)
-    TimeSeries(ys.index.tail :+ ys.index.last.plusSeconds(d.getSeconds), ys.values.map(_.asInstanceOf[Double]))
+    TimeSeries(ys.index.tail :+ ys.index.last.plusSeconds(d.getSeconds), ys.values)
   }
 
   def $const(xs: TimeSeries[Double], v: Double): TimeSeries[Double] = {
