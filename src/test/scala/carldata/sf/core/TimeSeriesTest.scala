@@ -462,6 +462,36 @@ class TimeSeriesTest extends FlatSpec with Matchers {
     result shouldBe Right(expected)
   }
 
+  it should "different types test: TimeSeries as first parameter" in {
+    val code =
+      """
+        |def main(a: TimeSeries, b: Number): TimeSeries = if a != b then a else b
+      """.stripMargin
+    val now = Instant.now
+    val idx = Vector(1, 2, 3, 4).map(i => now.plusSeconds(i))
+    val ts = TimeSeries(idx, Vector(3.0, 2.0, 3.0, 2.0))
+    val expected = TimeSeries(idx, Vector(3.0, 2.0, 3.0, 2.0))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(ts, 3.0))
+    }
+    result shouldBe Right(expected)
+  }
+
+  it should "different types test: TimeSeries as second parameter" in {
+    val code =
+      """
+        |def main(a: Number, b: TimeSeries): TimeSeries = if a != b then a else b
+      """.stripMargin
+    val now = Instant.now
+    val idx = Vector(1, 2, 3, 4).map(i => now.plusSeconds(i))
+    val ts = TimeSeries(idx, Vector(3.0, 3.0, 3.0, 3.0))
+    val expected = TimeSeries(idx, Vector(3.0, 3.0, 3.0, 3.0))
+    val result = Compiler.make(code).flatMap { exec =>
+      Interpreter(exec).run("main", Seq(3.0,ts))
+    }
+    result shouldBe Right(expected)
+  }
+
   it should "solve if statement: compare two time series (same size)" in {
     val code =
       """

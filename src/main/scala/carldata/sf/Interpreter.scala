@@ -242,17 +242,30 @@ class Interpreter(exec: ExecCode, runtimes: Seq[Runtime]) {
       val xs = pred.asInstanceOf[TimeSeries[Boolean]]
 
 
-      if (a.isInstanceOf[TimeSeries[_]] && b.isInstanceOf[TimeSeries[_]]) {
-        val tp = a.asInstanceOf[TimeSeries[Double]].joinOuter(b.asInstanceOf[TimeSeries[Double]], Double.NaN, Double.NaN)
-        xs.join(tp)
-          .mapValues {
-            x => if (x._1) x._2._1 else x._2._2
-          }
-          .filter(x => !x._2.equals(Double.NaN))
+      a match {
+        case _: TimeSeries[_] if b.isInstanceOf[TimeSeries[_]] =>
+          val tp = a.asInstanceOf[TimeSeries[Double]].joinOuter(b.asInstanceOf[TimeSeries[Double]], Double.NaN, Double.NaN)
+          xs.join(tp)
+            .mapValues {
+              x => if (x._1) x._2._1 else x._2._2
+            }
+            .filter(x => !x._2.equals(Double.NaN))
+        case _: TimeSeries[_] =>
+          a.asInstanceOf[TimeSeries[Double]].join(xs)
+            .mapValues {
+              x => if (x._2) x._1 else b
+            }
+            .filter(x => !x._2.equals(Double.NaN))
+        case _ => if (b.isInstanceOf[TimeSeries[_]]) {
+          b.asInstanceOf[TimeSeries[Double]].join(xs)
+            .mapValues {
+              x => if (x._2) x._1 else a
+            }
+            .filter(x => !x._2.equals(Double.NaN))
+        }
+        else
+          xs.mapValues(x => if (x) a else b)
       }
-      else
-
-        xs.mapValues(x => if (x) a else b)
     } else TimeSeries.empty[Double]
   }
 
